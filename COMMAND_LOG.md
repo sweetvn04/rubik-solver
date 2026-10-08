@@ -60,3 +60,4 @@
 | 43 | 2026-10-09 00:47 | `git add . && git commit -m "fix: replace ContactShadows with soft radial floor shadow and restore desktop MSAA"` | Commit bản sửa lỗi bóng đổ hình chữ nhật và khôi phục khử răng cưa trên máy tính | Commit `578fc15` |
 | 44 | 2026-10-09 00:54 | `npm run build` | Kiểm tra biên dịch sau khi tích hợp Move Engine, useRubikStore và PlayerBar | Lỗi TS (type-only import, thiếu import PlayerBar, Face type thiếu wide moves) |
 | 45 | 2026-10-09 00:55 | `npm run build` | Kiểm tra biên dịch lại sau khi sửa type imports và Face type | Thành công (built in 837ms) |
+| 46 | 2026-10-09 00:55 | `git add . && git commit -m "feat: implement 3D layer rotation engine, WCA/Roux parser, and interactive player toolbar"` | Commit toàn bộ tính năng Move Engine, hàng đợi xoay tầng và thanh điều khiển tương tác | Commit `8a74efa` |
