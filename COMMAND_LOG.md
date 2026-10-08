@@ -87,3 +87,4 @@
 | 70 | 2026-10-09 01:27 | `git commit -am "docs: finalize COMMAND_LOG.md with commands 68 and 69"` | Lưu commit hoàn thiện COMMAND_LOG.md | Commit `3a1b26b` |
 | 71 | 2026-10-09 01:30 | `npm run build` | Kiểm tra biên dịch sau khi sửa lỗi viewport h-dvh di động và tối giản thanh header | Thành công (built in 789ms) |
 | 72 | 2026-10-09 01:31 | `git status` | Kiểm tra trạng thái git working tree | Sẵn sàng commit App.tsx và PlayerBar.tsx |
+| 73 | 2026-10-09 01:31 | `git add . && git commit -m "fix(mobile): use dynamic viewport dvh, safe area insets, and minimize header"` | Commit khắc phục lỗi viewport mobile, safe area insets và tối giản thanh header | Commit `736cb05` |
