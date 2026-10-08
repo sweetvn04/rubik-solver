@@ -35,6 +35,7 @@
 | 10 | 2026-10-08 23:30 | `mkdir -p src/components/cube src/components/ui src/data/lessons src/engine/solver src/hooks src/store src/types public/audio` | Khởi tạo cấu trúc các thư mục mã nguồn theo chuẩn kiến trúc đã định trong `plan.md` | Thư mục được tạo đầy đủ |
 | 11 | 2026-10-08 23:31 | `npm run build` | Kiểm tra biên dịch TypeScript (`tsc -b`) và đóng gói Vite (`vite build`) toàn bộ dự án | Build thành công trong 694ms |
 | 12 | 2026-10-08 23:31 | `git init && git add . && git commit -m "feat: scaffold cozy 3D base with Vite, R3F and TailwindCSS"` | Khởi tạo local git repository và thực hiện commit đầu tiên theo chuẩn Conventional Commits | Initial commit `4367dc0` |
+| 13 | 2026-10-08 23:54 | `git add Agent.md && git commit -m "docs: add Agent.md tracking execution rules and command log"` | Thêm và commit file quy tắc & nhật ký thực thi của Agent | Commit `c1933d3` |
 
 ---
 
