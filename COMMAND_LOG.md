@@ -27,6 +27,9 @@
 
 ---
 
-## 📜 Phase 1: Cozy 3D Cube Model (Đang chờ thực hiện)
+## 📜 Phase 1: Cozy 3D Cube Model
 
-*(Các lệnh tiếp theo sẽ được ghi nối tiếp vào đây...)*
+| # | Thời gian (Local) | Lệnh đã thực thi | Chức năng / Mục đích | Kết quả |
+|---|-------------------|------------------|----------------------|---------|
+| 17 | 2026-10-09 00:06 | `npm run build` | Kiểm tra biên dịch sau khi dựng 26 cubies và bảng màu pastel | Lỗi TS1484 (cần type-only import cho verbatimModuleSyntax) |
+| 18 | 2026-10-09 00:07 | `npm run build` | Kiểm tra biên dịch lại sau khi sửa type-only import | Thành công (built in 597ms) |

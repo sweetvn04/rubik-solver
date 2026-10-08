@@ -1,13 +1,14 @@
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, RoundedBox } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { EnvironmentView } from './EnvironmentView';
+import { RubikCube } from './RubikCube';
 
 export function RubikCanvas() {
   return (
     <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
       <Canvas
         shadows
-        camera={{ position: [4.5, 3.8, 5.2], fov: 38 }}
+        camera={{ position: [5.2, 4.2, 6.0], fov: 36 }}
         gl={{ antialias: true, alpha: true }}
       >
         <EnvironmentView />
@@ -16,28 +17,14 @@ export function RubikCanvas() {
         <OrbitControls
           makeDefault
           enablePan={false}
-          minDistance={4}
-          maxDistance={12}
+          minDistance={4.5}
+          maxDistance={14}
           dampingFactor={0.05}
           rotateSpeed={0.8}
         />
 
-        {/* Temporary Cozy Center Cube to verify R3F + RoundedBox setup */}
-        <group position={[0, 0, 0]}>
-          <RoundedBox
-            args={[1, 1, 1]}
-            radius={0.08}
-            smoothness={4}
-            castShadow
-            receiveShadow
-          >
-            <meshStandardMaterial
-              color="#f59e0b"
-              roughness={0.35}
-              metalness={0.05}
-            />
-          </RoundedBox>
-        </group>
+        {/* Khối Rubik 3D đầy đủ 26 cubies bo góc mềm */}
+        <RubikCube />
       </Canvas>
     </div>
   );
