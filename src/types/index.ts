@@ -43,15 +43,15 @@ export interface CubieState {
   isDimmed?: boolean;
 }
 
-// Bảng màu Cozy Pastel (phong cách Deliver on a planet)
+// Bảng màu sáp / giấy phác thảo lấy cảm hứng từ phim ngắn SCRAMBLED
 export const CUBE_PALETTE = {
-  U: '#f6d167', // Vàng bơ ấm
-  D: '#fbf8f1', // Trắng sữa kem
-  F: '#52b788', // Xanh mint / matcha
-  B: '#3d5a80', // Xanh denim
-  R: '#e07a5f', // Đỏ san hô
-  L: '#f4a261', // Cam đào
-  CORE: '#2c2724', // Thân nhựa matte đen ấm
-  DIMMED: '#4a4642', // Màu xám mờ khi không thuộc nhóm highlight
+  U: '#e5a922', // Vàng nghệ sáp
+  D: '#dfdcce', // Trắng giấy mỹ thuật
+  F: '#38934c', // Xanh lá sáp / meadow
+  B: '#2f7ebb', // Xanh lam cerulean
+  R: '#9d2825', // Đỏ đô sáp / crimson
+  L: '#d86629', // Cam đất / burnt orange
+  CORE: '#1a1715', // Thân nhựa than đen thô mộc
+  DIMMED: '#4a443e', // Xám chì mờ khi không thuộc nhóm highlight
 } as const;
 
