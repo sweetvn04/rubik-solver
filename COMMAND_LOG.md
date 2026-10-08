@@ -45,3 +45,4 @@
 | 28 | 2026-10-09 00:27 | `npm run build` | Kiểm tra biên dịch sau khi sửa lỗi đâm xuyên hình học (clipping) và tăng độ đậm đà no màu của sáp | Thành công (built in 664ms) |
 | 29 | 2026-10-09 00:28 | `git add . && git commit -m "fix: resolve mesh clipping and make crayon colors rich and saturated"` | Commit bản sửa lỗi đâm xuyên hình học và tăng độ no màu sáp | Commit `f954096` |
 | 30 | 2026-10-09 00:29 | `npm run build` | Kiểm tra biên dịch sau khi thu hẹp rãnh đen (spacing 1.00, tile 0.93, body 0.98) | Thành công (built in 752ms) |
+| 31 | 2026-10-09 00:29 | `git add . && git commit -m "style: tighten grooves between cubies with snug spacing and larger tiles"` | Commit cập nhật thu hẹp rãnh đen giữa các viên khít sát | Commit `c54027d` |
