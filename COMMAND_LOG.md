@@ -51,3 +51,4 @@
 | 34 | 2026-10-09 00:38 | `npm run build` | Kiểm tra biên dịch sau khi thu nhỏ kích thước khối Rubik (scale 0.85) | Thành công (built in 619ms) |
 | 35 | 2026-10-09 00:38 | `git add . && git commit -m "style: scale down RubikCube to 0.85 for balanced viewport framing"` | Commit tinh chỉnh tỉ lệ khối Rubik 0.85 và cân chỉnh bóng tiếp xúc | Commit `acca7a7` |
 | 36 | 2026-10-09 00:41 | `npm run build` | Kiểm tra biên dịch sau đợt tối ưu chuyên sâu (tắt alpha blending, material pooling 7 vật liệu, giảm 50% tam giác) | Thành công (built in 575ms) |
+| 37 | 2026-10-09 00:41 | `git add . && git commit -m "perf: implement material pooling, disable alpha blending, and decimate geometry"` | Commit gói tối ưu hóa chuyên sâu cho WebGL và Linux compositor | Commit `6734eee` |
