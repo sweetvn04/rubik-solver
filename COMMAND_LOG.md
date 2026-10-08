@@ -95,3 +95,4 @@
 | 78 | 2026-10-09 01:32 | `git commit -am "docs: log command 77 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 77 vào COMMAND_LOG.md | Commit `b289658` |
 | 79 | 2026-10-09 01:34 | `npm run build` | Kiểm tra biên dịch sau khi điều chỉnh camera mặc định về cự ly zoom-out tối đa (khoảng cách 14.0) | Thành công (built in 718ms) |
 | 80 | 2026-10-09 01:34 | `git status` | Kiểm tra trạng thái git working tree | Sẵn sàng commit RubikCanvas.tsx |
+| 81 | 2026-10-09 01:35 | `git add . && git commit -m "style(camera): default camera position to max zoom-out distance of 14.0"` | Commit đặt cự ly camera khởi tạo về mức zoom nhỏ nhất (khoảng cách 14.0) | Commit `9667b55` |
