@@ -6,7 +6,16 @@
 
 ## 📅 2026-10-09
 
-### 📱 [Fix & Style] — Khắc phục Viewport Mobile (h-dvh & Safe Area) và Tối giản hóa Header
+### 🔍 [Camera & UX] — Đặt cự ly camera mặc định về mức zoom nhỏ nhất (Khoảng cách 14.0)
+* **Mục đích:** Theo yêu cầu người dùng, đặt kích thước hiển thị mặc định của khối Rubik ngay khi load trang bằng đúng kích thước nhỏ nhất hiện tại có thể điều chỉnh qua thao tác zoom-out (`maxDistance = 14.0`), tạo khoảng thở rộng rãi và góc nhìn cân đối trên mọi thiết bị.
+* **Files tác động:**
+  - `src/components/cube/RubikCanvas.tsx`:
+    * Tinh chỉnh tọa độ camera khởi tạo từ `[5.2, 4.2, 6.0]` (khoảng cách $\approx 8.98$) thành `[8.1, 6.55, 9.35]` (khoảng cách đúng chuẩn $\approx 14.0$).
+    * Giữ nguyên góc nhìn chéo kinh điển (isometric perspective) và bảo toàn tính năng zoom-in lại gần (`minDistance = 4.2`) khi người dùng muốn quan sát kỹ các mặt.
+
+---
+
+### 📱 [Commit `736cb05`] — Khắc phục Viewport Mobile (h-dvh & Safe Area) và Tối giản hóa Header
 * **Mục đích:** Sửa triệt để lỗi thanh PlayerBar bị lẹm một nửa bên dưới thanh điều hướng của trình duyệt điện thoại, đồng thời gỡ bỏ các nút thừa trên Header để người dùng tập trung 100% vào trải nghiệm khối Rubik 3D.
 * **Files tác động:**
   - `src/App.tsx`:

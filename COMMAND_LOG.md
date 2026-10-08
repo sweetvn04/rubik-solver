@@ -92,3 +92,6 @@
 | 75 | 2026-10-09 01:31 | `git commit -am "docs: finalize COMMAND_LOG.md with command 74"` | Lưu commit cập nhật COMMAND_LOG.md | Commit `d1b4b8b` |
 | 76 | 2026-10-09 01:31 | `git status` | Kiểm tra trạng thái git working tree | Sạch (clean) |
 | 77 | 2026-10-09 01:32 | `git commit -am "docs: update COMMAND_LOG.md with commands 75 and 76"` | Đồng bộ commit cập nhật dòng 75-76 vào COMMAND_LOG.md | Commit `8bf65b0` |
+| 78 | 2026-10-09 01:32 | `git commit -am "docs: log command 77 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 77 vào COMMAND_LOG.md | Commit `b289658` |
+| 79 | 2026-10-09 01:34 | `npm run build` | Kiểm tra biên dịch sau khi điều chỉnh camera mặc định về cự ly zoom-out tối đa (khoảng cách 14.0) | Thành công (built in 718ms) |
+| 80 | 2026-10-09 01:34 | `git status` | Kiểm tra trạng thái git working tree | Sẵn sàng commit RubikCanvas.tsx |

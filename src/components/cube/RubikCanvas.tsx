@@ -15,7 +15,7 @@ export function RubikCanvas() {
       <Canvas
         frameloop="demand" // Render on-demand: 0% GPU load khi không chạm
         dpr={dpr}          // 1.0 trên Mobile, 1.25 trên Desktop (cứu tinh cho GPU)
-        camera={{ position: [5.2, 4.2, 6.0], fov: isMobile ? 42 : 36 }}
+        camera={{ position: [8.1, 6.55, 9.35], fov: isMobile ? 42 : 36 }}
         gl={{
           antialias: !isMobile, // Tắt antialias trên mobile (màn hình nhỏ PPI cao không cần tới)
           alpha: false,         // Tắt alpha để compositor không phải tính toán hòa trộn
