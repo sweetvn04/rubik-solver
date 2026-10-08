@@ -1,7 +1,10 @@
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { type CubieState, CUBE_PALETTE } from '../../types';
-import { getScrambledFaceTexture } from '../../engine/crayonTexture';
+import { type CubieState } from '../../types';
+import {
+  getSharedFaceMaterial,
+  getSharedCoreMaterial,
+} from '../../engine/crayonTexture';
 import {
   createWobblyBodyGeometry,
   createWobblyTileGeometry,
@@ -32,8 +35,9 @@ function FaceTile({
   position,
   rotation,
 }: FaceTileProps) {
-  const { map, bumpMap } = useMemo(
-    () => getScrambledFaceTexture(color, `${cubieId}_${face}`, isDimmed),
+  // Dùng vật liệu được chia sẻ trong pool (Material Pooling)
+  const material = useMemo(
+    () => getSharedFaceMaterial(color, `${cubieId}_${face}`, isDimmed),
     [color, cubieId, face, isDimmed]
   );
 
@@ -44,15 +48,7 @@ function FaceTile({
 
   return (
     <group position={position} rotation={rotation}>
-      <mesh geometry={tileGeom}>
-        <meshStandardMaterial
-          map={map}
-          bumpMap={bumpMap}
-          bumpScale={0.02}
-          roughness={0.94}
-          metalness={0.02}
-        />
-      </mesh>
+      <mesh geometry={tileGeom} material={material} />
     </group>
   );
 }
@@ -65,6 +61,8 @@ export function Cubie({ cubie, position }: CubieProps) {
     () => createWobblyBodyGeometry(cubie.id),
     [cubie.id]
   );
+
+  const coreMaterial = useMemo(() => getSharedCoreMaterial(), []);
 
   const jitter = useMemo(
     () => getCubieMicroJitter(cubie.id),
@@ -84,14 +82,8 @@ export function Cubie({ cubie, position }: CubieProps) {
       rotation={jitter.rotation}
       name={cubie.id}
     >
-      {/* Thân khối nhựa than đen gọt hữu cơ */}
-      <mesh geometry={bodyGeom}>
-        <meshStandardMaterial
-          color={CUBE_PALETTE.CORE}
-          roughness={0.92}
-          metalness={0.03}
-        />
-      </mesh>
+      {/* Thân khối nhựa than đen dùng vật liệu shared core */}
+      <mesh geometry={bodyGeom} material={coreMaterial} />
 
       {/* Mặt U (Trên cùng: Y = +1) */}
       {colors.U && (

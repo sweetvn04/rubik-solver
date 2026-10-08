@@ -13,8 +13,7 @@ function getSeed(id: string): number {
 }
 
 /**
- * Sinh hình học thân khối: kích thước 0.98 (khít sát với spacing 1.00),
- * bo góc nhẹ nhàng để chỉ tạo rãnh đen mảnh 0.02 giữa các viên.
+ * Sinh hình học thân khối tối ưu số đa giác (segments: 2 thay vì 4, giảm 50% số tam giác)
  */
 export function createWobblyBodyGeometry(id: string): THREE.BufferGeometry {
   if (bodyGeomCache.has(id)) {
@@ -22,8 +21,8 @@ export function createWobblyBodyGeometry(id: string): THREE.BufferGeometry {
   }
 
   const seed = getSeed(id);
-  // Thân khối 0.98 ép sát nhau
-  const geom = new RoundedBoxGeometry(0.98, 0.98, 0.98, 4, 0.045);
+  // segments: 2 vừa đủ bo tròn mềm mại mà siêu nhẹ cho iGPU
+  const geom = new RoundedBoxGeometry(0.98, 0.98, 0.98, 2, 0.045);
   const pos = geom.attributes.position;
   const normal = geom.attributes.normal;
 
@@ -53,8 +52,7 @@ export function createWobblyBodyGeometry(id: string): THREE.BufferGeometry {
 }
 
 /**
- * Sinh hình học miếng dán nhãn màu: kích thước 0.93 để phủ kín bề mặt,
- * chỉ chừa lại viền rãnh đen mỏng, đẹp mắt.
+ * Sinh hình học miếng dán nhãn màu tối ưu đa giác (segments: 1)
  */
 export function createWobblyTileGeometry(id: string): THREE.BufferGeometry {
   if (tileGeomCache.has(id)) {
@@ -62,7 +60,7 @@ export function createWobblyTileGeometry(id: string): THREE.BufferGeometry {
   }
 
   const seed = getSeed(id) + 999;
-  const geom = new RoundedBoxGeometry(0.93, 0.93, 0.022, 3, 0.025);
+  const geom = new RoundedBoxGeometry(0.93, 0.93, 0.022, 1, 0.025);
   const pos = geom.attributes.position;
   const normal = geom.attributes.normal;
 
@@ -91,9 +89,6 @@ export function createWobblyTileGeometry(id: string): THREE.BufferGeometry {
   return geom;
 }
 
-/**
- * Độ nghiêng và lệch siêu nhẹ (Micro-tilt) cho cảm giác stop-motion
- */
 export function getCubieMicroJitter(id: string): {
   rotation: [number, number, number];
   offset: [number, number, number];
@@ -103,7 +98,7 @@ export function getCubieMicroJitter(id: string): {
   const s2 = Math.cos(seed * 2.3) * 0.5;
   const s3 = Math.sin(seed * 3.7) * 0.5;
 
-  const maxRot = 0.010; // ~0.5 độ, rất tinh tế
+  const maxRot = 0.010;
   const maxOff = 0.004;
 
   return {
