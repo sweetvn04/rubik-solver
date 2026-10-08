@@ -6,7 +6,20 @@
 
 ## 📅 2026-10-09
 
-### 🔊 [Feature] — Tích hợp bộ máy âm thanh xúc giác (Tactile ASMR Sound Engine) qua Web Audio API
+### 🧮 [Feature] — Triển khai Mô hình Toán học Rời rạc & Chuyển trạng thái Nano-giây (Micro-step 3.1)
+* **Mục đích:** Xây dựng nền tảng biểu diễn toán học rời rạc 54-facelet siêu tốc cho bộ máy giải Roux (Phase 3), cho phép thực hiện hàng triệu move/giây phục vụ thuật toán tìm kiếm cây trạng thái (BFS/IDA*) và định lượng chính xác 4 giai đoạn FB, SB, CMLL, LSE.
+* **Files tác động:**
+  - `src/engine/solver/cubeState.ts` *(Mới)*:
+    * Định nghĩa cấu trúc 54 Facelet Indices (0..53) theo chuẩn Kociemba / WCA tương thích bảng màu BOY (U Vàng, D Trắng, F Xanh lá, B Xanh lam, L Cam, R Đỏ).
+    * `generateMovePermutation`: Tự động tính toán toán học chuyển đổi vị trí và pháp tuyến 3D từ `moveParser`, đảm bảo đồng bộ 100% với 3D canvas và loại bỏ rủi ro sai sót thủ công.
+    * Cache `MOVE_PERMUTATIONS`: Tối ưu hóa chuyển trạng thái trong nano-giây qua mảng `Uint8Array(54)`.
+    * Cầu nối 2 chiều `cubiesToSolverState`: Chuyển đổi trạng thái visual 3D Quaternion của Zustand sang trạng thái giải toán.
+    * Bộ kiểm tra điều kiện đạt chuẩn 4 giai đoạn Roux (`isFirstBlockSolved`, `isSecondBlockSolved`, `isCMLLSolved`, `isLSE_EOSolved`, `isCubeSolved`).
+    * Vượt qua 100% (5/5) các bài unit test toán học (Sexy Move x6, R4, U4, M4, F4, Roux H-Perm x2, tính bất biến của First Block khi xoay R/U).
+
+---
+
+### 🔊 [Commit `239779a`] — Tích hợp bộ máy âm thanh xúc giác (Tactile ASMR Sound Engine) qua Web Audio API
 * **Mục đích:** Mang lại cảm giác xúc giác cơ học chân thực (game feel) mỗi khi xoay khối Rubik hoặc bấm nút, mô phỏng âm thanh nam châm hít đanh gọn của các dòng speedcube cao cấp bằng Web Audio API thuần (0 latency, 0 asset tải mạng).
 * **Files tác động:**
   - `src/engine/soundEngine.ts` *(Mới)*:
