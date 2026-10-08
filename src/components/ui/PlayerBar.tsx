@@ -6,23 +6,13 @@ import {
   Play,
   X,
   Gauge,
-  ChevronUp,
-  ChevronDown,
   Terminal,
   Keyboard,
   Sparkles,
+  Grid3X3,
 } from 'lucide-react';
 
-const QUICK_MOVES = ['R', "R'", 'U', "U'", 'M', "M'", 'r', 'F', "F'"];
-
-const ALL_BASIC_MOVES = [
-  ['R', "R'", 'R2'],
-  ['L', "L'", 'L2'],
-  ['U', "U'", 'U2'],
-  ['D', "D'", 'D2'],
-  ['F', "F'", 'F2'],
-  ['B', "B'", 'B2'],
-];
+const BASIC_FACES = ['R', 'L', 'U', 'D', 'F', 'B'];
 
 const ROUX_SLICE_MOVES = [
   ['M', "M'", 'M2'],
@@ -54,7 +44,7 @@ export function PlayerBar() {
   const turnDuration = useRubikStore((s) => s.turnDuration);
   const setTurnDuration = useRubikStore((s) => s.setTurnDuration);
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMovePadOpen, setIsMovePadOpen] = useState(false);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [showKeyHints, setShowKeyHints] = useState(false);
   const [customAlg, setCustomAlg] = useState('');
@@ -66,11 +56,11 @@ export function PlayerBar() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-2 max-w-full px-4 select-none pointer-events-auto">
-      {/* 1. Thanh trạng thái & Hàng đợi di chuyển */}
+    <div className="flex flex-col items-center gap-2 max-w-[95vw] px-2 select-none pointer-events-auto">
+      {/* 1. Lịch sử hoặc hàng đợi di chuyển */}
       <div className="flex items-center gap-2 px-3 py-1 bg-white/75 backdrop-blur-md rounded-xl text-[11px] text-[#6d6156] border border-[#e8dfcf] shadow-sm">
         <span className="font-semibold text-[#a06030]">Hàng đợi:</span>
-        <span className="font-mono font-medium max-w-[280px] truncate">
+        <span className="font-mono font-medium max-w-[260px] sm:max-w-[360px] truncate">
           {moveQueue.length > 0
             ? `${moveQueue.map((m) => m.raw).slice(0, 10).join(' ')}${
                 moveQueue.length > 10 ? '...' : ''
@@ -81,9 +71,23 @@ export function PlayerBar() {
         </span>
       </div>
 
-      {/* 2. Bảng nhập công thức tự do (Custom Algorithm Bar) */}
+      {/* 2. Ô nhập công thức tùy ý (Custom Algorithm Bar) */}
       {isInputOpen && (
-        <div className="w-full max-w-md p-2.5 bg-white/90 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="w-full max-w-md p-3 bg-white/92 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-[#8c7b6c] uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#e07a5f]" />
+              Nhập chuỗi công thức
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsInputOpen(false)}
+              className="p-1 text-[#8c7b6c] hover:text-[#332b25] rounded-lg hover:bg-[#efe8dc] transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           <form onSubmit={handleRunCustomAlg} className="flex items-center gap-1.5">
             <div className="flex items-center gap-1.5 flex-1 bg-[#faf6ee] px-2.5 py-1.5 rounded-xl border border-[#e4d9c7]">
               <Terminal className="w-3.5 h-3.5 text-[#8c7b6c]" />
@@ -91,7 +95,7 @@ export function PlayerBar() {
                 type="text"
                 value={customAlg}
                 onChange={(e) => setCustomAlg(e.target.value)}
-                placeholder="Nhập công thức: R U R' U' M2..."
+                placeholder="Ví dụ: R U R' U' M2 U M..."
                 className="w-full text-xs font-mono text-[#2c221e] bg-transparent outline-none placeholder:text-[#a89b8d]"
               />
               {customAlg && (
@@ -116,7 +120,7 @@ export function PlayerBar() {
           </form>
 
           {/* Công thức mẫu thông dụng */}
-          <div className="flex items-center gap-1 mt-2 pt-2 border-t border-[#f0e8db] overflow-x-auto text-[10px]">
+          <div className="flex items-center gap-1 mt-2.5 pt-2 border-t border-[#f0e8db] overflow-x-auto text-[10px]">
             <span className="text-[#8c7b6c] shrink-0 font-medium">Mẫu:</span>
             {SAMPLE_ALGORITHMS.map(({ name, alg }) => (
               <button
@@ -133,48 +137,77 @@ export function PlayerBar() {
         </div>
       )}
 
-      {/* 3. Bảng đầy đủ ký hiệu xoay (Full Move Drawer) */}
-      {isDrawerOpen && (
-        <div className="w-full max-w-lg p-3 bg-white/90 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+      {/* 3. "HỘP MOVES" (Floating Move Pad) - Bảng phím bấm chuyên dụng */}
+      {isMovePadOpen && (
+        <div className="w-full max-w-sm sm:max-w-md p-3 bg-white/92 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-[#f0e8db]">
+            <span className="text-[11px] font-bold text-[#8c7b6c] uppercase tracking-wider flex items-center gap-1.5">
+              <Grid3X3 className="w-3.5 h-3.5 text-[#3d5a80]" />
+              Hộp Moves (Bảng Ký Hiệu)
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsMovePadOpen(false)}
+              className="p-1 text-[#8c7b6c] hover:text-[#332b25] rounded-lg hover:bg-[#efe8dc] transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           <div className="flex flex-col gap-2.5">
-            {/* Nhóm Mặt Cơ Bản */}
+            {/* Cụm 1: 6 Mặt cơ bản WCA (Lưới 6 cột x 3 hàng: Thuận, Nghịch ', Đôi 2) */}
             <div>
-              <div className="text-[10px] font-bold text-[#8c7b6c] uppercase tracking-wider mb-1">
-                Mặt cơ bản (Standard WCA)
+              <div className="text-[10px] font-semibold text-[#8c7b6c] mb-1">
+                6 Mặt cơ bản (WCA)
               </div>
               <div className="grid grid-cols-6 gap-1">
-                {ALL_BASIC_MOVES.map((row) => (
-                  <div key={row[0]} className="flex flex-col gap-0.5">
-                    {row.map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => enqueueMove(m)}
-                        className="py-1 text-xs font-mono font-bold bg-[#faf6ee] hover:bg-white text-[#2c221e] rounded-lg border border-[#e2d8c7] transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                      >
-                        {m}
-                      </button>
-                    ))}
+                {BASIC_FACES.map((face) => (
+                  <div key={face} className="flex flex-col gap-1">
+                    {/* Move thuận (R, L, U...) */}
+                    <button
+                      type="button"
+                      onClick={() => enqueueMove(face)}
+                      className="h-8 flex items-center justify-center text-xs font-mono font-bold bg-[#faf6ee] hover:bg-white active:scale-90 text-[#2c221e] rounded-lg border border-[#e2d8c7] shadow-xs transition-all cursor-pointer"
+                    >
+                      {face}
+                    </button>
+                    {/* Move nghịch (R', L', U'...) */}
+                    <button
+                      type="button"
+                      onClick={() => enqueueMove(`${face}'`)}
+                      className="h-7 flex items-center justify-center text-[11px] font-mono font-bold bg-[#f3ebe0] hover:bg-[#eae0d2] active:scale-90 text-[#7a4820] rounded-lg border border-[#dfd2c0] transition-all cursor-pointer"
+                    >
+                      {face}'
+                    </button>
+                    {/* Move xoay đôi 180 độ (R2, L2, U2...) */}
+                    <button
+                      type="button"
+                      onClick={() => enqueueMove(`${face}2`)}
+                      className="h-6 flex items-center justify-center text-[10px] font-mono font-semibold bg-[#eae0d2] hover:bg-[#dfd3c2] active:scale-90 text-[#544133] rounded-lg border border-[#d6c7b2] transition-all cursor-pointer"
+                    >
+                      {face}2
+                    </button>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Nhóm Tầng Giữa Roux & Wide Moves */}
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-[#f0e8db]">
+            {/* Cụm 2: Tầng Roux đặc trưng & Wide Moves */}
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#f0e8db]">
+              {/* Roux Slice Moves */}
               <div>
-                <div className="text-[10px] font-bold text-[#3d5a80] uppercase tracking-wider mb-1">
+                <div className="text-[10px] font-bold text-[#3d5a80] mb-1">
                   Tầng giữa Roux (Slice)
                 </div>
                 <div className="grid grid-cols-3 gap-1">
                   {ROUX_SLICE_MOVES.map((row) => (
-                    <div key={row[0]} className="flex flex-col gap-0.5">
+                    <div key={row[0]} className="flex flex-col gap-1">
                       {row.map((m) => (
                         <button
                           key={m}
                           type="button"
                           onClick={() => enqueueMove(m)}
-                          className="py-1 text-xs font-mono font-bold bg-[#3d5a80] hover:bg-[#344e70] text-white rounded-lg border border-[#344d6d] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                          className="h-7 flex items-center justify-center text-[11px] font-mono font-bold bg-[#3d5a80] hover:bg-[#344e70] active:scale-90 text-white rounded-lg border border-[#344d6d] shadow-xs transition-all cursor-pointer"
                         >
                           {m}
                         </button>
@@ -184,19 +217,20 @@ export function PlayerBar() {
                 </div>
               </div>
 
+              {/* 2-Layer Wide Moves */}
               <div>
-                <div className="text-[10px] font-bold text-[#2a9d8f] uppercase tracking-wider mb-1">
+                <div className="text-[10px] font-bold text-[#2a9d8f] mb-1">
                   Xoay 2 tầng (Wide)
                 </div>
                 <div className="grid grid-cols-3 gap-1">
                   {WIDE_MOVES.map((row) => (
-                    <div key={row[0]} className="flex flex-col gap-0.5">
+                    <div key={row[0]} className="flex flex-col gap-1">
                       {row.map((m) => (
                         <button
                           key={m}
                           type="button"
                           onClick={() => enqueueMove(m)}
-                          className="py-1 text-xs font-mono font-bold bg-[#2a9d8f] hover:bg-[#238b7f] text-white rounded-lg border border-[#208579] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                          className="h-7 flex items-center justify-center text-[11px] font-mono font-bold bg-[#2a9d8f] hover:bg-[#238b7f] active:scale-90 text-white rounded-lg border border-[#208579] shadow-xs transition-all cursor-pointer"
                         >
                           {m}
                         </button>
@@ -210,14 +244,14 @@ export function PlayerBar() {
         </div>
       )}
 
-      {/* 4. Thanh điều khiển chính - Capsule Toy Bar */}
-      <div className="flex items-center gap-1.5 p-1.5 bg-white/85 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-lg flex-wrap justify-center">
+      {/* 4. Thanh điều khiển chính - Minimalist Dock (Gọn gàng & Tinh tế) */}
+      <div className="flex items-center gap-1.5 p-1.5 bg-white/85 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-lg">
         {/* Nút Xáo Scramble */}
         <button
           type="button"
           onClick={scramble}
-          className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
-          title="Xáo khối 20 moves chuẩn WCA (Space)"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          title="Xáo khối 20 moves chuẩn WCA (Phím Space)"
         >
           <Shuffle className="w-3.5 h-3.5" />
           <span>Xáo</span>
@@ -228,70 +262,50 @@ export function PlayerBar() {
           type="button"
           onClick={reset}
           className="p-1.5 text-xs text-[#5c4f43] hover:bg-[#efe8dc] rounded-xl transition-all hover:scale-105 active:scale-95 cursor-pointer"
-          title="Khôi phục trạng thái hoàn thành (Esc)"
+          title="Khôi phục trạng thái hoàn thành (Phím Esc)"
         >
           <RefreshCw className="w-3.5 h-3.5" />
         </button>
 
         <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5" />
 
-        {/* Các nút xoay nhanh cơ bản */}
-        <div className="flex items-center gap-1">
-          {QUICK_MOVES.map((rawMove) => {
-            const isRouxSpecial = rawMove.startsWith('M') || rawMove === 'r';
-            return (
-              <button
-                key={rawMove}
-                type="button"
-                onClick={() => enqueueMove(rawMove)}
-                className={`px-2 py-1 text-xs font-mono font-bold rounded-lg border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
-                  isRouxSpecial
-                    ? 'bg-[#3d5a80] text-white border-[#344d6d] hover:bg-[#344e70]'
-                    : 'bg-[#faf6ee] hover:bg-white text-[#2c221e] border-[#e2d8c7]'
-                }`}
-                title={`Xoay ${rawMove}`}
-              >
-                {rawMove}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5" />
-
-        {/* Mở Drawer bảng moves đầy đủ */}
+        {/* Nút mở HỘP MOVES */}
         <button
           type="button"
-          onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-          className={`flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
-            isDrawerOpen
-              ? 'bg-[#4a3f35] text-white border-[#3a3129]'
-              : 'bg-[#f4efe5] hover:bg-[#eae2d4] text-[#4a3f35] border-[#dfd5c4]'
+          onClick={() => {
+            setIsMovePadOpen(!isMovePadOpen);
+            if (!isMovePadOpen) setIsInputOpen(false);
+          }}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+            isMovePadOpen
+              ? 'bg-[#3d5a80] text-white border-[#344d6d] shadow-sm'
+              : 'bg-[#faf6ee] hover:bg-white text-[#2c221e] border-[#e2d8c7]'
           }`}
-          title="Xem toàn bộ bảng ký hiệu"
+          title="Bật/Tắt Hộp Moves (Bảng ký hiệu)"
         >
-          <span>Moves</span>
-          {isDrawerOpen ? (
-            <ChevronDown className="w-3 h-3" />
-          ) : (
-            <ChevronUp className="w-3 h-3" />
-          )}
+          <Grid3X3 className="w-3.5 h-3.5" />
+          <span>Hộp Moves</span>
         </button>
 
-        {/* Mở ô nhập công thức tự do */}
+        {/* Nút mở Ô NHẬP CÔNG THỨC */}
         <button
           type="button"
-          onClick={() => setIsInputOpen(!isInputOpen)}
-          className={`flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+          onClick={() => {
+            setIsInputOpen(!isInputOpen);
+            if (!isInputOpen) setIsMovePadOpen(false);
+          }}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
             isInputOpen
-              ? 'bg-[#e07a5f] text-white border-[#cc6b52]'
-              : 'bg-[#f4efe5] hover:bg-[#eae2d4] text-[#4a3f35] border-[#dfd5c4]'
+              ? 'bg-[#e07a5f] text-white border-[#cc6b52] shadow-sm'
+              : 'bg-[#faf6ee] hover:bg-white text-[#2c221e] border-[#e2d8c7]'
           }`}
           title="Nhập chuỗi công thức bất kỳ"
         >
-          <Sparkles className="w-3 h-3" />
-          <span>Công thức</span>
+          <Sparkles className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Công thức</span>
         </button>
+
+        <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5" />
 
         {/* Điều chỉnh tốc độ xoay */}
         <button
@@ -301,11 +315,11 @@ export function PlayerBar() {
             else if (turnDuration === 120) setTurnDuration(420); // Chậm
             else setTurnDuration(220); // Bình thường
           }}
-          className="flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all hover:scale-105 active:scale-95 cursor-pointer"
           title={`Tốc độ xoay: ${turnDuration}ms (Click để đổi)`}
         >
-          <Gauge className="w-3 h-3 text-[#e07a5f]" />
-          <span className="font-mono text-[11px]">
+          <Gauge className="w-3.5 h-3.5 text-[#e07a5f]" />
+          <span className="font-mono text-[11px] hidden sm:inline">
             {turnDuration === 120 ? 'Nhanh' : turnDuration === 220 ? 'Vừa' : 'Chậm'}
           </span>
         </button>
@@ -330,8 +344,8 @@ export function PlayerBar() {
         <div className="flex items-center gap-2 px-3 py-1.5 bg-white/80 backdrop-blur-md rounded-xl text-[11px] text-[#5c4f43] border border-[#e8dfcf] shadow-sm animate-in fade-in duration-200">
           <span className="font-bold text-[#3d5a80]">⌨ Phím tắt:</span>
           <span>
-            <strong className="font-mono">R, L, U, D, F, B, M</strong> (Giữ{' '}
-            <strong className="font-mono">Shift</strong> để xoay ngược{' '})
+            <strong className="font-mono">R, L, U, D, F, B, M</strong> (+{' '}
+            <strong className="font-mono">Shift</strong> xoay ngược{' '})
           </span>
           <span className="text-[#a89b8d]">|</span>
           <span>

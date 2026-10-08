@@ -6,7 +6,20 @@
 
 ## 📅 2026-10-09
 
-### 🎛️ [Feature & Fix] — Đại tu PlayerBar, Phím tắt WCA và Khắc phục đứng hình Render Loop
+### 🎛️ [Refactor & Style] — Tinh gọn PlayerBar thành Minimal Dock & Tích hợp Floating Move Pad
+* **Mục đích:** Loại bỏ dãy 9 nút xoay nhanh rời rạc gây chật chội và tràn màn hình di động; quy hoạch toàn bộ các thao tác xoay tầng vào **Hộp Moves (Floating Move Pad)** chuyên dụng, mang lại giao diện tinh gọn, công thái học và chuẩn thẩm mỹ stop-motion claymation.
+* **Files tác động:**
+  - `src/components/ui/PlayerBar.tsx`:
+    * Chuyển đổi thanh đáy chính thành **Minimalist Dock**: chỉ chứa các nút cốt lõi (Xáo, Reset, Hộp Moves, Công thức, Tốc độ, Phím tắt).
+    * Thiết kế **Hộp Moves (Floating Move Pad)** mở dạng popover nổi với nút đóng:
+      - Cụm 6 mặt cơ bản WCA tổ chức dạng ma trận 6 cột x 3 hàng: Thuận (`R, L, U...`), Nghịch (`R', L', U'...`), Đôi (`R2, L2, U2...`) với độ cao và màu nền phân biệt rõ rệt.
+      - Cụm tầng giữa Roux (`M, E, S`) với màu xanh Roux Blue `#3d5a80`.
+      - Cụm xoay 2 tầng Wide (`r, l, u`) với màu xanh Roux Teal `#2a9d8f`.
+    * Tối ưu hoàn hảo cho màn hình Mobile (chiều ngang co giãn dưới 380px không bị tràn viền hay vỡ dòng).
+
+---
+
+### 🎛️ [Commit `174c08a`] — Đại tu PlayerBar, Phím tắt WCA và Khắc phục đứng hình Render Loop
 * **Mục đích:** Sửa triệt để lỗi người dùng bấm nút thì move bị kẹt trong hàng đợi (phải xoay nhẹ khối mới chạy), đồng thời nâng cấp giao diện điều khiển toàn diện với bảng ký hiệu đầy đủ, ô nhập thuật toán tùy biến, thanh tốc độ, và phím tắt bàn phím chuẩn speedcubing.
 * **Files tác động:**
   - `src/store/useRubikStore.ts`:
