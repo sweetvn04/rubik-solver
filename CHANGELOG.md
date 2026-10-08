@@ -6,6 +6,22 @@
 
 ## 📅 2026-10-09
 
+### 🪄 [Feature] — Tích hợp Nút Tự giải FB & SB trực quan và Banner kết quả lên Minimal Dock
+* **Mục đích:** Cho phép người dùng trải nghiệm trực tiếp và kiểm chứng thuật toán solver Roux 3D ngay trên giao diện web bằng 1 cú click: Rubik tự tính toán và tự động diễn hoạt xoay giải Khối bên trái rồi Khối bên phải kèm âm thanh click tactile ASMR.
+* **Files tác động:**
+  - `src/store/useRubikStore.ts`:
+    * Bổ sung action `solveFirstTwoBlocks`:
+      - Đọc trạng thái 3D Quaternion hiện tại từ Zustand và chuyển đổi sang mô hình 54-facelet qua `cubiesToSolverState`.
+      - Kiểm tra và tự động giải tuần tự First Block rồi Second Block.
+      - Nạp toàn bộ các moves giải được vào `moveQueue` của 3D canvas qua `enqueueAlgorithm`.
+      - Đo lường và trả về thông số thống kê (`fbMoves`, `sbMoves`, `durationMs`, `isAlreadySolved`).
+  - `src/components/ui/PlayerBar.tsx`:
+    * Thêm nút bấm nổi bật màu xanh ngọc Roux (`#2a9d8f`) với icon `Wand2` ("Giải FB+SB") ngay trên thanh điều khiển chính.
+    * Bổ sung Banner Toast thông báo số bước và thời gian tính toán tự động biến mất sau 5 giây.
+    * Tự động vô hiệu hóa (`disabled`) khi Rubik đang xoay dở để tránh xung đột luồng trạng thái.
+
+---
+
 ### 🧩 [Commit `db13f4f`] — Triển khai Bộ máy giải Tự động First Block & Second Block (Micro-step 3.2)
 * **Mục đích:** Hiện thực hóa 2 giai đoạn nền tảng đầu tiên của phương pháp Roux: xây dựng Khối 1x2x3 bên trái (First Block - FB) và Khối 1x2x3 bên phải (Second Block - SB) bằng thuật toán tìm kiếm tối ưu, bám sát giáo trình Roux Method VN và bảo toàn tuyệt đối nguyên lý bất biến (Roux Invariance Property).
 * **Files tác động:**

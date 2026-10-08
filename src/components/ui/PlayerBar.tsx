@@ -12,6 +12,7 @@ import {
   Grid3X3,
   Volume2,
   VolumeX,
+  Wand2,
 } from 'lucide-react';
 
 const BASIC_FACES = ['R', 'L', 'U', 'D', 'F', 'B'];
@@ -47,11 +48,31 @@ export function PlayerBar() {
   const setTurnDuration = useRubikStore((s) => s.setTurnDuration);
   const isMuted = useRubikStore((s) => s.isMuted);
   const toggleMute = useRubikStore((s) => s.toggleMute);
+  const solveFirstTwoBlocks = useRubikStore((s) => s.solveFirstTwoBlocks);
 
   const [isMovePadOpen, setIsMovePadOpen] = useState(false);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [showKeyHints, setShowKeyHints] = useState(false);
   const [customAlg, setCustomAlg] = useState('');
+  const [solverFeedback, setSolverFeedback] = useState<string | null>(null);
+
+  const handleAutoSolveFB_SB = () => {
+    const res = solveFirstTwoBlocks();
+    if (!res) return;
+
+    if (res.isAlreadySolved) {
+      setSolverFeedback('✅ Khối 1 & 2 (FB & SB) đã hoàn thành sẵn!');
+    } else {
+      const total = res.fbMoves.length + res.sbMoves.length;
+      setSolverFeedback(
+        `✨ FB (${res.fbMoves.length}) + SB (${res.sbMoves.length}) = ${total} bước (${res.durationMs.toFixed(0)}ms)`
+      );
+    }
+
+    setTimeout(() => {
+      setSolverFeedback(null);
+    }, 5000);
+  };
 
   const handleRunCustomAlg = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -61,6 +82,13 @@ export function PlayerBar() {
 
   return (
     <div className="flex flex-col items-center gap-2 max-w-[95vw] px-2 select-none pointer-events-auto">
+      {/* Thông báo phản hồi kết quả giải FB & SB */}
+      {solverFeedback && (
+        <div className="px-3.5 py-1.5 bg-[#2a9d8f]/95 backdrop-blur-sm text-white text-xs font-medium rounded-xl shadow-lg border border-[#238b7f] animate-in fade-in slide-in-from-bottom-2 duration-200">
+          {solverFeedback}
+        </div>
+      )}
+
       {/* 1. Lịch sử hoặc hàng đợi di chuyển */}
       <div className="flex items-center gap-2 px-3 py-1 bg-white/75 backdrop-blur-md rounded-xl text-[11px] text-[#6d6156] border border-[#e8dfcf] shadow-sm">
         <span className="font-semibold text-[#a06030]">Hàng đợi:</span>
@@ -269,6 +297,19 @@ export function PlayerBar() {
           title="Khôi phục trạng thái hoàn thành (Phím Esc)"
         >
           <RefreshCw className="w-3.5 h-3.5" />
+        </button>
+
+        {/* Nút Tự giải FB & SB */}
+        <button
+          type="button"
+          onClick={handleAutoSolveFB_SB}
+          disabled={moveQueue.length > 0}
+          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold bg-[#2a9d8f] hover:bg-[#238b7f] disabled:opacity-40 text-white rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:cursor-not-allowed"
+          title="Tự động tính toán & diễn hoạt giải First Block và Second Block"
+        >
+          <Wand2 className="w-3.5 h-3.5" />
+          <span className="hidden xs:inline sm:inline">Giải FB+SB</span>
+          <span className="xs:hidden sm:hidden">Giải</span>
         </button>
 
         <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5" />

@@ -6,6 +6,16 @@ import { createInitialCubies } from '../engine/cubeModel';
 import { parseAlgorithm, getMoveExecutionInfo } from '../engine/moveParser';
 import { generateScramble } from '../engine/scrambler';
 import { soundEngine } from '../engine/soundEngine';
+import { cubiesToSolverState, isFirstBlockSolved, isSecondBlockSolved } from '../engine/solver/cubeState';
+import { solveFirstBlock } from '../engine/solver/firstBlock';
+import { solveSecondBlock } from '../engine/solver/secondBlock';
+
+export interface SolveResult {
+  fbMoves: string[];
+  sbMoves: string[];
+  durationMs: number;
+  isAlreadySolved: boolean;
+}
 
 interface RubikStore {
   cubies: CubieState[];
@@ -25,6 +35,7 @@ interface RubikStore {
   reset: () => void;
   setTurnDuration: (duration: number) => void;
   toggleMute: () => void;
+  solveFirstTwoBlocks: () => SolveResult | null;
 }
 
 /**
@@ -154,4 +165,45 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   },
 
   setTurnDuration: (duration) => set({ turnDuration: duration }),
+  solveFirstTwoBlocks: () => {
+    const { cubies, isAnimating, moveQueue } = get();
+    if (isAnimating || moveQueue.length > 0) return null;
+
+    const t0 = performance.now();
+    const solverState = cubiesToSolverState(cubies);
+
+    const isFBAlready = isFirstBlockSolved(solverState);
+    const isSBAlready = isSecondBlockSolved(solverState);
+
+    if (isFBAlready && isSBAlready) {
+      return {
+        fbMoves: [],
+        sbMoves: [],
+        durationMs: performance.now() - t0,
+        isAlreadySolved: true,
+      };
+    }
+
+    const fbRes = isFBAlready
+      ? { moves: [] as string[], state: solverState }
+      : solveFirstBlock(solverState);
+
+    const sbRes = isSBAlready
+      ? { moves: [] as string[], state: fbRes.state }
+      : solveSecondBlock(fbRes.state);
+
+    const durationMs = performance.now() - t0;
+    const allMovesStr = [...fbRes.moves, ...sbRes.moves].join(' ');
+
+    if (allMovesStr) {
+      get().enqueueAlgorithm(allMovesStr);
+    }
+
+    return {
+      fbMoves: fbRes.moves,
+      sbMoves: sbRes.moves,
+      durationMs,
+      isAlreadySolved: false,
+    };
+  },
 }));
