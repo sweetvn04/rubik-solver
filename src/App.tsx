@@ -44,8 +44,17 @@ export default function App() {
       </header>
 
       {/* 3D Canvas Viewport */}
-      <section className="flex-1 w-full h-full">
+      <section className="flex-1 w-full h-full relative">
         <RubikCanvas />
+
+        {/* Cozy Studio Vignette Overlay: Spotlight dịu dàng ở trung tâm và viền tối ấm ở 4 góc (0 draw call, 0% GPU) */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(circle at 50% 46%, rgba(255, 253, 248, 0.35) 0%, transparent 58%), radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(160, 135, 110, 0.15) 75%, rgba(110, 85, 60, 0.25) 100%)',
+          }}
+        />
       </section>
 
       {/* Bottom Floating Player Bar */}

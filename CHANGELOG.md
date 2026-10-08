@@ -6,7 +6,18 @@
 
 ## 📅 2026-10-09
 
-### 🎛️ [Refactor & Style] — Tinh gọn PlayerBar thành Minimal Dock & Tích hợp Floating Move Pad
+### 🎨 [Style] — Tích hợp Cozy Studio Radial Vignette Overlay (Chiều sâu điện ảnh, 0% GPU)
+* **Mục đích:** Khắc phục cảm giác nền phẳng đơn điệu và khối Rubik lơ lửng không gian; bổ sung lớp phủ ánh sáng studio (Phương án 3) với hiệu ứng spotlight tập trung vào trung tâm khối Rubik và viền tối ấm dịu nhẹ ở 4 góc mà không tiêu tốn bất kỳ draw call hay chu kỳ GPU nào.
+* **Files tác động:**
+  - `src/App.tsx`:
+    * Thêm lớp phủ `absolute inset-0 pointer-events-none` phủ trên khung nhìn Three.js.
+    * Sử dụng kết hợp CSS `radial-gradient` đa tầng: tâm điểm sáng ấm dịu (`rgba(255, 253, 248, 0.35)`) và viền ngoài màu đất nung ấm áp (`rgba(110, 85, 60, 0.25)`).
+    * `pointer-events-none` đảm bảo toàn bộ cử chỉ xoay chuột, zoom, vuốt cảm ứng trên Rubik hoàn toàn không bị ảnh hưởng.
+    * Đạt hiệu năng tối đa: 0 WebGL draw call, 0 tam giác, tải GPU giữ nguyên 0% khi đứng yên.
+
+---
+
+### 🎛️ [Commit `eee97a9`] — Tinh gọn PlayerBar thành Minimal Dock & Tích hợp Floating Move Pad
 * **Mục đích:** Loại bỏ dãy 9 nút xoay nhanh rời rạc gây chật chội và tràn màn hình di động; quy hoạch toàn bộ các thao tác xoay tầng vào **Hộp Moves (Floating Move Pad)** chuyên dụng, mang lại giao diện tinh gọn, công thái học và chuẩn thẩm mỹ stop-motion claymation.
 * **Files tác động:**
   - `src/components/ui/PlayerBar.tsx`:
