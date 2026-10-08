@@ -22,7 +22,7 @@ interface FaceTileProps {
   rotation: [number, number, number];
 }
 
-const TILE_OFFSET = 0.490;
+const TILE_OFFSET = 0.501;
 
 function FaceTile({
   cubieId,

@@ -13,9 +13,8 @@ function getSeed(id: string): number {
 }
 
 /**
- * Sinh hình học thân khối bo góc méo mó hữu cơ (Organic Clay)
- * Kích thước được căn chỉnh an toàn (size 0.94, max wave 0.012)
- * để KHÔNG BAO GIỜ bị đâm xuyên (clipping) qua lớp miếng dán màu bên ngoài.
+ * Sinh hình học thân khối: kích thước 0.98 (khít sát với spacing 1.00),
+ * bo góc nhẹ nhàng để chỉ tạo rãnh đen mảnh 0.02 giữa các viên.
  */
 export function createWobblyBodyGeometry(id: string): THREE.BufferGeometry {
   if (bodyGeomCache.has(id)) {
@@ -23,13 +22,12 @@ export function createWobblyBodyGeometry(id: string): THREE.BufferGeometry {
   }
 
   const seed = getSeed(id);
-  // Thân khối 0.94 (bán kính 0.47)
-  const geom = new RoundedBoxGeometry(0.94, 0.94, 0.94, 4, 0.07);
+  // Thân khối 0.98 ép sát nhau
+  const geom = new RoundedBoxGeometry(0.98, 0.98, 0.98, 4, 0.045);
   const pos = geom.attributes.position;
   const normal = geom.attributes.normal;
 
-  // Giới hạn biên độ biến dạng an toàn tuyệt đối (tối đa 0.012)
-  const amplitude = 0.012;
+  const amplitude = 0.007;
 
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
@@ -40,7 +38,6 @@ export function createWobblyBodyGeometry(id: string): THREE.BufferGeometry {
     const ny = normal.getY(i);
     const nz = normal.getZ(i);
 
-    // Sóng hữu cơ mềm mại
     const wave =
       Math.sin(x * 5.0 + seed * 0.7) * Math.cos(y * 4.5 + seed * 1.1) +
       Math.sin(z * 5.2 + seed * 1.3) * Math.cos(x * 3.8 + seed * 0.4);
@@ -56,7 +53,8 @@ export function createWobblyBodyGeometry(id: string): THREE.BufferGeometry {
 }
 
 /**
- * Sinh hình học miếng dán nhãn màu uốn cong nhẹ tự nhiên
+ * Sinh hình học miếng dán nhãn màu: kích thước 0.93 để phủ kín bề mặt,
+ * chỉ chừa lại viền rãnh đen mỏng, đẹp mắt.
  */
 export function createWobblyTileGeometry(id: string): THREE.BufferGeometry {
   if (tileGeomCache.has(id)) {
@@ -64,11 +62,11 @@ export function createWobblyTileGeometry(id: string): THREE.BufferGeometry {
   }
 
   const seed = getSeed(id) + 999;
-  const geom = new RoundedBoxGeometry(0.86, 0.86, 0.024, 3, 0.03);
+  const geom = new RoundedBoxGeometry(0.93, 0.93, 0.022, 3, 0.025);
   const pos = geom.attributes.position;
   const normal = geom.attributes.normal;
 
-  const amplitude = 0.006;
+  const amplitude = 0.004;
 
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
@@ -105,8 +103,8 @@ export function getCubieMicroJitter(id: string): {
   const s2 = Math.cos(seed * 2.3) * 0.5;
   const s3 = Math.sin(seed * 3.7) * 0.5;
 
-  const maxRot = 0.014; // khoảng ~0.8 độ
-  const maxOff = 0.006; // xê dịch nhẹ
+  const maxRot = 0.010; // ~0.5 độ, rất tinh tế
+  const maxOff = 0.004;
 
   return {
     rotation: [s1 * maxRot, s2 * maxRot, s3 * maxRot],
