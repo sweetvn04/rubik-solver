@@ -48,3 +48,4 @@
 | 31 | 2026-10-09 00:29 | `git add . && git commit -m "style: tighten grooves between cubies with snug spacing and larger tiles"` | Commit cập nhật thu hẹp rãnh đen giữa các viên khít sát | Commit `c54027d` |
 | 32 | 2026-10-09 00:32 | `npm run build` | Kiểm tra biên dịch sau đợt đại tu tối ưu hiệu năng iGPU (demand loop, bake shadow, texture pooling) | Thành công (built in 886ms) |
 | 33 | 2026-10-09 00:33 | `git add . && git commit -m "perf: optimize render loop and texture memory for iGPU to reduce load to near 0%"` | Commit gói tối ưu hóa giải phóng iGPU | Commit `63b668c` |
+| 34 | 2026-10-09 00:38 | `npm run build` | Kiểm tra biên dịch sau khi thu nhỏ kích thước khối Rubik (scale 0.85) | Thành công (built in 619ms) |

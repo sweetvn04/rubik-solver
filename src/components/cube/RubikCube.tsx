@@ -8,7 +8,7 @@ export function RubikCube() {
   const [cubies] = useState(() => createInitialCubies());
 
   return (
-    <group name="RubikCubeRoot">
+    <group name="RubikCubeRoot" scale={0.85}>
       {cubies.map((cubie) => {
         const [x, y, z] = cubie.currentPos;
         const pos: [number, number, number] = [

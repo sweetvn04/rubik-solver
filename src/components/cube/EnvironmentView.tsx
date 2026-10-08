@@ -33,11 +33,11 @@ export function EnvironmentView() {
       */}
       <ContactShadows
         frames={1}
-        position={[0, -2.2, 0]}
-        opacity={0.35}
-        scale={8}
-        blur={2.4}
-        far={4.5}
+        position={[0, -1.85, 0]}
+        opacity={0.32}
+        scale={6.5}
+        blur={2.2}
+        far={3.8}
         color="#3d2f23"
       />
     </>
