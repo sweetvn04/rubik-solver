@@ -1,8 +1,11 @@
 import { RubikCanvas } from './components/cube/RubikCanvas';
 import { PlayerBar } from './components/ui/PlayerBar';
+import { useKeyboardControls } from './hooks/useKeyboardControls';
 import { BookOpen, Wand2 } from 'lucide-react';
 
 export default function App() {
+  useKeyboardControls();
+
   return (
     <main className="w-screen h-screen flex flex-col bg-[#f6f2e9] text-[#332b25] relative overflow-hidden select-none">
       {/* Header bar - Cozy Toy Style */}

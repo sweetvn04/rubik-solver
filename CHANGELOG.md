@@ -6,7 +6,31 @@
 
 ## 📅 2026-10-09
 
-### 🔄 [Feature] — Triển khai Move Engine & Xoay tầng 3D (Layer Rotation Engine)
+### 🎛️ [Feature & Fix] — Đại tu PlayerBar, Phím tắt WCA và Khắc phục đứng hình Render Loop
+* **Mục đích:** Sửa triệt để lỗi người dùng bấm nút thì move bị kẹt trong hàng đợi (phải xoay nhẹ khối mới chạy), đồng thời nâng cấp giao diện điều khiển toàn diện với bảng ký hiệu đầy đủ, ô nhập thuật toán tùy biến, thanh tốc độ, và phím tắt bàn phím chuẩn speedcubing.
+* **Files tác động:**
+  - `src/store/useRubikStore.ts`:
+    * Import trực tiếp `invalidate` từ `@react-three/fiber` vào Zustand store.
+    * Kích hoạt `invalidate()` ngay lập tức trong `enqueueMove`, `enqueueAlgorithm`, `scramble`, và `reset` $\rightarrow$ Đảm bảo WebGL Canvas thức dậy tức thì khi người dùng tương tác từ ngoài DOM mà không phụ thuộc vào cử chỉ chuột.
+  - `src/components/cube/RubikCube.tsx`:
+    * Đơn giản hóa và đồng bộ hóa việc lấy `moveInfo` trực tiếp từ `currentMove` trong `useFrame`, loại bỏ race condition của `useEffect` và ref.
+    * Thêm cơ chế bảo vệ bước nhảy thời gian `safeDelta = Math.min(delta, 0.035)`: Ngăn chặn hiện tượng delta quá lớn sau thời gian dài ngủ demand làm move bị nhảy vọt chỉ trong 1 frame.
+    * Tự động lấy move tiếp theo trong cùng frame để chuỗi thuật toán xoay liên tục không bị gián đoạn.
+  - `src/hooks/useKeyboardControls.ts` *(Mới)*:
+    * Lắng nghe sự kiện bàn phím toàn cục cho các phím: `R, L, U, D, F, B, M` (ấn kèm `Shift` để xoay ngược `'`).
+    * Phím `Space` để xáo nhanh (Scramble), phím `Esc` để đặt lại trạng thái ban đầu (Reset).
+    * Tự động bỏ qua khi người dùng đang gõ trong ô text input.
+  - `src/components/ui/PlayerBar.tsx`:
+    * Bổ sung **Expandable Move Drawer**: Bảng ngăn kéo mở rộng chứa trọn bộ các ký hiệu: 6 mặt chuẩn WCA (`R, L, U, D, F, B`), tầng giữa Roux (`M, E, S`) và các wide moves (`r, l, u`).
+    * Bổ sung **Custom Algorithm Input Bar**: Ô nhập công thức tùy ý hỗ trợ nút Chạy, nút Xóa, và danh sách các công thức mẫu kinh điển (Sexy Move, Sune, T-Perm, Roux H-Perm, Roux EOLR).
+    * Bổ sung **Bộ chọn tốc độ (Speed Selector)**: Chuyển đổi nhanh giữa 3 nấc: Nhanh (120ms), Vừa (220ms), Chậm (420ms).
+    * Bổ sung **Bảng gợi ý phím tắt (Keyboard Shortcut Hints)**.
+  - `src/App.tsx`:
+    * Tích hợp hook `useKeyboardControls()`.
+
+---
+
+### 🔄 [Commit `8a74efa`] — Triển khai Move Engine & Xoay tầng 3D (Layer Rotation Engine)
 * **Mục đích:** Xây dựng bộ máy xoay các tầng của Rubik hỗ trợ đầy đủ các move WCA cơ bản và các move đặc thù của phương pháp Roux (M-slice và Wide moves), điều khiển mượt mà qua hàng đợi trạng thái.
 * **Files tác động:**
   - `src/engine/moveParser.ts` *(Mới)*:

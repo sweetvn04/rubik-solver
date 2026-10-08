@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import * as THREE from 'three';
+import { invalidate } from '@react-three/fiber';
 import type { CubieState, Move } from '../types';
 import { createInitialCubies } from '../engine/cubeModel';
 import { parseAlgorithm, getMoveExecutionInfo } from '../engine/moveParser';
@@ -79,6 +80,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     set((state) => ({
       moveQueue: [...state.moveQueue, move],
     }));
+    invalidate();
   },
 
   enqueueAlgorithm: (alg) => {
@@ -88,6 +90,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     set((state) => ({
       moveQueue: [...state.moveQueue, ...moves],
     }));
+    invalidate();
   },
 
   startNextMove: () => {
@@ -123,6 +126,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     set((state) => ({
       moveQueue: [...state.moveQueue, ...moves],
     }));
+    invalidate();
   },
 
   reset: () => {
@@ -133,6 +137,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       currentMove: null,
       moveHistory: [],
     });
+    invalidate();
   },
 
   setTurnDuration: (duration) => set({ turnDuration: duration }),
