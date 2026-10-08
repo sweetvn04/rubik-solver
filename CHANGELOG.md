@@ -6,7 +6,30 @@
 
 ## 📅 2026-10-09
 
-### 🛡️ [Fix & Refine] — Thay thế ContactShadows bằng Bóng tròn mềm tự nhiên & Khôi phục Khử răng cưa MSAA
+### 🔄 [Feature] — Triển khai Move Engine & Xoay tầng 3D (Layer Rotation Engine)
+* **Mục đích:** Xây dựng bộ máy xoay các tầng của Rubik hỗ trợ đầy đủ các move WCA cơ bản và các move đặc thù của phương pháp Roux (M-slice và Wide moves), điều khiển mượt mà qua hàng đợi trạng thái.
+* **Files tác động:**
+  - `src/engine/moveParser.ts` *(Mới)*:
+    * Parser chuyển đổi chuỗi ký hiệu công thức (ví dụ: `"R U R' U' M2 U M"`) thành các đối tượng `Move`.
+    * Định nghĩa ánh xạ trục xoay Vector3, góc quay radian và hàm lọc tọa độ 9 viên cho từng mặt: `R, L, U, D, F, B`, các move tầng giữa Roux `M, E, S` và các wide moves 2 tầng `r, l, u, d, f, b`.
+  - `src/engine/scrambler.ts` *(Mới)*:
+    * Bộ sinh chuỗi xáo khối Scramble 20 moves ngẫu nhiên chuẩn WCA, tự động lọc tránh lặp lại cùng trục xoay liên tiếp.
+  - `src/store/useRubikStore.ts` *(Mới)*:
+    * Quản lý trạng thái 26 cubies trong Zustand (vị trí nguyên và quaternion hướng).
+    * Hàng đợi di chuyển FIFO (`moveQueue`) ngăn chặn xung đột khi người dùng click liên tục.
+    * Hàm toán học `rotateCubies` cập nhật chính xác vị trí và quaternion sau mỗi move.
+  - `src/components/cube/RubikCube.tsx`:
+    * Vòng lặp `useFrame` nội suy góc xoay bằng hàm `easeOutCubic` mượt mà có độ nảy nhẹ.
+    * Gọi `invalidate()` thông minh khi đang xoay để duy trì 60fps, tự động ngủ về 0% GPU khi xoay xong.
+  - `src/components/cube/Cubie.tsx`:
+    * Cập nhật nhận `quaternion` toán học và cơ chế đăng ký ref phục vụ việc xoay theo tầng.
+  - `src/components/ui/PlayerBar.tsx` *(Mới)*:
+    * Thanh điều khiển dạng capsule phong cách *Deliver on a planet* ở đáy màn hình.
+    * Nút xoay nhanh (`R, R', U, U', M, M', r, F, F'`), nút **Xáo (Scramble)**, nút **Reset**, và nút thử nhanh công thức (`R U R' U'`, `M2 U M2`).
+  - `src/App.tsx`: Gắn component `PlayerBar` vào footer.
+  - `src/types/index.ts`: Bổ sung wide moves vào `Face` type và `quaternion` vào `CubieState`.
+
+---
 * **Mục đích:** Khắc phục triệt để lỗi tấm hình chữ nhật màu xám cắt ngang sàn do Drei `ContactShadows` không tương thích với `alpha: false`, đồng thời sửa lỗi nhận nhầm Desktop thành Mobile khiến máy tính bị tắt khử răng cưa.
 * **Files tác động:**
   - `src/components/cube/EnvironmentView.tsx`:

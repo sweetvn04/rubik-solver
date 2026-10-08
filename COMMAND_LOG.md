@@ -58,3 +58,5 @@
 | 41 | 2026-10-09 00:45 | `git add AGENTS.md CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: mandate continuous code change tracking and create CHANGELOG.md"` | Commit bổ sung luật bắt buộc theo dõi code và khởi tạo CHANGELOG.md | Commit `62fccb8` |
 | 42 | 2026-10-09 00:47 | `npm run build` | Kiểm tra biên dịch sau khi thay thế ContactShadows bằng bóng tròn mềm và khôi phục khử răng cưa MSAA trên desktop | Thành công (built in 532ms) |
 | 43 | 2026-10-09 00:47 | `git add . && git commit -m "fix: replace ContactShadows with soft radial floor shadow and restore desktop MSAA"` | Commit bản sửa lỗi bóng đổ hình chữ nhật và khôi phục khử răng cưa trên máy tính | Commit `578fc15` |
+| 44 | 2026-10-09 00:54 | `npm run build` | Kiểm tra biên dịch sau khi tích hợp Move Engine, useRubikStore và PlayerBar | Lỗi TS (type-only import, thiếu import PlayerBar, Face type thiếu wide moves) |
+| 45 | 2026-10-09 00:55 | `npm run build` | Kiểm tra biên dịch lại sau khi sửa type imports và Face type | Thành công (built in 837ms) |

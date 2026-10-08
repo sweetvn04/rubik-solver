@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { type CubieState } from '../../types';
 import {
@@ -14,6 +14,8 @@ import {
 interface CubieProps {
   cubie: CubieState;
   position: [number, number, number];
+  quaternion: [number, number, number, number];
+  onRegisterRef: (id: string, group: THREE.Group | null) => void;
 }
 
 interface FaceTileProps {
@@ -35,7 +37,6 @@ function FaceTile({
   position,
   rotation,
 }: FaceTileProps) {
-  // Dùng vật liệu được chia sẻ trong pool (Material Pooling)
   const material = useMemo(
     () => getSharedFaceMaterial(color, `${cubieId}_${face}`, isDimmed),
     [color, cubieId, face, isDimmed]
@@ -53,9 +54,19 @@ function FaceTile({
   );
 }
 
-export function Cubie({ cubie, position }: CubieProps) {
+export function Cubie({
+  cubie,
+  position,
+  quaternion,
+  onRegisterRef,
+}: CubieProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { colors, isDimmed } = cubie;
+
+  useEffect(() => {
+    onRegisterRef(cubie.id, groupRef.current);
+    return () => onRegisterRef(cubie.id, null);
+  }, [cubie.id, onRegisterRef]);
 
   const bodyGeom = useMemo(
     () => createWobblyBodyGeometry(cubie.id),
@@ -69,6 +80,15 @@ export function Cubie({ cubie, position }: CubieProps) {
     [cubie.id]
   );
 
+  // Áp dụng quaternion toán học kết hợp độ nghiêng thủ công micro-jitter
+  const finalQuat = useMemo(() => {
+    const baseQ = new THREE.Quaternion(...quaternion);
+    const jitQ = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(...jitter.rotation)
+    );
+    return baseQ.multiply(jitQ);
+  }, [quaternion, jitter.rotation]);
+
   const finalPos: [number, number, number] = [
     position[0] + jitter.offset[0],
     position[1] + jitter.offset[1],
@@ -79,10 +99,10 @@ export function Cubie({ cubie, position }: CubieProps) {
     <group
       ref={groupRef}
       position={finalPos}
-      rotation={jitter.rotation}
+      quaternion={finalQuat}
       name={cubie.id}
     >
-      {/* Thân khối nhựa than đen dùng vật liệu shared core */}
+      {/* Thân khối nhựa than đen gọt hữu cơ */}
       <mesh geometry={bodyGeom} material={coreMaterial} />
 
       {/* Mặt U (Trên cùng: Y = +1) */}

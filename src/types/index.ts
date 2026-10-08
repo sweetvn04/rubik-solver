@@ -1,4 +1,19 @@
-export type Face = 'U' | 'D' | 'F' | 'B' | 'R' | 'L' | 'M' | 'E' | 'S';
+export type Face =
+  | 'U'
+  | 'D'
+  | 'F'
+  | 'B'
+  | 'R'
+  | 'L'
+  | 'M'
+  | 'E'
+  | 'S'
+  | 'r'
+  | 'l'
+  | 'u'
+  | 'd'
+  | 'f'
+  | 'b';
 
 export interface Move {
   face: Face;
@@ -39,6 +54,7 @@ export interface CubieState {
   id: CubieId;
   initialPos: [number, number, number];
   currentPos: [number, number, number];
+  quaternion: [number, number, number, number];
   colors: CubieColorDef;
   isDimmed?: boolean;
 }

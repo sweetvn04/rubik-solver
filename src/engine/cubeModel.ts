@@ -28,6 +28,7 @@ export function createInitialCubies(): CubieState[] {
           id,
           initialPos: [x, y, z],
           currentPos: [x, y, z],
+          quaternion: [0, 0, 0, 1],
           colors,
           isDimmed: false,
         });

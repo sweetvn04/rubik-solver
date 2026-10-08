@@ -1,5 +1,6 @@
 import { RubikCanvas } from './components/cube/RubikCanvas';
-import { Sparkles, BookOpen, Wand2 } from 'lucide-react';
+import { PlayerBar } from './components/ui/PlayerBar';
+import { BookOpen, Wand2 } from 'lucide-react';
 
 export default function App() {
   return (
@@ -44,14 +45,9 @@ export default function App() {
         <RubikCanvas />
       </section>
 
-      {/* Bottom Floating Player Bar Placeholder */}
+      {/* Bottom Floating Player Bar */}
       <footer className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 pointer-events-auto">
-        <div className="flex items-center gap-3 bg-white/85 backdrop-blur-md px-5 py-2.5 rounded-2xl shadow-md border border-[#e8dfcf]">
-          <div className="flex items-center gap-1.5 text-xs text-[#7d7168]">
-            <Sparkles className="w-3.5 h-3.5 text-[#f4a261]" />
-            <span>Phase 0: Sẵn sàng khởi tạo khối 26 cubies</span>
-          </div>
-        </div>
+        <PlayerBar />
       </footer>
     </main>
   );
