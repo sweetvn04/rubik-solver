@@ -1,8 +1,12 @@
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { RoundedBox } from '@react-three/drei';
 import { type CubieState, CUBE_PALETTE } from '../../types';
 import { getScrambledFaceTexture } from '../../engine/crayonTexture';
+import {
+  createWobblyBodyGeometry,
+  createWobblyTileGeometry,
+  getCubieMicroJitter,
+} from '../../engine/organicGeometry';
 
 interface CubieProps {
   cubie: CubieState;
@@ -18,8 +22,6 @@ interface FaceTileProps {
   rotation: [number, number, number];
 }
 
-const TILE_SIZE: [number, number, number] = [0.86, 0.86, 0.025];
-const TILE_RADIUS = 0.025;
 const TILE_OFFSET = 0.485;
 
 function FaceTile({
@@ -35,23 +37,26 @@ function FaceTile({
     [color, cubieId, face, isDimmed]
   );
 
+  const tileGeom = useMemo(
+    () => createWobblyTileGeometry(`${cubieId}_${face}`),
+    [cubieId, face]
+  );
+
   return (
     <group position={position} rotation={rotation}>
-      <RoundedBox
-        args={TILE_SIZE}
-        radius={TILE_RADIUS}
-        smoothness={2}
+      <mesh
+        geometry={tileGeom}
         castShadow
         receiveShadow
       >
         <meshStandardMaterial
           map={map}
           bumpMap={bumpMap}
-          bumpScale={0.02}
+          bumpScale={0.024}
           roughness={0.94}
           metalness={0.02}
         />
-      </RoundedBox>
+      </mesh>
     </group>
   );
 }
@@ -60,22 +65,43 @@ export function Cubie({ cubie, position }: CubieProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { colors, isDimmed } = cubie;
 
+  // Lấy hình học thân khối gọt tay méo mó nhẹ
+  const bodyGeom = useMemo(
+    () => createWobblyBodyGeometry(cubie.id),
+    [cubie.id]
+  );
+
+  // Lấy độ nghiêng và độ xê dịch nhẹ (micro-jitter)
+  const jitter = useMemo(
+    () => getCubieMicroJitter(cubie.id),
+    [cubie.id]
+  );
+
+  const finalPos: [number, number, number] = [
+    position[0] + jitter.offset[0],
+    position[1] + jitter.offset[1],
+    position[2] + jitter.offset[2],
+  ];
+
   return (
-    <group ref={groupRef} position={position} name={cubie.id}>
-      {/* Khối thân nhựa đen than thô mộc bo góc */}
-      <RoundedBox
-        args={[0.96, 0.96, 0.96]}
-        radius={0.06}
-        smoothness={3}
+    <group
+      ref={groupRef}
+      position={finalPos}
+      rotation={jitter.rotation}
+      name={cubie.id}
+    >
+      {/* Thân khối nhựa than đen gọt hữu cơ, không vuông thẳng tắp công nghiệp */}
+      <mesh
+        geometry={bodyGeom}
         castShadow
         receiveShadow
       >
         <meshStandardMaterial
           color={CUBE_PALETTE.CORE}
-          roughness={0.88}
-          metalness={0.04}
+          roughness={0.92}
+          metalness={0.03}
         />
-      </RoundedBox>
+      </mesh>
 
       {/* Mặt U (Trên cùng: Y = +1) */}
       {colors.U && (
