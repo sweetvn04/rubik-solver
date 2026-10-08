@@ -137,3 +137,4 @@
 | 120 | 2026-10-09 02:10 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi tạo secondBlock.ts | Thành công (built in 723ms) |
 | 121 | 2026-10-09 02:10 | `rm test_fb.ts` | Xóa file benchmark test tạm thời trước khi commit | Hoàn tất |
 | 122 | 2026-10-09 02:10 | `git status` | Kiểm tra trạng thái git working tree | Sẵn sàng commit firstBlock.ts và secondBlock.ts |
+| 123 | 2026-10-09 02:11 | `git add . && git commit -m "feat(solver): implement First Block and Second Block Roux solvers with IDA* and macro BFS"` | Commit bộ máy giải First Block và Second Block Roux | Commit `db13f4f` |

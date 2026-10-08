@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-09
 
-### 🧩 [Feature] — Triển khai Bộ máy giải Tự động First Block & Second Block (Micro-step 3.2)
+### 🧩 [Commit `db13f4f`] — Triển khai Bộ máy giải Tự động First Block & Second Block (Micro-step 3.2)
 * **Mục đích:** Hiện thực hóa 2 giai đoạn nền tảng đầu tiên của phương pháp Roux: xây dựng Khối 1x2x3 bên trái (First Block - FB) và Khối 1x2x3 bên phải (Second Block - SB) bằng thuật toán tìm kiếm tối ưu, bám sát giáo trình Roux Method VN và bảo toàn tuyệt đối nguyên lý bất biến (Roux Invariance Property).
 * **Files tác động:**
   - `src/engine/solver/firstBlock.ts` *(Mới)*:
