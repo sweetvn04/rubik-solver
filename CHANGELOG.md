@@ -6,7 +6,20 @@
 
 ## 📅 2026-10-09
 
-### 🚀 [Commit `519867a`] — Gói tối ưu hóa phần cứng di động chuyên sâu (Mobile-First Optimization)
+### 🛡️ [Fix & Refine] — Thay thế ContactShadows bằng Bóng tròn mềm tự nhiên & Khôi phục Khử răng cưa MSAA
+* **Mục đích:** Khắc phục triệt để lỗi tấm hình chữ nhật màu xám cắt ngang sàn do Drei `ContactShadows` không tương thích với `alpha: false`, đồng thời sửa lỗi nhận nhầm Desktop thành Mobile khiến máy tính bị tắt khử răng cưa.
+* **Files tác động:**
+  - `src/components/cube/EnvironmentView.tsx`:
+    * Loại bỏ hoàn toàn component `ContactShadows` của Drei.
+    * Tự sinh texture bóng mềm hình tròn đa tầng loang mờ (`createRadialShadowTexture`) đặt sát ngay đáy khối Rubik (`y = -1.275`).
+    * Triệt tiêu 100% hiện tượng lộ viền xám hình chữ nhật, giúp khối Rubik tiếp đất tự nhiên, êm ái.
+  - `src/engine/device.ts`:
+    * Cải tiến hàm `isMobileDevice()`: Kiểm tra chặt chẽ `isMobileUA && isSmallScreen` thay vì chỉ dựa vào `maxTouchPoints > 0`, tránh nhận nhầm laptop có màn hình cảm ứng trên Linux.
+    * Đặt lại `DPR` tối đa lên tới `2.0` cho Desktop.
+  - `src/components/cube/RubikCanvas.tsx`:
+    * Tự động bật lại `antialias: true` và `DPR = 2.0` trên Desktop, giúp khử sạch toàn bộ hiện tượng răng cưa mà không ảnh hưởng hiệu năng.
+
+---
 * **Mục đích:** Đảm bảo khối Rubik 3D chạy mượt 60fps trên điện thoại và máy tính bảng, không gây nóng máy hay tụt pin.
 * **Files tác động:**
   - `src/engine/device.ts` *(Mới)*: Module nhận diện thiết bị (`isMobileDevice`) và tính toán DPR tối ưu (`1.0` cho mobile, `1.25` cho desktop).
