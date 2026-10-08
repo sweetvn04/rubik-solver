@@ -53,3 +53,4 @@
 | 36 | 2026-10-09 00:41 | `npm run build` | Kiểm tra biên dịch sau đợt tối ưu chuyên sâu (tắt alpha blending, material pooling 7 vật liệu, giảm 50% tam giác) | Thành công (built in 575ms) |
 | 37 | 2026-10-09 00:41 | `git add . && git commit -m "perf: implement material pooling, disable alpha blending, and decimate geometry"` | Commit gói tối ưu hóa chuyên sâu cho WebGL và Linux compositor | Commit `6734eee` |
 | 38 | 2026-10-09 00:42 | `npm run build` | Kiểm tra biên dịch sau khi tích hợp bộ tối ưu hóa phần cứng Mobile (DPR 1.0, 16-bit mediump, touch lock) | Thành công (built in 556ms) |
+| 39 | 2026-10-09 00:42 | `git add . && git commit -m "perf: add mobile-first hardware optimizations with 1.0 DPR and 16-bit precision"` | Commit gói tối ưu hóa phần cứng di động chuyên sâu | Commit `519867a` |
