@@ -22,6 +22,7 @@
 | 12 | 2026-10-08 23:31 | `git init && git add . && git commit -m "feat: scaffold cozy 3D base with Vite, R3F and TailwindCSS"` | Khởi tạo local git repository và thực hiện commit đầu tiên theo chuẩn Conventional Commits | Initial commit `4367dc0` |
 | 13 | 2026-10-08 23:54 | `git add Agent.md && git commit -m "docs: add Agent.md tracking execution rules and command log"` | Thêm và commit file quy tắc & nhật ký thực thi của Agent (phiên bản gộp ban đầu) | Commit `c1933d3` |
 | 14 | 2026-10-08 23:55 | `git commit -am "docs: update command log in Agent.md"` | Cập nhật dòng log 13 vào Git | Commit `2179f35` |
+| 15 | 2026-10-09 00:03 | `git rm -f Agent.md && git add AGENTS.md COMMAND_LOG.md && git commit -m "docs: separate AGENTS.md rules and COMMAND_LOG.md execution log"` | Tách riêng file AGENTS.md (quy tắc agent) và COMMAND_LOG.md (nhật ký lệnh) | Commit `98432db` |
 
 ---
 
