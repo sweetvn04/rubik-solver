@@ -72,3 +72,4 @@
 | 55 | 2026-10-09 01:08 | `git commit -am "docs: finalize COMMAND_LOG.md"` | Lưu commit hoàn thiện COMMAND_LOG.md | Commit `e741165` |
 | 56 | 2026-10-09 01:20 | `npm run build` | Kiểm tra biên dịch sau khi tinh gọn PlayerBar thành Minimal Dock và Floating Move Pad | Thành công (built in 834ms) |
 | 57 | 2026-10-09 01:21 | `git status` | Kiểm tra trạng thái git working tree | Chỉ có PlayerBar.tsx thay đổi |
+| 58 | 2026-10-09 01:21 | `git add . && git commit -m "refactor(ui): streamline PlayerBar into minimal dock with ergonomic Floating Move Pad"` | Commit tinh gọn thanh điều khiển và bổ sung Floating Move Pad | Commit `eee97a9` |
