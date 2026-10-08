@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-09
 
-### 🪄 [Feature] — Tích hợp Nút Tự giải FB & SB trực quan và Banner kết quả lên Minimal Dock
+### 🪄 [Commit `419e326`] — Tích hợp Nút Tự giải FB & SB trực quan và Banner kết quả lên Minimal Dock
 * **Mục đích:** Cho phép người dùng trải nghiệm trực tiếp và kiểm chứng thuật toán solver Roux 3D ngay trên giao diện web bằng 1 cú click: Rubik tự tính toán và tự động diễn hoạt xoay giải Khối bên trái rồi Khối bên phải kèm âm thanh click tactile ASMR.
 * **Files tác động:**
   - `src/store/useRubikStore.ts`:
