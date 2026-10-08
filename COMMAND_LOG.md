@@ -119,3 +119,21 @@
 | 102 | 2026-10-09 01:54 | `git commit -am "docs: finalize COMMAND_LOG.md with command 101"` | Lưu commit cập nhật COMMAND_LOG.md | Commit `dada370` |
 | 103 | 2026-10-09 01:54 | `git status` | Kiểm tra trạng thái git working tree | Sạch (clean) |
 | 104 | 2026-10-09 01:55 | `git commit -am "docs: update COMMAND_LOG.md with commands 102 and 103"` | Đồng bộ commit cập nhật dòng 102-103 vào COMMAND_LOG.md | Commit `5cac46f` |
+| 105 | 2026-10-09 02:00 | `git status` | Kiểm tra trạng thái git working tree | Có file untracked `src/engine/solver/firstBlock.ts` |
+| 106 | 2026-10-09 02:01 | `ls -la scratch 2>/dev/null \|\| echo "No scratch dir"` | Kiểm tra thư mục scratch nội bộ | Thư mục chưa tồn tại |
+| 107 | 2026-10-09 02:01 | `git log -n 5 --oneline` | Xem 5 commit gần nhất | Các commit tài liệu và feat(solver) |
+| 108 | 2026-10-09 02:01 | `npx --yes tsx test_fb.ts` | Chạy test benchmark thuật toán First Block solver | Lỗi do applyMoves không tồn tại trong cubeState |
+| 109 | 2026-10-09 02:02 | `npx --yes tsx test_fb.ts` | Chạy test xác thực First Block solver với scramble ngắn | 3/3 test PASS (0.64ms và 0.10ms) |
+| 110 | 2026-10-09 02:02 | `npx --yes tsx test_fb.ts` | Benchmark First Block solver với WCA Scramble 20 bước ngẫu nhiên | Đã hủy (kill) do phát hiện lỗi định dạng đầu vào scramble |
+| 111 | 2026-10-09 02:03 | `npx --yes tsx test_fb.ts` | Debug cấu trúc dữ liệu trả về từ generateScramble | Phát hiện hàm trả về object {raw, moves} thay vì string |
+| 112 | 2026-10-09 02:04 | `npx --yes tsx test_fb.ts` | Benchmark First Block solver với chuỗi scramble WCA thực tế | 2/2 test PASS 100% (399ms - 8 moves và 656ms - 9 moves) |
+| 113 | 2026-10-09 02:04 | `npx --yes tsx test_fb.ts` | Benchmark 5 lần WCA Scramble 20 bước ngẫu nhiên trên FB solver | 5/5 PASS 100% (trung bình 370ms, 6-11 moves) |
+| 114 | 2026-10-09 02:05 | `npx --yes tsx test_fb.ts` | Benchmark chuỗi FB -> SB với 3 scramble WCA | FB 3/3 PASS (100%), SB 1/3 PASS (cần tinh chỉnh nhánh tìm kiếm) |
+| 115 | 2026-10-09 02:06 | `npx --yes tsx test_fb.ts` | Benchmark chuỗi FB -> SB với độ sâu 6/7 | Test 1 PASS cả FB+SB (1730ms), Test 2 & 3 SB bị thiếu độ sâu chèn cặp |
+| 116 | 2026-10-09 02:07 | `npx --yes tsx test_fb.ts` | Kiểm chứng toán học các công thức F2L bảo toàn BackSquare | R U R', r U' r', U R U' R' bảo toàn 100% BackSquare |
+| 117 | 2026-10-09 02:08 | `npx --yes tsx test_fb.ts` | Chạy test chuỗi FB -> SB với macro BFS | Lỗi cú pháp thiếu ngoặc tại dòng 207 của secondBlock.ts |
+| 118 | 2026-10-09 02:09 | `npx --yes tsx test_fb.ts` | Benchmark chuỗi FB -> SB sau khi sửa cú pháp và tích hợp Macro BFS | 4/5 tests PASS 100% (SB trung bình 60ms, FB+SB chỉ ~300ms) |
+| 119 | 2026-10-09 02:10 | `npx --yes tsx test_fb.ts` | Benchmark SB với độ sâu Cặp 1 lên 6 và mở rộng tập Macro | 4/5 tests PASS 100% (tổng thời gian FB+SB chỉ 200-500ms) |
+| 120 | 2026-10-09 02:10 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi tạo secondBlock.ts | Thành công (built in 723ms) |
+| 121 | 2026-10-09 02:10 | `rm test_fb.ts` | Xóa file benchmark test tạm thời trước khi commit | Hoàn tất |
+| 122 | 2026-10-09 02:10 | `git status` | Kiểm tra trạng thái git working tree | Sẵn sàng commit firstBlock.ts và secondBlock.ts |
