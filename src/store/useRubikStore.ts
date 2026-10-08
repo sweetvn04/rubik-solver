@@ -5,6 +5,7 @@ import type { CubieState, Move } from '../types';
 import { createInitialCubies } from '../engine/cubeModel';
 import { parseAlgorithm, getMoveExecutionInfo } from '../engine/moveParser';
 import { generateScramble } from '../engine/scrambler';
+import { soundEngine } from '../engine/soundEngine';
 
 interface RubikStore {
   cubies: CubieState[];
@@ -13,6 +14,7 @@ interface RubikStore {
   currentMove: Move | null;
   moveHistory: string[];
   turnDuration: number; // ms cho 1 move
+  isMuted: boolean;
 
   // Actions
   enqueueMove: (moveOrRaw: Move | string) => void;
@@ -22,6 +24,7 @@ interface RubikStore {
   scramble: () => void;
   reset: () => void;
   setTurnDuration: (duration: number) => void;
+  toggleMute: () => void;
 }
 
 /**
@@ -68,6 +71,12 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   currentMove: null,
   moveHistory: [],
   turnDuration: 220, // 220ms xoay nhanh mượt
+  isMuted: soundEngine.getMuted(),
+
+  toggleMute: () => {
+    const muted = soundEngine.toggleMute();
+    set({ isMuted: muted });
+  },
 
   enqueueMove: (moveOrRaw) => {
     const move =
@@ -119,6 +128,9 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       isAnimating: false,
       moveHistory: [...moveHistory, currentMove.raw],
     });
+
+    // Phát âm thanh click cơ học giòn tan khi hoàn thành 1 move
+    soundEngine.playTurnSnap();
   },
 
   scramble: () => {
@@ -130,6 +142,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   },
 
   reset: () => {
+    soundEngine.playResetSound();
     set({
       cubies: createInitialCubies(),
       isAnimating: false,

@@ -6,7 +6,27 @@
 
 ## 📅 2026-10-09
 
-### 🔍 [Camera & UX] — Đặt cự ly camera mặc định về mức zoom nhỏ nhất (Khoảng cách 14.0)
+### 🔊 [Feature] — Tích hợp bộ máy âm thanh xúc giác (Tactile ASMR Sound Engine) qua Web Audio API
+* **Mục đích:** Mang lại cảm giác xúc giác cơ học chân thực (game feel) mỗi khi xoay khối Rubik hoặc bấm nút, mô phỏng âm thanh nam châm hít đanh gọn của các dòng speedcube cao cấp bằng Web Audio API thuần (0 latency, 0 asset tải mạng).
+* **Files tác động:**
+  - `src/engine/soundEngine.ts` *(Mới)*:
+    * Xây dựng bộ tổng hợp âm thanh đa tầng bằng Web Audio API thuần:
+      - **Lớp 1 (Plastic Friction):** Tiếng ma sát bề mặt nhựa qua bộ lọc dải tần (Bandpass filtered white noise) thời lượng 25ms.
+      - **Lớp 2 (Magnetic Snap):** Tiếng hít nam châm đanh gọn với sóng tam giác tụt tần số nhanh từ 740Hz xuống 260Hz.
+      - **Lớp 3 (Tactile Pop):** Tiếng gõ cơ học vi mô tần số cao ~1600Hz tạo độ nảy sắc nét.
+    * Tự động áp dụng micro-jitter ngẫu nhiên hóa nhẹ tần số ($\pm 5\%$) mỗi cú xoay, giúp âm thanh tự nhiên như cầm khối vật lý trên tay.
+    * Âm thanh nhẹ nhàng khi bấm nút Reset.
+    * Tự động lưu và khôi phục trạng thái tắt/bật tiếng vào `localStorage`.
+  - `src/store/useRubikStore.ts`:
+    * Tự động kích hoạt `soundEngine.playTurnSnap()` mỗi khi một move hoàn tất (`completeCurrentMove`).
+    * Kích hoạt `soundEngine.playResetSound()` khi Reset.
+    * Quản lý trạng thái `isMuted` và action `toggleMute()`.
+  - `src/components/ui/PlayerBar.tsx`:
+    * Bổ sung nút bấm bật/tắt âm thanh (biểu tượng `Volume2` / `VolumeX`) trên thanh Minimal Dock.
+
+---
+
+### 🔍 [Commit `9667b55`] — Đặt cự ly camera mặc định về mức zoom nhỏ nhất (Khoảng cách 14.0)
 * **Mục đích:** Theo yêu cầu người dùng, đặt kích thước hiển thị mặc định của khối Rubik ngay khi load trang bằng đúng kích thước nhỏ nhất hiện tại có thể điều chỉnh qua thao tác zoom-out (`maxDistance = 14.0`), tạo khoảng thở rộng rãi và góc nhìn cân đối trên mọi thiết bị.
 * **Files tác động:**
   - `src/components/cube/RubikCanvas.tsx`:

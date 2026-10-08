@@ -10,6 +10,8 @@ import {
   Keyboard,
   Sparkles,
   Grid3X3,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 
 const BASIC_FACES = ['R', 'L', 'U', 'D', 'F', 'B'];
@@ -43,6 +45,8 @@ export function PlayerBar() {
   const moveHistory = useRubikStore((s) => s.moveHistory);
   const turnDuration = useRubikStore((s) => s.turnDuration);
   const setTurnDuration = useRubikStore((s) => s.setTurnDuration);
+  const isMuted = useRubikStore((s) => s.isMuted);
+  const toggleMute = useRubikStore((s) => s.toggleMute);
 
   const [isMovePadOpen, setIsMovePadOpen] = useState(false);
   const [isInputOpen, setIsInputOpen] = useState(false);
@@ -322,6 +326,24 @@ export function PlayerBar() {
           <span className="font-mono text-[11px] hidden sm:inline">
             {turnDuration === 120 ? 'Nhanh' : turnDuration === 220 ? 'Vừa' : 'Chậm'}
           </span>
+        </button>
+
+        {/* Nút bật/tắt âm thanh xúc giác (Tactile ASMR Sound) */}
+        <button
+          type="button"
+          onClick={toggleMute}
+          className={`p-1.5 text-xs rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+            isMuted
+              ? 'bg-[#faf6ee] text-[#b0a293] border-[#e2d8c7]'
+              : 'bg-[#faf6ee] hover:bg-white text-[#e07a5f] border-[#e2d8c7]'
+          }`}
+          title={isMuted ? 'Bật âm thanh click (ASMR)' : 'Tắt âm thanh'}
+        >
+          {isMuted ? (
+            <VolumeX className="w-3.5 h-3.5" />
+          ) : (
+            <Volume2 className="w-3.5 h-3.5" />
+          )}
         </button>
 
         {/* Trợ giúp phím tắt - Ẩn trên Mobile vì điện thoại không có bàn phím cứng */}
