@@ -6,7 +6,21 @@
 
 ## 📅 2026-10-09
 
-### 🎨 [Style] — Tích hợp Cozy Studio Radial Vignette Overlay (Chiều sâu điện ảnh, 0% GPU)
+### 📱 [Fix & Style] — Khắc phục Viewport Mobile (h-dvh & Safe Area) và Tối giản hóa Header
+* **Mục đích:** Sửa triệt để lỗi thanh PlayerBar bị lẹm một nửa bên dưới thanh điều hướng của trình duyệt điện thoại, đồng thời gỡ bỏ các nút thừa trên Header để người dùng tập trung 100% vào trải nghiệm khối Rubik 3D.
+* **Files tác động:**
+  - `src/App.tsx`:
+    * Chuyển đổi từ `h-screen` (100vh) sang `h-dvh min-h-dvh max-h-dvh` (Dynamic Viewport Height): Tự động thích ứng chính xác theo chiều cao thực tế khi thanh địa chỉ di động xuất hiện/ẩn đi.
+    * Đặt vị trí `footer` nổi an toàn: `bottom-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))]` giúp thanh điều khiển luôn nằm trên thanh chỉ báo vuốt (Home Indicator) của iOS/Android.
+    * Tinh gọn triệt để thanh tiêu đề: Loại bỏ hoàn toàn 2 nút hành động lớn ("Bài học", "Tự giải") và phụ đề rườm rà; chỉ giữ lại logo watermark `Roux Method VN` nhỏ gọn ở góc trái trên.
+  - `src/components/ui/PlayerBar.tsx`:
+    * Ẩn nút phím tắt bàn phím trên điện thoại (`hidden sm:flex`) vì màn hình cảm ứng không dùng phím cứng.
+    * Giới hạn chiều cao cuộn `max-h-[65vh] overflow-y-auto` cho Hộp Moves và ô nhập công thức để không bao giờ bị tràn ngoài màn hình khi xoay ngang máy.
+    * Tinh chỉnh padding và nhãn nút bấm co giãn linh hoạt dưới 360px.
+
+---
+
+### 🎨 [Commit `bd56fd0`] — Tích hợp Cozy Studio Radial Vignette Overlay (Chiều sâu điện ảnh, 0% GPU)
 * **Mục đích:** Khắc phục cảm giác nền phẳng đơn điệu và khối Rubik lơ lửng không gian; bổ sung lớp phủ ánh sáng studio (Phương án 3) với hiệu ứng spotlight tập trung vào trung tâm khối Rubik và viền tối ấm dịu nhẹ ở 4 góc mà không tiêu tốn bất kỳ draw call hay chu kỳ GPU nào.
 * **Files tác động:**
   - `src/App.tsx`:

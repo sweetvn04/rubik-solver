@@ -139,7 +139,7 @@ export function PlayerBar() {
 
       {/* 3. "HỘP MOVES" (Floating Move Pad) - Bảng phím bấm chuyên dụng */}
       {isMovePadOpen && (
-        <div className="w-full max-w-sm sm:max-w-md p-3 bg-white/92 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="w-full max-w-sm sm:max-w-md max-h-[65vh] overflow-y-auto p-3 bg-white/92 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
           <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-[#f0e8db]">
             <span className="text-[11px] font-bold text-[#8c7b6c] uppercase tracking-wider flex items-center gap-1.5">
               <Grid3X3 className="w-3.5 h-3.5 text-[#3d5a80]" />
@@ -245,12 +245,12 @@ export function PlayerBar() {
       )}
 
       {/* 4. Thanh điều khiển chính - Minimalist Dock (Gọn gàng & Tinh tế) */}
-      <div className="flex items-center gap-1.5 p-1.5 bg-white/85 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-lg">
+      <div className="flex items-center gap-1 sm:gap-1.5 p-1 sm:p-1.5 bg-white/88 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-lg max-w-full">
         {/* Nút Xáo Scramble */}
         <button
           type="button"
           onClick={scramble}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
           title="Xáo khối 20 moves chuẩn WCA (Phím Space)"
         >
           <Shuffle className="w-3.5 h-3.5" />
@@ -276,7 +276,7 @@ export function PlayerBar() {
             setIsMovePadOpen(!isMovePadOpen);
             if (!isMovePadOpen) setIsInputOpen(false);
           }}
-          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+          className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
             isMovePadOpen
               ? 'bg-[#3d5a80] text-white border-[#344d6d] shadow-sm'
               : 'bg-[#faf6ee] hover:bg-white text-[#2c221e] border-[#e2d8c7]'
@@ -284,7 +284,7 @@ export function PlayerBar() {
           title="Bật/Tắt Hộp Moves (Bảng ký hiệu)"
         >
           <Grid3X3 className="w-3.5 h-3.5" />
-          <span>Hộp Moves</span>
+          <span>Moves</span>
         </button>
 
         {/* Nút mở Ô NHẬP CÔNG THỨC */}
@@ -294,7 +294,7 @@ export function PlayerBar() {
             setIsInputOpen(!isInputOpen);
             if (!isInputOpen) setIsMovePadOpen(false);
           }}
-          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+          className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-xs font-bold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
             isInputOpen
               ? 'bg-[#e07a5f] text-white border-[#cc6b52] shadow-sm'
               : 'bg-[#faf6ee] hover:bg-white text-[#2c221e] border-[#e2d8c7]'
@@ -302,7 +302,7 @@ export function PlayerBar() {
           title="Nhập chuỗi công thức bất kỳ"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Công thức</span>
+          <span className="hidden xs:inline sm:inline">Công thức</span>
         </button>
 
         <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5" />
@@ -315,7 +315,7 @@ export function PlayerBar() {
             else if (turnDuration === 120) setTurnDuration(420); // Chậm
             else setTurnDuration(220); // Bình thường
           }}
-          className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all hover:scale-105 active:scale-95 cursor-pointer"
           title={`Tốc độ xoay: ${turnDuration}ms (Click để đổi)`}
         >
           <Gauge className="w-3.5 h-3.5 text-[#e07a5f]" />
@@ -324,11 +324,11 @@ export function PlayerBar() {
           </span>
         </button>
 
-        {/* Trợ giúp phím tắt */}
+        {/* Trợ giúp phím tắt - Ẩn trên Mobile vì điện thoại không có bàn phím cứng */}
         <button
           type="button"
           onClick={() => setShowKeyHints(!showKeyHints)}
-          className={`p-1.5 text-xs rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+          className={`hidden sm:flex p-1.5 text-xs rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
             showKeyHints
               ? 'bg-[#3d5a80] text-white border-[#344d6d]'
               : 'bg-[#faf6ee] hover:bg-white text-[#5c4f43] border-[#e2d8c7]'
