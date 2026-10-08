@@ -55,3 +55,4 @@
 | 38 | 2026-10-09 00:42 | `npm run build` | Kiểm tra biên dịch sau khi tích hợp bộ tối ưu hóa phần cứng Mobile (DPR 1.0, 16-bit mediump, touch lock) | Thành công (built in 556ms) |
 | 39 | 2026-10-09 00:42 | `git add . && git commit -m "perf: add mobile-first hardware optimizations with 1.0 DPR and 16-bit precision"` | Commit gói tối ưu hóa phần cứng di động chuyên sâu | Commit `519867a` |
 | 40 | 2026-10-09 00:44 | `npm run build` | Kiểm tra biên dịch sau khi cập nhật rule theo dõi code trong AGENTS.md và tạo CHANGELOG.md | Thành công (built in 544ms) |
+| 41 | 2026-10-09 00:45 | `git add AGENTS.md CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: mandate continuous code change tracking and create CHANGELOG.md"` | Commit bổ sung luật bắt buộc theo dõi code và khởi tạo CHANGELOG.md | Commit `62fccb8` |
