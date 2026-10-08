@@ -44,15 +44,11 @@ function FaceTile({
 
   return (
     <group position={position} rotation={rotation}>
-      <mesh
-        geometry={tileGeom}
-        castShadow
-        receiveShadow
-      >
+      <mesh geometry={tileGeom}>
         <meshStandardMaterial
           map={map}
           bumpMap={bumpMap}
-          bumpScale={0.024}
+          bumpScale={0.02}
           roughness={0.94}
           metalness={0.02}
         />
@@ -65,13 +61,11 @@ export function Cubie({ cubie, position }: CubieProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { colors, isDimmed } = cubie;
 
-  // Lấy hình học thân khối gọt tay méo mó nhẹ
   const bodyGeom = useMemo(
     () => createWobblyBodyGeometry(cubie.id),
     [cubie.id]
   );
 
-  // Lấy độ nghiêng và độ xê dịch nhẹ (micro-jitter)
   const jitter = useMemo(
     () => getCubieMicroJitter(cubie.id),
     [cubie.id]
@@ -90,12 +84,8 @@ export function Cubie({ cubie, position }: CubieProps) {
       rotation={jitter.rotation}
       name={cubie.id}
     >
-      {/* Thân khối nhựa than đen gọt hữu cơ, không vuông thẳng tắp công nghiệp */}
-      <mesh
-        geometry={bodyGeom}
-        castShadow
-        receiveShadow
-      >
+      {/* Thân khối nhựa than đen gọt hữu cơ */}
+      <mesh geometry={bodyGeom}>
         <meshStandardMaterial
           color={CUBE_PALETTE.CORE}
           roughness={0.92}

@@ -3,40 +3,36 @@ import { ContactShadows } from '@react-three/drei';
 export function EnvironmentView() {
   return (
     <>
-      {/* Warm ambient base light */}
-      <ambientLight intensity={0.9} color="#fff6eb" />
+      {/* Ánh sáng môi trường dịu ấm */}
+      <ambientLight intensity={0.95} color="#fff6eb" />
 
-      {/* Main warm key light */}
+      {/* Đèn chính góc ấm (Không bật castShadow thời gian thực để bảo vệ iGPU) */}
       <directionalLight
         position={[6, 10, 6]}
         intensity={1.8}
         color="#fffaf0"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-camera-near={0.5}
-        shadow-camera-far={25}
-        shadow-camera-left={-4}
-        shadow-camera-right={4}
-        shadow-camera-top={4}
-        shadow-camera-bottom={-4}
       />
 
-      {/* Soft cool fill light from opposite angle */}
+      {/* Đèn bù dịu từ phía đối diện */}
       <directionalLight
         position={[-6, -2, -6]}
         intensity={0.5}
         color="#d6e8fa"
       />
 
-      {/* Gentle front fill for face visibility */}
+      {/* Đèn mặt trước */}
       <directionalLight
         position={[0, 4, 8]}
         intensity={0.6}
         color="#fff4e0"
       />
 
-      {/* Soft cozy contact shadow beneath the Rubik cube */}
+      {/* 
+        Bóng tiếp xúc mềm:
+        frames={1} -> CHỈ RENDER 1 LẦN DUY NHẤT LÚC LOAD, KHÔNG TỐN GPU MỖI FRAME!
+      */}
       <ContactShadows
+        frames={1}
         position={[0, -2.2, 0]}
         opacity={0.35}
         scale={8}

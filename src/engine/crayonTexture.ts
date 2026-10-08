@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-// Bảng màu sáp / sơn dầu lấy cảm hứng từ phim hoạt hình Scrambled (Màu đậm, no màu, sắc nét)
+// Bảng màu sáp / sơn dầu lấy cảm hứng từ phim hoạt hình Scrambled
 export const SCRAMBLED_PALETTE = {
   U: '#e29e10', // Vàng nghệ sáp đậm đà (Mustard Gold)
   D: '#dad5c7', // Trắng giấy mỹ thuật / xám chì (Paper White)
@@ -12,7 +12,7 @@ export const SCRAMBLED_PALETTE = {
   INK: '#201c19', // Khung viền mực đen
 } as const;
 
-// Cache textures để không phải sinh lại mỗi frame
+// Cache textures tái sử dụng (giảm từ 108 textures xuống chỉ còn 12 textures trong VRAM)
 const textureCache = new Map<string, THREE.CanvasTexture>();
 const bumpCache = new Map<string, THREE.CanvasTexture>();
 
@@ -26,14 +26,19 @@ function createSeededRandom(seed: number) {
 }
 
 /**
- * Sinh CanvasTexture sáp màu đậm đà, dày dặn, rõ nét như trong phim SCRAMBLED
+ * Sinh CanvasTexture sáp màu nhẹ, sắc nét và siêu tiết kiệm GPU
  */
 export function getScrambledFaceTexture(
   colorHex: string,
   key: string,
   isDimmed: boolean = false
 ): { map: THREE.CanvasTexture; bumpMap: THREE.CanvasTexture } {
-  const cacheKey = `${key}_${colorHex}_${isDimmed ? 'dim' : 'norm'}`;
+  // Gom nhóm seed theo biến thể (2 biến thể mỗi mặt để vừa có tính ngẫu nhiên, vừa siêu nhẹ)
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = (hash + key.charCodeAt(i)) | 0;
+  const variation = Math.abs(hash) % 2;
+
+  const cacheKey = `${colorHex}_v${variation}_${isDimmed ? 'dim' : 'norm'}`;
 
   if (textureCache.has(cacheKey) && bumpCache.has(cacheKey)) {
     return {
@@ -42,7 +47,8 @@ export function getScrambledFaceTexture(
     };
   }
 
-  const size = 512;
+  // 256x256 là kích thước lý tưởng cho màn hình web: cực kỳ sắc nét mà nhẹ hơn 512x512 gấp 4 lần!
+  const size = 256;
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
@@ -53,50 +59,46 @@ export function getScrambledFaceTexture(
   bumpCanvas.height = size;
   const bCtx = bumpCanvas.getContext('2d')!;
 
-  let seedNum = 53;
-  for (let i = 0; i < key.length; i++) {
-    seedNum = (seedNum * 31 + key.charCodeAt(i)) | 0;
-  }
-  const rand = createSeededRandom(seedNum);
+  const rand = createSeededRandom(hash + 101);
 
-  // 1. NỀN GIẤY PHÁC THẢO MÀU KEM (ART PAPER BASE)
+  // 1. NỀN GIẤY PHÁC THẢO MÀU KEM
   ctx.fillStyle = SCRAMBLED_PALETTE.PAPER;
   ctx.fillRect(0, 0, size, size);
 
   bCtx.fillStyle = '#808080';
   bCtx.fillRect(0, 0, size, size);
 
-  // Hạt sần giấy tinh tế
+  // Hạt sần giấy
   const imgData = ctx.getImageData(0, 0, size, size);
   const data = imgData.data;
   for (let i = 0; i < data.length; i += 4) {
-    const grain = (rand() - 0.5) * 12;
+    const grain = (rand() - 0.5) * 10;
     data[i] = Math.min(255, Math.max(0, data[i] + grain));
     data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + grain));
     data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + grain));
   }
   ctx.putImageData(imgData, 0, 0);
 
-  // 2. TỌA ĐỘ VÙNG SÁP MÀU (CHỪA LẠI VIỀN GIẤY KEM RÕ RỆT)
-  const margin = 42; // Để lộ khoảng 42px viền giấy như trong ảnh phim
-  const pL = margin + (rand() - 0.5) * 6;
-  const pT = margin + (rand() - 0.5) * 6;
-  const pR = size - margin + (rand() - 0.5) * 6;
-  const pB = size - margin + (rand() - 0.5) * 6;
+  // 2. VÙNG SÁP MÀU
+  const margin = 21; // tỷ lệ tương ứng 42px trên 512
+  const pL = margin + (rand() - 0.5) * 4;
+  const pT = margin + (rand() - 0.5) * 4;
+  const pR = size - margin + (rand() - 0.5) * 4;
+  const pB = size - margin + (rand() - 0.5) * 4;
   const pW = pR - pL;
   const pH = pB - pT;
 
   const targetColor = isDimmed ? '#504a44' : colorHex;
 
-  // 3. LỚP LÓT MÀU ĐẬM ĐÀ, NO MÀU (SOLID OPAQUE COLOR WASH)
+  // 3. LỚP LÓT MÀU ĐẬM ĐÀ
   ctx.save();
   ctx.fillStyle = targetColor;
-  ctx.globalAlpha = 0.94; // Gần như che phủ hoàn toàn, không bị nhạt nhòa!
+  ctx.globalAlpha = 0.94;
   ctx.fillRect(pL, pT, pW, pH);
   ctx.restore();
 
-  // 4. CÁC NÉT ĐÁNH SÁP DÀY ĐẶC (DENSE CRAYON WAX STROKES)
-  const numStrokes = 220;
+  // 4. CÁC NÉT ĐÁNH SÁP
+  const numStrokes = 120;
   const mainAngle = Math.PI / 4 + (rand() - 0.5) * 0.25;
 
   ctx.save();
@@ -105,15 +107,14 @@ export function getScrambledFaceTexture(
   for (let i = 0; i < numStrokes; i++) {
     const sx = pL + rand() * pW;
     const sy = pT + rand() * pH;
-    const len = 35 + rand() * 90;
-    const w = 4 + rand() * 8;
+    const len = 18 + rand() * 45;
+    const w = 2.5 + rand() * 4;
 
     const ex = sx + Math.cos(mainAngle) * len;
     const ey = sy + Math.sin(mainAngle) * len;
 
     if (ex < pL || ex > pR || ey < pT || ey > pB) continue;
 
-    // Đan xen nét đậm và nét nhạt để tạo gân sáp
     const isDark = rand() > 0.45;
     ctx.strokeStyle = isDark ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.18)';
     ctx.lineWidth = w;
@@ -123,7 +124,6 @@ export function getScrambledFaceTexture(
     ctx.lineTo(ex, ey);
     ctx.stroke();
 
-    // Bump map tạo gờ sáp nổi thật
     bCtx.strokeStyle = isDark ? '#404040' : '#c0c0c0';
     bCtx.lineWidth = w;
     bCtx.lineCap = 'round';
@@ -134,34 +134,17 @@ export function getScrambledFaceTexture(
     bCtx.stroke();
   }
 
-  // 5. NÉT GẠCH CHÉO BỔ SUNG (CROSS-HATCHING TEXTURE)
-  const crossStrokes = 60;
-  const crossAngle = -Math.PI / 4 + (rand() - 0.5) * 0.3;
-  for (let i = 0; i < crossStrokes; i++) {
-    const sx = pL + rand() * pW;
-    const sy = pT + rand() * pH;
-    const len = 25 + rand() * 60;
-
-    ctx.strokeStyle = 'rgba(0,0,0,0.12)';
-    ctx.lineWidth = 3 + rand() * 5;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-    ctx.lineTo(sx + Math.cos(crossAngle) * len, sy + Math.sin(crossAngle) * len);
-    ctx.stroke();
-  }
-
-  // 6. VIỀN RÌA SÁP NGUỆCH NGOẠC HỮU CƠ (WOBBLY CRAYON PATCH BORDER)
+  // 5. VIỀN RÌA SÁP NGUỆCH NGOẠC
   ctx.strokeStyle = targetColor;
-  ctx.lineWidth = 7;
+  ctx.lineWidth = 4;
   ctx.globalAlpha = 0.95;
 
   ctx.beginPath();
-  const borderSteps = 24;
+  const borderSteps = 16;
   for (let side = 0; side < 4; side++) {
     for (let s = 0; s <= borderSteps; s++) {
       const t = s / borderSteps;
-      const wobble = (rand() - 0.5) * 5;
+      const wobble = (rand() - 0.5) * 3;
       let x = 0;
       let y = 0;
 
@@ -186,20 +169,24 @@ export function getScrambledFaceTexture(
   ctx.closePath();
   ctx.stroke();
 
-  // 7. KHUNG VIỀN MỰC NGOÀI CÙNG DÀY DẶN (THICK ARTWORK BORDER)
+  // 6. KHUNG VIỀN MỰC
   ctx.strokeStyle = SCRAMBLED_PALETTE.INK;
-  ctx.lineWidth = 6;
+  ctx.lineWidth = 3.5;
   ctx.globalAlpha = 0.9;
-  ctx.strokeRect(8, 8, size - 16, size - 16);
+  ctx.strokeRect(4, 4, size - 8, size - 8);
 
   ctx.restore();
   bCtx.restore();
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
+  texture.generateMipmaps = false; // Tắt mipmap generation trên iGPU để tiết kiệm bộ nhớ
+  texture.minFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
 
   const bumpTexture = new THREE.CanvasTexture(bumpCanvas);
+  bumpTexture.generateMipmaps = false;
+  bumpTexture.minFilter = THREE.LinearFilter;
   bumpTexture.needsUpdate = true;
 
   textureCache.set(cacheKey, texture);

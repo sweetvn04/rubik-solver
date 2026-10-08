@@ -7,19 +7,24 @@ export function RubikCanvas() {
   return (
     <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
       <Canvas
-        shadows
+        frameloop="demand" // CHỈ RENDER KHI CÓ TƯƠNG TÁC (GPU về 0% khi đứng yên)
+        dpr={[1, 1.5]}    // Giới hạn tỷ lệ pixel, tránh render 4K quá tải trên iGPU
         camera={{ position: [5.2, 4.2, 6.0], fov: 36 }}
-        gl={{ antialias: true, alpha: true }}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance',
+        }}
       >
         <EnvironmentView />
 
-        {/* Orbit controls with smooth damping */}
+        {/* Orbit controls với damping, tự động invalidate render loop khi xoay */}
         <OrbitControls
           makeDefault
           enablePan={false}
           minDistance={4.5}
           maxDistance={14}
-          dampingFactor={0.05}
+          dampingFactor={0.06}
           rotateSpeed={0.8}
         />
 
