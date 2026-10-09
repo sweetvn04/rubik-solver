@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-09
 
-### 📐 [Commit `PENDING`] — Tối ưu Vị trí TutorCard Tránh Che Khối Rubik (Floating Side Panel, Mini Bar & Responsive Offset)
+### 📐 [Commit `14a434e`] — Tối ưu Vị trí TutorCard Tránh Che Khối Rubik (Floating Side Panel, Mini Bar & Responsive Offset)
 * **Nguyên nhân kỹ thuật & Thực trạng:** Ban đầu TutorCard nằm cố định chính giữa đáy màn hình, với chiều cao ~360px đã che mất một nửa phần dưới của khối Rubik 3D, khiến người dùng không thể quan sát toàn diện trạng thái các tầng khi làm theo hướng dẫn.
 * **Giải pháp khắc phục:**
   - `src/components/ui/TutorCard.tsx`:

@@ -246,3 +246,4 @@
 | 222 | 2026-10-09 23:43 | `npm run build` | Kiểm tra biên dịch sau khi tách layout TutorCard sang góc phải và thêm responsive offset | Lỗi TS6133 (isTutorActive không dùng trong PlayerBar) |
 | 223 | 2026-10-09 23:44 | `npm run build` | Kiểm tra biên dịch lại sau khi loại bỏ biến thừa | Thành công (built in 656ms) |
 | 224 | 2026-10-09 23:44 | `git status` | Kiểm tra trạng thái git working tree chuẩn bị commit | Nhận diện đủ 4 file thay đổi |
+| 225 | 2026-10-09 23:44 | `git add . && git commit -m "refactor(ui): position TutorCard as floating side panel to avoid covering Rubik's cube"` | Commit tối ưu vị trí TutorCard sang góc phải, hỗ trợ Mini Bar và responsive vertical offset | Commit `14a434e` |
