@@ -192,39 +192,39 @@ interface SolveStep {
 ## 7. Lộ trình thực hiện (Roadmap)
 
 ### Phase 0 — Setup & Cozy Base (~45 phút)
-- [ ] Khởi tạo Vite + React 18 + TypeScript + TailwindCSS.
-- [ ] Cài đặt R3F: `@react-three/fiber`, `@react-three/drei`, `three`, `zustand`, `howler`.
-- [ ] Cấu hình ambient studio lighting, màu nền ấm (soft cream/sand), orbit controls mượt mà có damping.
+- [x] Khởi tạo Vite + React 19 + TypeScript + TailwindCSS v4.
+- [x] Cài đặt R3F: `@react-three/fiber`, `@react-three/drei`, `three`, `zustand`, `howler`.
+- [x] Cấu hình ambient studio lighting, màu nền ấm (soft cream/sand), orbit controls mượt mà có damping.
 
 ### Phase 1 — Cozy 3D Cube Model (~1.5 giờ)
-- [ ] **Step 1 (~30p):** Dựng 26 cubies bo góc mềm mại (`RoundedBoxGeometry` từ `@react-three/drei`).
-- [ ] **Step 2 (~30p):** Áp dụng bảng màu pastel matte + viền đen outline mảnh (Inverted Hull).
-- [ ] **Step 3 (~30p):** Tích hợp âm thanh click xúc giác (tactile sound) khi tương tác.
+- [x] **Step 1:** Dựng 26 cubies bo góc mềm mại (`RoundedBoxGeometry` từ `@react-three/drei`).
+- [x] **Step 2:** Áp dụng bảng màu sáp dầu Scrambled Crayon Texture thủ công + viền đen outline phác thảo.
+- [x] **Step 3:** Tích hợp âm thanh click xúc giác (tactile sound) & Bộ phát nhạc Lo-fi BGM Web Audio API.
 
 ### Phase 2 — Move Engine & Notation (~2 giờ)
-- [ ] **Step 4 (~30p):** Notation parser (`moveParser.ts`) hỗ trợ đầy đủ `R, L, U, D, F, B, M, E, S, r, u, f`.
-- [ ] **Step 5 (~60p):** Cơ chế xoay tầng bằng Pivot và animation mượt mà có độ nảy nhẹ (elastic feel).
-- [ ] **Step 6 (~30p):** Queue quản lý animation tránh xung đột khi xoay liên tục.
+- [x] **Step 4:** Notation parser (`moveParser.ts`) hỗ trợ đầy đủ `R, L, U, D, F, B, M, E, S, r, l, u, d, f, b, x, y, z`.
+- [x] **Step 5:** Cơ chế xoay tầng bằng Pivot và animation mượt mà có độ nảy nhẹ (elastic feel).
+- [x] **Step 6:** Queue quản lý animation tránh xung đột khi xoay liên tục.
 
 ### Phase 3 — Roux Auto-Solver Engine (~3.5 giờ)
-- [ ] **Step 7 (~45p):** Xây dựng bộ biểu diễn trạng thái khối Rubik phục vụ solver (`cubeState.ts`).
-- [ ] **Step 8 (~45p):** Solver cho Phase 1 (First Block) & Phase 2 (Second Block).
-- [ ] **Step 9 (~45p):** CMLL matcher & tra cứu 42 thuật toán từ `rouxmethodvn`.
-- [ ] **Step 10 (~45p):** LSE solver (EO $\rightarrow$ UL/UR $\rightarrow$ M-slice).
-- [ ] **Step 11 (~30p):** Test solver tự động với 100 scramble ngẫu nhiên để đảm bảo tỷ lệ giải thành công 100%.
+- [x] **Step 7:** Xây dựng bộ biểu diễn trạng thái khối Rubik phục vụ solver (`cubeState.ts`).
+- [x] **Step 8:** Solver cho Phase 1 (First Block) & Phase 2 (Second Block).
+- [x] **Step 9:** CMLL matcher & tra cứu 42 thuật toán từ `rouxmethodvn`.
+- [x] **Step 10:** LSE solver (EO $\rightarrow$ UL/UR $\rightarrow$ M-slice).
+- [x] **Step 11:** Test solver tự động với 100 scramble ngẫu nhiên để đảm bảo tỷ lệ giải thành công 100%.
 
 ### Phase 4 — Visualizer & Lesson UI (~2 giờ)
-- [ ] **Step 12 (~45p):** Modal "Tự giải" hiển thị từng chặng đường giải kèm nút Play/Pause/Next/Prev.
-- [ ] **Step 13 (~45p):** Hệ thống Highlight / Dimming trực quan cho từng bước của Roux.
-- [ ] **Step 14 (~30p):** Tương tác người dùng: Click/Drag trực tiếp để xoay mặt, Scramble button.
+- [x] **Step 12:** Modal "Tự giải" hiển thị từng chặng đường giải kèm nút Play/Pause/Next/Prev.
+- [x] **Step 13:** Hệ thống Highlight / Dimming trực quan cho từng bước của Roux.
+- [x] **Step 14:** Tương tác người dùng: Click/Drag trực tiếp để xoay mặt, Scramble button.
 
 ### Phase 5 — Nội dung & Data rouxmethodvn (~2 giờ)
-- [ ] **Step 15 (~60p):** Tổng hợp và chuyển đổi toàn bộ bài viết từ `rouxmethodvn` vào thư mục `src/data/lessons/`.
-- [ ] **Step 16 (~60p):** Tạo Sidebar điều hướng bài học kết nối trực tiếp với 3D visualizer.
+- [x] **Step 15:** Tổng hợp và chuyển đổi toàn bộ bài học lý thuyết chuẩn Roux vào `src/data/lessonsData.ts`.
+- [x] **Step 16:** Tạo LessonDrawer điều hướng bài học và bộ tra cứu 45 CMLL Trainer kết nối trực tiếp với 3D visualizer.
 
 ### Phase 6 — Polish & Deploy (~1 giờ)
-- [ ] **Step 17 (~30p):** Responsive UI, hỗ trợ cả màn hình desktop và mobile.
-- [ ] **Step 18 (~30p):** Build kiểm tra lỗi TypeScript, cấu hình GitHub Actions deploy lên GitHub Pages hoặc Vercel.
+- [x] **Step 17:** Responsive UI cho TutorCard (Floating Side Panel, Mini Bar, Swap Side) và Canvas Offset cho mobile.
+- [x] **Step 18:** Build kiểm tra không lỗi TypeScript, cấu hình `base: './'` trong Vite cho triển khai GitHub Pages/Vercel.
 
 ---
 
