@@ -48,6 +48,9 @@ interface RubikStore {
   tutorAllMoves: string[];
   tutorCurrentIndex: number;
 
+  // Focus Mode State (Làm nổi bật các viên của phase đang giải)
+  isFocusMode: boolean;
+
   // Actions
   enqueueMove: (moveOrRaw: Move | string) => void;
   enqueueAlgorithm: (alg: string) => void;
@@ -57,6 +60,7 @@ interface RubikStore {
   reset: () => void;
   setTurnDuration: (duration: number) => void;
   toggleMute: () => void;
+  toggleFocusMode: () => void;
   solveFirstTwoBlocks: () => SolveResult | null;
   solveFullCube: () => FullRouxSolution | null;
 
@@ -120,9 +124,17 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   tutorAllMoves: [],
   tutorCurrentIndex: 0,
 
+  // Focus Mode State
+  isFocusMode: true,
+
   toggleMute: () => {
     const muted = soundEngine.toggleMute();
     set({ isMuted: muted });
+  },
+
+  toggleFocusMode: () => {
+    set((state) => ({ isFocusMode: !state.isFocusMode }));
+    invalidate();
   },
 
   enqueueMove: (moveOrRaw) => {

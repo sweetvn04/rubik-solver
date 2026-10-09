@@ -11,6 +11,8 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowLeftRight,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 export const TutorCard: React.FC = () => {
@@ -28,6 +30,8 @@ export const TutorCard: React.FC = () => {
   const tutorPrevStep = useRubikStore((s) => s.tutorPrevStep);
   const tutorPlayCurrentPhase = useRubikStore((s) => s.tutorPlayCurrentPhase);
   const exitTutorMode = useRubikStore((s) => s.exitTutorMode);
+  const isFocusMode = useRubikStore((s) => s.isFocusMode);
+  const toggleFocusMode = useRubikStore((s) => s.toggleFocusMode);
 
   if (!isTutorActive) return null;
 
@@ -118,6 +122,23 @@ export const TutorCard: React.FC = () => {
 
           <button
             type="button"
+            onClick={toggleFocusMode}
+            className={`p-1.5 rounded-lg transition-all ${
+              isFocusMode
+                ? 'text-[#e07a5f] bg-[#fbf0ec]'
+                : 'text-[#8c7b6c] hover:bg-[#efe8dc]'
+            }`}
+            title={
+              isFocusMode
+                ? 'Đang bật Tiêu điểm (Focus): Làm nổi bật viên chặng này (Click để tắt)'
+                : 'Đang tắt Tiêu điểm: Click để làm nổi bật viên của chặng này'
+            }
+          >
+            {isFocusMode ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+          </button>
+
+          <button
+            type="button"
             onClick={() => setIsCollapsed(false)}
             className="p-1.5 text-[#8c7b6c] hover:text-[#2c221e] hover:bg-[#efe8dc] rounded-lg transition-all"
             title="Mở rộng chi tiết"
@@ -152,8 +173,25 @@ export const TutorCard: React.FC = () => {
           </div>
         </div>
 
-        {/* Nút Đổi bên, Thu nhỏ, Thoát */}
+        {/* Nút Tiêu điểm, Đổi bên, Thu nhỏ, Thoát */}
         <div className="flex items-center gap-0.5 text-[#8c7b6c]">
+          <button
+            type="button"
+            onClick={toggleFocusMode}
+            className={`p-1 rounded-lg transition-all ${
+              isFocusMode
+                ? 'text-[#e07a5f] bg-[#fbf0ec]'
+                : 'text-[#8c7b6c] hover:bg-[#efe8dc]'
+            }`}
+            title={
+              isFocusMode
+                ? 'Đang bật Tiêu điểm (Focus): Chỉ sáng viên của chặng này (Click để tắt)'
+                : 'Đang tắt Tiêu điểm: Click để làm sáng nổi bật các viên của chặng này'
+            }
+          >
+            {isFocusMode ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+          </button>
+
           <button
             type="button"
             onClick={() => setSide(side === 'right' ? 'left' : 'right')}

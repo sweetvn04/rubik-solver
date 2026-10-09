@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useRubikStore } from '../../store/useRubikStore';
 import { getMoveExecutionInfo } from '../../engine/moveParser';
+import { isCubieInPhase, type FocusPhaseId } from '../../engine/highlightRules';
 import { Cubie } from './Cubie';
 
 const SPACING = 1.00;
@@ -19,6 +20,30 @@ export function RubikCube() {
   const startNextMove = useRubikStore((s) => s.startNextMove);
   const completeCurrentMove = useRubikStore((s) => s.completeCurrentMove);
   const turnDuration = useRubikStore((s) => s.turnDuration);
+
+  // Focus Mode State & Tutor Current Phase
+  const isTutorActive = useRubikStore((s) => s.isTutorActive);
+  const tutorPhases = useRubikStore((s) => s.tutorPhases);
+  const tutorCurrentIndex = useRubikStore((s) => s.tutorCurrentIndex);
+  const tutorAllMoves = useRubikStore((s) => s.tutorAllMoves);
+  const isFocusMode = useRubikStore((s) => s.isFocusMode);
+
+  let currentPhaseId: FocusPhaseId = 'all';
+  if (isTutorActive && isFocusMode) {
+    if (tutorCurrentIndex < tutorAllMoves.length) {
+      const activePhase = tutorPhases.find(
+        (p) => tutorCurrentIndex >= p.startIndex && tutorCurrentIndex < p.endIndex
+      );
+      if (activePhase) {
+        currentPhaseId = activePhase.id;
+      }
+    }
+  }
+
+  // Cập nhật lại khung hình khi chuyển phase hoặc bật/tắt Focus
+  useEffect(() => {
+    invalidate();
+  }, [currentPhaseId, isFocusMode, invalidate]);
 
   const cubieRefs = useRef<Map<string, THREE.Group>>(new Map());
   const progressRef = useRef(0);
@@ -102,10 +127,12 @@ export function RubikCube() {
           z * SPACING,
         ];
 
+        const isDimmed = !isCubieInPhase(cubie, currentPhaseId);
+
         return (
           <Cubie
             key={cubie.id}
-            cubie={cubie}
+            cubie={{ ...cubie, isDimmed }}
             position={pos}
             quaternion={cubie.quaternion}
             onRegisterRef={handleRegisterRef}

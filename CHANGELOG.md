@@ -4,6 +4,18 @@
 
 ---
 
+## 📅 2026-10-10
+
+### 💡 [Commit `PENDING`] — Triển khai Hệ thống Focus Block & Phase-based Dimming
+* **Mục đích:** Làm nổi bật rực rỡ các viên cubie thuộc giai đoạn đang giải (FB, SB, CMLL) và làm mờ (dim/desaturate) các viên không liên quan, giúp người học định hình cấu trúc khối ngay lập tức mà không bị rối mắt.
+* **Files tác động:**
+  - `src/engine/highlightRules.ts` *(Mới)*: Module xác định các viên thuộc từng giai đoạn Roux (FB: 6 viên trái, SB: 6 viên phải, CMLL: 4 góc đỉnh, LSE: toàn khối).
+  - `src/store/useRubikStore.ts`: Bổ sung state `isFocusMode` và action `toggleFocusMode`.
+  - `src/components/cube/RubikCube.tsx`: Tự động tính toán cờ `isDimmed` theo thời gian thực dựa trên `currentPhase` của Tutor Mode và truyền xuống từng `Cubie`.
+  - `src/components/ui/TutorCard.tsx`: Bổ sung nút bấm Tiêu điểm (icon `Eye` / `EyeOff`) trên cả thanh Mini Bar và Expanded Header.
+
+---
+
 ## 📅 2026-10-09
 
 ### 📐 [Commit `14a434e`] — Tối ưu Vị trí TutorCard Tránh Che Khối Rubik (Floating Side Panel, Mini Bar & Responsive Offset)
