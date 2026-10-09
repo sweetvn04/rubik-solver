@@ -238,3 +238,4 @@
 | 214 | 2026-10-09 23:12 | `npx tsx /home/sweetvn/.gemini/.../scratch/test_tutor.ts` | Chạy lại test sau khi sửa applyAlgorithm | PASSED 100%: Invert moves, mô tả tiếng Việt, 4 phases liên tục không lỗi |
 | 215 | 2026-10-09 23:12 | `npm run build` | Kiểm tra đóng gói toàn dự án với Tutor Mode | Thành công sạch sẽ (built in 571ms) |
 | 216 | 2026-10-09 23:12 | `git status` | Kiểm tra trạng thái git working tree chuẩn bị commit | Nhận diện đủ các file sửa đổi và tạo mới |
+| 217 | 2026-10-09 23:13 | `git add . && git commit -m "feat(tutor): implement interactive step-by-step Roux tutor mode with visual card and hotkeys"` | Commit triển khai hoàn chỉnh chế độ Hướng dẫn giải từng bước (Tutor Mode) | Commit `8873931` |

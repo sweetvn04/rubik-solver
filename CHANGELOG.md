@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-09
 
-### 🎓 [Commit `PENDING`] — Triển khai Chế độ Hướng dẫn Giải từng bước (Interactive Step-by-Step Tutor Mode)
+### 🎓 [Commit `8873931`] — Triển khai Chế độ Hướng dẫn Giải từng bước (Interactive Step-by-Step Tutor Mode)
 * **Mục đích:** Cung cấp tính năng Tutor Mode tương tác trực quan cho phép người dùng tự tay cầm khối Rubik vật lý xoay theo từng bước hướng dẫn trên màn hình 3D.
 * **Files tác động:**
   - `src/engine/tutorHelper.ts` *(Mới)*:
