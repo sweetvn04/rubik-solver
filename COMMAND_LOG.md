@@ -222,3 +222,19 @@
 | 205 | 2026-10-09 20:04 | `git commit -am "docs: finalize COMMAND_LOG.md with command 204"` | Lưu commit nhật ký lệnh 204 vào COMMAND_LOG.md | Commit `6b20d52` |
 | 206 | 2026-10-09 20:04 | `git status` | Kiểm tra trạng thái git working tree sau commit docs | Sạch sẽ 100% |
 | 207 | 2026-10-09 20:05 | `git commit -am "docs: log command 205 and 206 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 205-206 vào COMMAND_LOG.md | Thành công |
+| 208 | 2026-10-09 23:04 | `npm run dev -- --host --port 5173` | Khởi động lại dev server Vite trên cổng 5173 sau server restart | Đang chạy nền (task-1689) |
+
+---
+
+## 📜 Phase 5: Interactive Step-by-Step Tutor Mode
+
+| # | Thời gian (Local) | Lệnh đã thực thi | Chức năng / Mục đích | Kết quả |
+|---|-------------------|------------------|----------------------|---------|
+| 209 | 2026-10-09 23:10 | `npm run build` | Kiểm tra biên dịch sau khi tích hợp TutorCard và useRubikStore | Lỗi TS6133 ('Sparkles' declared but never read) |
+| 210 | 2026-10-09 23:10 | `npm run build` | Kiểm tra biên dịch lại sau khi loại bỏ import thừa Sparkles | Thành công (built in 555ms) |
+| 211 | 2026-10-09 23:11 | `npx tsx /home/sweetvn/.gemini/.../scratch/test_tutor.ts` | Chạy kịch bản test xác minh logic Tutor Mode (invertMove, mô tả tiếng Việt, 4 phases) | Báo lỗi relative path trong scratch directory |
+| 212 | 2026-10-09 23:11 | `npx tsx /home/sweetvn/.gemini/.../scratch/test_tutor.ts` | Chạy lại test sau khi đổi sang path tuyệt đối | Báo lỗi tên hàm createSolvedCubeState |
+| 213 | 2026-10-09 23:11 | `npx tsx /home/sweetvn/.gemini/.../scratch/test_tutor.ts` | Chạy lại test sau khi sửa createSolvedCube | Báo lỗi tên hàm applyMovesToSolverState |
+| 214 | 2026-10-09 23:12 | `npx tsx /home/sweetvn/.gemini/.../scratch/test_tutor.ts` | Chạy lại test sau khi sửa applyAlgorithm | PASSED 100%: Invert moves, mô tả tiếng Việt, 4 phases liên tục không lỗi |
+| 215 | 2026-10-09 23:12 | `npm run build` | Kiểm tra đóng gói toàn dự án với Tutor Mode | Thành công sạch sẽ (built in 571ms) |
+| 216 | 2026-10-09 23:12 | `git status` | Kiểm tra trạng thái git working tree chuẩn bị commit | Nhận diện đủ các file sửa đổi và tạo mới |

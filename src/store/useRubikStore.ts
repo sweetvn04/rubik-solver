@@ -16,6 +16,11 @@ import { solveFirstBlock } from '../engine/solver/firstBlock';
 import { solveSecondBlock } from '../engine/solver/secondBlock';
 import { solveCMLL } from '../engine/solver/cmllSolver';
 import { solveCompleteRoux, type FullRouxSolution } from '../engine/solver/rouxSolver';
+import {
+  createTutorPhases,
+  invertMove,
+  type TutorPhase,
+} from '../engine/tutorHelper';
 
 export interface SolveResult {
   fbMoves: string[];
@@ -37,6 +42,12 @@ interface RubikStore {
   turnDuration: number; // ms cho 1 move
   isMuted: boolean;
 
+  // Tutor Mode State
+  isTutorActive: boolean;
+  tutorPhases: TutorPhase[];
+  tutorAllMoves: string[];
+  tutorCurrentIndex: number;
+
   // Actions
   enqueueMove: (moveOrRaw: Move | string) => void;
   enqueueAlgorithm: (alg: string) => void;
@@ -48,6 +59,13 @@ interface RubikStore {
   toggleMute: () => void;
   solveFirstTwoBlocks: () => SolveResult | null;
   solveFullCube: () => FullRouxSolution | null;
+
+  // Tutor Mode Actions
+  startTutorMode: () => { success: boolean; message?: string };
+  tutorNextStep: () => void;
+  tutorPrevStep: () => void;
+  tutorPlayCurrentPhase: () => void;
+  exitTutorMode: () => void;
 }
 
 /**
@@ -95,6 +113,12 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   moveHistory: [],
   turnDuration: 220, // 220ms xoay nhanh mượt
   isMuted: soundEngine.getMuted(),
+
+  // Tutor Mode State
+  isTutorActive: false,
+  tutorPhases: [],
+  tutorAllMoves: [],
+  tutorCurrentIndex: 0,
 
   toggleMute: () => {
     const muted = soundEngine.toggleMute();
@@ -160,6 +184,10 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     const { moves } = generateScramble(20);
     set((state) => ({
       moveQueue: [...state.moveQueue, ...moves],
+      isTutorActive: false,
+      tutorPhases: [],
+      tutorAllMoves: [],
+      tutorCurrentIndex: 0,
     }));
     invalidate();
   },
@@ -172,6 +200,10 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       moveQueue: [],
       currentMove: null,
       moveHistory: [],
+      isTutorActive: false,
+      tutorPhases: [],
+      tutorAllMoves: [],
+      tutorCurrentIndex: 0,
     });
     invalidate();
   },
@@ -278,6 +310,87 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     }
 
     return solution;
+  },
+
+  startTutorMode: () => {
+    const { cubies, isAnimating, moveQueue } = get();
+    if (isAnimating || moveQueue.length > 0) {
+      return { success: false, message: 'Khối đang xoay, vui lòng chờ một chút...' };
+    }
+
+    const solverState = cubiesToSolverState(cubies);
+    const solution = solveCompleteRoux(solverState);
+
+    if (!solution.isSuccess) {
+      return {
+        success: false,
+        message: solution.errorMessage || 'Chưa tìm ra thuật toán giải cho trạng thái này.',
+      };
+    }
+
+    if (solution.allMoves.length === 0) {
+      return {
+        success: false,
+        message: 'Khối Rubik đã được giải hoàn tất 100% rồi!',
+      };
+    }
+
+    const phases = createTutorPhases(solution);
+    set({
+      isTutorActive: true,
+      tutorPhases: phases,
+      tutorAllMoves: solution.allMoves,
+      tutorCurrentIndex: 0,
+    });
+
+    return { success: true };
+  },
+
+  tutorNextStep: () => {
+    const { isTutorActive, isAnimating, moveQueue, tutorAllMoves, tutorCurrentIndex } = get();
+    if (!isTutorActive || isAnimating || moveQueue.length > 0) return;
+    if (tutorCurrentIndex >= tutorAllMoves.length) return;
+
+    const nextMove = tutorAllMoves[tutorCurrentIndex];
+    set({ tutorCurrentIndex: tutorCurrentIndex + 1 });
+    get().enqueueMove(nextMove);
+  },
+
+  tutorPrevStep: () => {
+    const { isTutorActive, isAnimating, moveQueue, tutorAllMoves, tutorCurrentIndex } = get();
+    if (!isTutorActive || isAnimating || moveQueue.length > 0) return;
+    if (tutorCurrentIndex <= 0) return;
+
+    const lastMove = tutorAllMoves[tutorCurrentIndex - 1];
+    const revMove = invertMove(lastMove);
+    set({ tutorCurrentIndex: tutorCurrentIndex - 1 });
+    get().enqueueMove(revMove);
+  },
+
+  tutorPlayCurrentPhase: () => {
+    const { isTutorActive, isAnimating, moveQueue, tutorPhases, tutorAllMoves, tutorCurrentIndex } = get();
+    if (!isTutorActive || isAnimating || moveQueue.length > 0) return;
+    if (tutorCurrentIndex >= tutorAllMoves.length) return;
+
+    const currentPhase = tutorPhases.find(
+      (p) => tutorCurrentIndex >= p.startIndex && tutorCurrentIndex < p.endIndex
+    );
+    if (!currentPhase) return;
+
+    const remaining = tutorAllMoves.slice(tutorCurrentIndex, currentPhase.endIndex);
+    if (remaining.length === 0) return;
+
+    set({ tutorCurrentIndex: currentPhase.endIndex });
+    get().enqueueAlgorithm(remaining.join(' '));
+  },
+
+  exitTutorMode: () => {
+    set({
+      isTutorActive: false,
+      tutorPhases: [],
+      tutorAllMoves: [],
+      tutorCurrentIndex: 0,
+    });
   },
 }));
 

@@ -6,6 +6,28 @@
 
 ## 📅 2026-10-09
 
+### 🎓 [Commit `PENDING`] — Triển khai Chế độ Hướng dẫn Giải từng bước (Interactive Step-by-Step Tutor Mode)
+* **Mục đích:** Cung cấp tính năng Tutor Mode tương tác trực quan cho phép người dùng tự tay cầm khối Rubik vật lý xoay theo từng bước hướng dẫn trên màn hình 3D.
+* **Files tác động:**
+  - `src/engine/tutorHelper.ts` *(Mới)*:
+    * `createTutorPhases`: Phân rã chuỗi giải của Master Roux thành 4 Phase hướng dẫn trực quan (FB $\rightarrow$ SB $\rightarrow$ CMLL $\rightarrow$ LSE), gắn nhãn trường hợp CMLL và mẹo (tip) hỗ trợ ghi nhớ.
+    * `invertMove`: Đảo ngược move WCA để hỗ trợ tính năng Lùi bước (Undo).
+    * `getMoveDescriptionVi`: Diễn giải từng move thành câu tiếng Việt tự nhiên và hướng dẫn hướng xoay chi tiết.
+  - `src/store/useRubikStore.ts`:
+    * Quản lý trạng thái Tutor: `isTutorActive`, `tutorPhases`, `tutorAllMoves`, `tutorCurrentIndex`.
+    * Hành động điều khiển: `startTutorMode`, `tutorNextStep`, `tutorPrevStep`, `tutorPlayCurrentPhase`, `exitTutorMode`.
+    * Tự động dọn dẹp trạng thái tutor khi `reset` hoặc `scramble`.
+  - `src/components/ui/TutorCard.tsx` *(Mới)*:
+    * Giao diện phong cách Crayon / Stop-motion Claymation: hiển thị badge Phase, số bước `X/Y`, thanh tiến trình tổng thể, ký hiệu move to đậm, mô tả tiếng Việt và lời khuyên.
+    * Các nút bấm điều khiển thân thiện: Lùi lại (`ChevronLeft`), Xoay bước này (`ChevronRight`), Xong chặng này (`FastForward`), Thoát (`X`), và Màn hình chúc mừng khi hoàn thành 100%.
+  - `src/components/ui/PlayerBar.tsx`:
+    * Tích hợp nút **"Hướng dẫn"** (icon `GraduationCap` màu navy chì `#3d5a80`) bên cạnh nút "Giải Full Roux".
+    * Chuyển đổi mượt mà sang `TutorCard` khi kích hoạt chế độ hướng dẫn, tối ưu diện tích và trải nghiệm bấm ngón tay cái trên thiết bị di động.
+  - `src/hooks/useKeyboardControls.ts`:
+    * Bổ sung phím tắt chuyên dụng khi đang ở Tutor Mode: `ArrowRight` / `Enter` (bước tiếp), `ArrowLeft` / `Backspace` (lùi lại), `Escape` (thoát), đồng thời khóa các phím xoay tự do để tránh làm lệch trạng thái.
+
+---
+
 ### 🏆 [Commit `f49f397`] — Hoàn tất 100% Bộ giải Tự động Phương pháp Roux (FB $\rightarrow$ SB $\rightarrow$ CMLL $\rightarrow$ LSE)
 * **Mục đích:** Hoàn thành giai đoạn cuối cùng (Phase 4: Last Six Edges - LSE) và xâu chuỗi toàn diện bộ giải Master Roux Solver, giải quyết trọn vẹn 100% khối Rubik 3D trong nháy mắt (< 10ms) với trải nghiệm thị giác và âm thanh ASMR chân thực.
 * **Files tác động:**

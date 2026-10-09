@@ -12,6 +12,10 @@ export function useKeyboardControls(enabled: boolean = true) {
   const enqueueMove = useRubikStore((s) => s.enqueueMove);
   const scramble = useRubikStore((s) => s.scramble);
   const reset = useRubikStore((s) => s.reset);
+  const isTutorActive = useRubikStore((s) => s.isTutorActive);
+  const tutorNextStep = useRubikStore((s) => s.tutorNextStep);
+  const tutorPrevStep = useRubikStore((s) => s.tutorPrevStep);
+  const exitTutorMode = useRubikStore((s) => s.exitTutorMode);
 
   useEffect(() => {
     if (!enabled) return;
@@ -30,6 +34,27 @@ export function useKeyboardControls(enabled: boolean = true) {
 
       // Không can thiệp nếu đang dùng tổ hợp phím hệ thống (Ctrl, Alt, Meta)
       if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+      // Xử lý riêng khi đang ở chế độ Tutor Mode
+      if (isTutorActive) {
+        if (e.key === 'ArrowRight' || e.key === 'Enter') {
+          e.preventDefault();
+          tutorNextStep();
+          return;
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+          e.preventDefault();
+          tutorPrevStep();
+          return;
+        }
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          exitTutorMode();
+          return;
+        }
+        // Khi đang tutor, không cho xoay phím tự do để tránh làm lệch trạng thái
+        return;
+      }
 
       const key = e.key.toUpperCase();
       const isShift = e.shiftKey;
@@ -67,5 +92,14 @@ export function useKeyboardControls(enabled: boolean = true) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [enabled, enqueueMove, scramble, reset]);
+  }, [
+    enabled,
+    enqueueMove,
+    scramble,
+    reset,
+    isTutorActive,
+    tutorNextStep,
+    tutorPrevStep,
+    exitTutorMode,
+  ]);
 }

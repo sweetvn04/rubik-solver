@@ -13,7 +13,9 @@ import {
   Volume2,
   VolumeX,
   Wand2,
+  GraduationCap,
 } from 'lucide-react';
+import { TutorCard } from './TutorCard';
 
 const BASIC_FACES = ['R', 'L', 'U', 'D', 'F', 'B'];
 
@@ -49,12 +51,24 @@ export function PlayerBar() {
   const isMuted = useRubikStore((s) => s.isMuted);
   const toggleMute = useRubikStore((s) => s.toggleMute);
   const solveFullCube = useRubikStore((s) => s.solveFullCube);
+  const isTutorActive = useRubikStore((s) => s.isTutorActive);
+  const startTutorMode = useRubikStore((s) => s.startTutorMode);
 
   const [isMovePadOpen, setIsMovePadOpen] = useState(false);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [showKeyHints, setShowKeyHints] = useState(false);
   const [customAlg, setCustomAlg] = useState('');
   const [solverFeedback, setSolverFeedback] = useState<string | null>(null);
+
+  const handleStartTutorMode = () => {
+    const res = startTutorMode();
+    if (!res.success && res.message) {
+      setSolverFeedback(`💡 ${res.message}`);
+      setTimeout(() => {
+        setSolverFeedback(null);
+      }, 4000);
+    }
+  };
 
   const handleAutoSolveFullRoux = () => {
     const res = solveFullCube();
@@ -80,6 +94,11 @@ export function PlayerBar() {
     if (!customAlg.trim()) return;
     enqueueAlgorithm(customAlg.trim());
   };
+
+  // Khi đang ở chế độ Tutor Mode, hiển thị thẻ TutorCard chuyên dụng
+  if (isTutorActive) {
+    return <TutorCard />;
+  }
 
   return (
     <div className="flex flex-col items-center gap-2 max-w-[95vw] px-2 select-none pointer-events-auto">
@@ -298,6 +317,19 @@ export function PlayerBar() {
           title="Khôi phục trạng thái hoàn thành (Phím Esc)"
         >
           <RefreshCw className="w-3.5 h-3.5" />
+        </button>
+
+        {/* Nút Hướng Dẫn Từng Bước (Interactive Step-by-Step Tutor Mode) */}
+        <button
+          type="button"
+          onClick={handleStartTutorMode}
+          disabled={moveQueue.length > 0}
+          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold bg-[#3d5a80] hover:bg-[#344d6d] disabled:opacity-40 text-white rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:cursor-not-allowed"
+          title="Bật chế độ hướng dẫn giải từng bước (Tutor Mode) để tự tay xoay theo"
+        >
+          <GraduationCap className="w-3.5 h-3.5" />
+          <span className="hidden xs:inline sm:inline">Hướng dẫn</span>
+          <span className="xs:hidden sm:hidden">Dạy giải</span>
         </button>
 
         {/* Nút Tự giải Toàn Bộ Rubik (Master Roux 100%) */}
