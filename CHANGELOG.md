@@ -6,6 +6,17 @@
 
 ## 📅 2026-10-10
 
+### 📚 [Commit `PENDING`] — Triển khai Thư viện Giáo trình 4 Bước Roux & Bộ Tra cứu 45 CMLL Trainer
+* **Mục đích:** Cung cấp hệ thống học lý thuyết chuẩn phương pháp Roux và bộ công cụ tra cứu, luyện tập 45 thế cờ CMLL trực quan, tích hợp tương tác trực tiếp lên khối Rubik 3D.
+* **Files tác động:**
+  - `src/data/lessonsData.ts` *(Mới)*: Tổng hợp giáo trình 4 bài học lớn chuẩn Roux Method VN (First Block, Second Block, CMLL, LSE) gồm mục tiêu, kỹ thuật then chốt và lời khuyên cuber.
+  - `src/components/ui/LessonDrawer.tsx` *(Mới)*: Drawer trượt mượt mà với 2 Tab:
+    * **Tab Giáo trình 4 Bước**: Xem chi tiết bài học, mục tiêu, số moves trung bình.
+    * **Tab Tra cứu 45 CMLL**: Bảng lọc 8 nhóm thế cờ (O, H, Pi, T, U, L, S, As), thanh tìm kiếm nhanh, nút **"Tập thế cờ này"** (tự động đảo ngược chuỗi để dàn dựng thế cờ lên khối 3D cho người dùng giải) và nút **"Chạy giải"**.
+  - `src/App.tsx`: Tích hợp nút mở thư viện (icon `BookOpen`) ở Header và kết nối `LessonDrawer`.
+
+---
+
 ### 💡 [Commit `e9beace`] — Triển khai Hệ thống Focus Block & Phase-based Dimming
 * **Mục đích:** Làm nổi bật rực rỡ các viên cubie thuộc giai đoạn đang giải (FB, SB, CMLL) và làm mờ (dim/desaturate) các viên không liên quan, giúp người học định hình cấu trúc khối ngay lập tức mà không bị rối mắt.
 * **Files tác động:**

@@ -1,24 +1,43 @@
+import { useState } from 'react';
 import { RubikCanvas } from './components/cube/RubikCanvas';
 import { PlayerBar } from './components/ui/PlayerBar';
 import { TutorCard } from './components/ui/TutorCard';
+import { LessonDrawer } from './components/ui/LessonDrawer';
 import { useRubikStore } from './store/useRubikStore';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
+import { BookOpen } from 'lucide-react';
 
 export default function App() {
   useKeyboardControls();
   const isTutorActive = useRubikStore((s) => s.isTutorActive);
+  const [isLessonOpen, setIsLessonOpen] = useState(false);
 
   return (
     <main className="w-screen h-dvh min-h-dvh max-h-dvh flex flex-col bg-[#f6f2e9] text-[#332b25] relative overflow-hidden select-none">
-      {/* Header bar - Tối giản tối đa để tập trung vào khối Rubik */}
+      {/* Header bar - Tối giản tinh tế để tập trung vào khối Rubik */}
       <header className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-3 sm:p-4 pointer-events-none">
-        <div className="flex items-center gap-2 bg-white/75 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-[#e8dfcf] shadow-xs pointer-events-auto">
+        {/* Logo Roux Method VN */}
+        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-[#e8dfcf] shadow-xs pointer-events-auto">
           <div className="w-5 h-5 rounded-md bg-[#e07a5f] flex items-center justify-center text-white font-bold text-xs shadow-inner">
             R
           </div>
           <span className="text-xs font-bold tracking-tight text-[#2c221e]">
             Roux Method VN
           </span>
+        </div>
+
+        {/* Nút mở Thư viện Giáo trình & Tra cứu 45 CMLL */}
+        <div className="pointer-events-auto">
+          <button
+            type="button"
+            onClick={() => setIsLessonOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white/85 hover:bg-white text-[#2c221e] text-xs font-bold rounded-xl border border-[#e8dfcf] shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            title="Mở Thư viện Giáo trình Roux & Tra cứu 45 CMLL"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-[#e07a5f]" />
+            <span className="hidden xs:inline sm:inline">Giáo trình & CMLL</span>
+            <span className="xs:hidden sm:hidden">Lý thuyết</span>
+          </button>
         </div>
       </header>
 
@@ -45,6 +64,12 @@ export default function App() {
           <PlayerBar />
         </footer>
       )}
+
+      {/* Drawer Thư viện Giáo trình Roux & Tra cứu 45 CMLL */}
+      <LessonDrawer
+        isOpen={isLessonOpen}
+        onClose={() => setIsLessonOpen(false)}
+      />
     </main>
   );
 }
