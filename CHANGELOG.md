@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-10
 
-### 📚 [Commit `PENDING`] — Triển khai Thư viện Giáo trình 4 Bước Roux & Bộ Tra cứu 45 CMLL Trainer
+### 📚 [Commit `2de1c62`] — Triển khai Thư viện Giáo trình 4 Bước Roux & Bộ Tra cứu 45 CMLL Trainer
 * **Mục đích:** Cung cấp hệ thống học lý thuyết chuẩn phương pháp Roux và bộ công cụ tra cứu, luyện tập 45 thế cờ CMLL trực quan, tích hợp tương tác trực tiếp lên khối Rubik 3D.
 * **Files tác động:**
   - `src/data/lessonsData.ts` *(Mới)*: Tổng hợp giáo trình 4 bài học lớn chuẩn Roux Method VN (First Block, Second Block, CMLL, LSE) gồm mục tiêu, kỹ thuật then chốt và lời khuyên cuber.
