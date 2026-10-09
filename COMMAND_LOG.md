@@ -174,3 +174,7 @@
 | 157 | 2026-10-09 17:41 | `git commit -am "docs: finalize COMMAND_LOG.md with command 156"` | Lưu commit cập nhật COMMAND_LOG.md | Commit `399590c` |
 | 158 | 2026-10-09 17:41 | `git status` | Kiểm tra trạng thái git working tree | Sạch (clean) |
 | 159 | 2026-10-09 17:41 | `git commit -am "docs: update COMMAND_LOG.md with commands 157 and 158"` | Đồng bộ commit cập nhật dòng 157-158 vào COMMAND_LOG.md | Commit `032eb60` |
+| 160 | 2026-10-09 17:41 | `git commit -am "docs: log command 159 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 159 vào COMMAND_LOG.md | Commit `b3f8014` |
+| 161 | 2026-10-09 17:42 | `npm run dev -- --host --port 5173` | Khởi động lại dev server Vite trên cổng 5173 sau server restart | Đang chạy nền (task-1298) |
+| 162 | 2026-10-09 17:42 | `git status` | Kiểm tra trạng thái git working tree sau context recovery | Sạch sẽ, chỉ có file COMMAND_LOG.md chưa commit |
+| 163 | 2026-10-09 17:43 | `git commit -am "docs: update COMMAND_LOG.md with command 162"` | Lưu commit cập nhật COMMAND_LOG.md sau recovery | Thành công |
