@@ -15,6 +15,8 @@ export interface SolveResult {
   sbMoves: string[];
   durationMs: number;
   isAlreadySolved: boolean;
+  isFailed?: boolean;
+  errorMessage?: string;
 }
 
 interface RubikStore {
@@ -188,9 +190,33 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       ? { moves: [] as string[], state: solverState }
       : solveFirstBlock(solverState);
 
+    const isFBSuccessful = isFirstBlockSolved(fbRes.state);
+    if (!isFBSuccessful) {
+      return {
+        fbMoves: [],
+        sbMoves: [],
+        durationMs: performance.now() - t0,
+        isAlreadySolved: false,
+        isFailed: true,
+        errorMessage: 'Chưa tìm ra lời giải cho First Block trong độ sâu cho phép.',
+      };
+    }
+
     const sbRes = isSBAlready
       ? { moves: [] as string[], state: fbRes.state }
       : solveSecondBlock(fbRes.state);
+
+    const isSBSuccessful = isSecondBlockSolved(sbRes.state);
+    if (!isSBSuccessful) {
+      return {
+        fbMoves: fbRes.moves,
+        sbMoves: [],
+        durationMs: performance.now() - t0,
+        isAlreadySolved: false,
+        isFailed: true,
+        errorMessage: 'Chưa tìm ra lời giải hoàn chỉnh cho Second Block.',
+      };
+    }
 
     const durationMs = performance.now() - t0;
     const allMovesStr = [...fbRes.moves, ...sbRes.moves].join(' ');

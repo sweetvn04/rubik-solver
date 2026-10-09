@@ -60,7 +60,9 @@ export function PlayerBar() {
     const res = solveFirstTwoBlocks();
     if (!res) return;
 
-    if (res.isAlreadySolved) {
+    if (res.isFailed) {
+      setSolverFeedback(`⚠️ ${res.errorMessage || 'Không tìm ra lời giải hoàn chỉnh.'}`);
+    } else if (res.isAlreadySolved) {
       setSolverFeedback('✅ Khối 1 & 2 (FB & SB) đã hoàn thành sẵn!');
     } else {
       const total = res.fbMoves.length + res.sbMoves.length;

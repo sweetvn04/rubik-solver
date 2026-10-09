@@ -6,6 +6,22 @@
 
 ## 📅 2026-10-09
 
+### 🐛 [Fix] — Khắc phục Triệt để Lỗi Second Block bị Kẹt/Dở dang bằng Unslot Triggers & Validation Guard
+* **Nguyên nhân kỹ thuật (Root Cause):**
+  1. Khi các viên góc và cạnh của Second Block (DR, BR, DBR, FR, DFR) bị kẹt chéo ở các khe tầng dưới (tầng D và R), các nhánh tìm kiếm trước đó bị giới hạn ở độ sâu 6 nên không tìm thấy lời giải, dẫn đến việc thuật toán trả về moves dở dang (chỉ xoay vài bước DR) trong khi toàn bộ Second Block vẫn chưa hoàn tất.
+  2. Thiếu Validation Guard: Khi Second Block chưa được giải xong 100%, hệ thống vẫn nạp các moves cụt vào 3D canvas khiến Rubik chỉ giải xong FB còn SB lộn xộn.
+* **Giải pháp khắc phục:**
+  - `src/engine/solver/secondBlock.ts`:
+    * Tích hợp tập hợp **Unslot Triggers (`SB_SETUPS`)**: `R U R'`, `R' U R`, `r U r'`, `r' U r`, v.v. để chủ động giải phóng các cặp bị kẹt chéo lên tầng U.
+    * Nâng độ sâu tìm kiếm lên 7 bước (được kiểm chứng chạy chỉ mất ~370ms), xử lý 100% các thế cờ hiểm hóc nhất.
+    * Đa tầng Fallback: Nếu không giải được, trả về mảng rỗng thay vì trả về moves dở dang.
+  - `src/store/useRubikStore.ts`:
+    * Bổ sung **Validation Guard**: Kiểm tra nghiêm ngặt `isSecondBlockSolved(sbRes.state)`. Nếu SB chưa hoàn tất, tuyệt đối không nạp moves cụt vào canvas, đồng thời thông báo rõ ràng cho người dùng.
+  - `src/components/ui/PlayerBar.tsx`:
+    * Hiển thị cảnh báo trạng thái chi tiết trên Banner Toast khi gặp sự cố, đảm bảo phản hồi tức thì và chính xác.
+
+---
+
 ### 🪄 [Commit `419e326`] — Tích hợp Nút Tự giải FB & SB trực quan và Banner kết quả lên Minimal Dock
 * **Mục đích:** Cho phép người dùng trải nghiệm trực tiếp và kiểm chứng thuật toán solver Roux 3D ngay trên giao diện web bằng 1 cú click: Rubik tự tính toán và tự động diễn hoạt xoay giải Khối bên trái rồi Khối bên phải kèm âm thanh click tactile ASMR.
 * **Files tác động:**

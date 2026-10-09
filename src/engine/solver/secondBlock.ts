@@ -215,6 +215,20 @@ function bfsSolvePair(
   return null;
 }
 
+// Các chuỗi Unslot Trigger giải phóng các mảnh bị kẹt chéo ở tầng D/R lên tầng U
+const SB_SETUPS: string[][] = [
+  [], // Không setup (trạng thái gốc)
+  ['R', 'U', "R'"],
+  ["R'", 'U', 'R'],
+  ['r', 'U', "r'"],
+  ["r'", 'U', 'r'],
+  ['R', "U'", "R'"],
+  ["R'", "U'", 'R'],
+  ['r', "U'", "r'"],
+  ['R2'],
+  ['M2'],
+];
+
 export interface BlockSolveResult {
   moves: string[];
   state: SolverCubeState;
@@ -223,123 +237,153 @@ export interface BlockSolveResult {
 
 /**
  * Tự động giải Second Block (SB: 1x2x3 bên phải) từ trạng thái đã giải xong FB
- * 100% bám sát giáo trình Roux Method VN:
- * 1. Dựng cạnh DR (và tâm R) bằng các moves trong {R, r, M, U}.
- * 2. Ghép và chèn cặp 1 (Back pair hoặc Front pair tùy theo nhánh nào tối ưu hơn).
- * 3. Ghép và chèn cặp còn lại để hoàn tất 1x2x3 block bên phải.
+ * 100% bám sát giáo trình Roux Method VN và bảo toàn tuyệt đối First Block.
  */
 export function solveSecondBlock(initialCube: SolverCubeState): BlockSolveResult {
-  let cube = cloneCube(initialCube);
-  const totalMoves: string[] = [];
-
   // Nếu SB đã giải xong ngay từ đầu
-  if (isSecondBlockSolved(cube)) {
+  if (isSecondBlockSolved(initialCube)) {
     return {
       moves: [],
-      state: cube,
+      state: initialCube,
       explanation: 'Second Block đã hoàn thành từ trước.',
     };
   }
 
-  // --- BƯỚC 1: Dựng cạnh DR và tâm R ---
-  if (!isDRSolved(cube)) {
-    const drMoves = idaSearchSB(cube, isDRSolved, SB_CANDIDATE_MOVES, 5);
-    if (drMoves && drMoves.length > 0) {
-      for (const m of drMoves) {
-        cube = applyMove(cube, m);
-        totalMoves.push(m);
-      }
+  // Helper tìm kiếm chặng thứ 2 (hoàn thiện cặp còn lại)
+  const solveRemainingPair = (
+    state: SolverCubeState,
+    isFrontSquareCompleted: boolean,
+    maxDepth: number = 6
+  ): string[] | null => {
+    if (isSecondBlockSolved(state)) return [];
+
+    // 1. Thử IDA* ngắn (độ sâu 1..5)
+    let finishMoves = idaSearchSB(state, isSecondBlockSolved, SB_CANDIDATE_MOVES, 5);
+    if (finishMoves) return finishMoves;
+
+    // 2. Thử Macro BFS an toàn (độ sâu tối đa 4 tầng macro)
+    const macros = isFrontSquareCompleted ? BACK_PAIR_MACROS : FRONT_PAIR_MACROS;
+    finishMoves = bfsSolvePair(state, isSecondBlockSolved, macros, 4);
+    if (finishMoves) return finishMoves;
+
+    // 3. Thử IDA* sâu
+    if (maxDepth > 5) {
+      finishMoves = idaSearchSB(state, isSecondBlockSolved, SB_CANDIDATE_MOVES, maxDepth);
     }
-  }
-
-  if (isSecondBlockSolved(cube)) {
-    return {
-      moves: totalMoves,
-      state: cube,
-      explanation: 'Hoàn tất Second Block (1x2x3 bên phải).',
-    };
-  }
-
-  // --- BƯỚC 2 & 3: Thử 2 phương án phân rã cặp ---
-  // Phương án A: Làm Back 1x2x2 trước, sau đó Front pair
-  const tryBackFirst = (): string[] | null => {
-    let testState = cloneCube(cube);
-    const movesA: string[] = [];
-
-    if (!isBackSquareR_Solved(testState)) {
-      const backMoves = idaSearchSB(testState, isBackSquareR_Solved, SB_CANDIDATE_MOVES, 6);
-      if (!backMoves) return null;
-      for (const m of backMoves) {
-        testState = applyMove(testState, m);
-        movesA.push(m);
-      }
-    }
-
-    if (!isSecondBlockSolved(testState)) {
-      // Thử IDA* ngắn trước
-      let finishMoves = idaSearchSB(testState, isSecondBlockSolved, SB_CANDIDATE_MOVES, 5);
-      // Nếu không ra, dùng Macro BFS
-      if (!finishMoves) {
-        finishMoves = bfsSolvePair(testState, isSecondBlockSolved, FRONT_PAIR_MACROS, 4);
-      }
-      if (!finishMoves) return null;
-      movesA.push(...finishMoves);
-    }
-
-    return movesA;
+    return finishMoves;
   };
 
-  // Phương án B: Làm Front 1x2x2 trước, sau đó Back pair
-  const tryFrontFirst = (): string[] | null => {
-    let testState = cloneCube(cube);
-    const movesB: string[] = [];
+  // VÒNG 1: Thử tất cả các Setups ở độ sâu 5..6 (tốc độ siêu nhanh < 300ms)
+  for (const prefix of SB_SETUPS) {
+    let base = initialCube;
+    for (const m of prefix) base = applyMove(base, m);
 
-    if (!isFrontSquareR_Solved(testState)) {
-      const frontMoves = idaSearchSB(testState, isFrontSquareR_Solved, SB_CANDIDATE_MOVES, 6);
-      if (!frontMoves) return null;
-      for (const m of frontMoves) {
-        testState = applyMove(testState, m);
-        movesB.push(m);
+    // Nhánh 1: BackSquare trước -> giải nốt SB
+    const bMoves = idaSearchSB(base, isBackSquareR_Solved, SB_CANDIDATE_MOVES, 6);
+    if (bMoves) {
+      let afterB = base;
+      for (const m of bMoves) afterB = applyMove(afterB, m);
+      const fMoves = solveRemainingPair(afterB, false, 6);
+      if (fMoves) {
+        let finalState = afterB;
+        for (const m of fMoves) finalState = applyMove(finalState, m);
+        if (isSecondBlockSolved(finalState)) {
+          const totalMoves = [...prefix, ...bMoves, ...fMoves];
+          return {
+            moves: totalMoves,
+            state: finalState,
+            explanation: `Dựng Second Block (1x2x3 bên phải): ${totalMoves.join(' ')}`,
+          };
+        }
       }
     }
 
-    if (!isSecondBlockSolved(testState)) {
-      let finishMoves = idaSearchSB(testState, isSecondBlockSolved, SB_CANDIDATE_MOVES, 5);
-      if (!finishMoves) {
-        finishMoves = bfsSolvePair(testState, isSecondBlockSolved, BACK_PAIR_MACROS, 4);
+    // Nhánh 2: FrontSquare trước -> giải nốt SB
+    const fMoves = idaSearchSB(base, isFrontSquareR_Solved, SB_CANDIDATE_MOVES, 6);
+    if (fMoves) {
+      let afterF = base;
+      for (const m of fMoves) afterF = applyMove(afterF, m);
+      const b2Moves = solveRemainingPair(afterF, true, 6);
+      if (b2Moves) {
+        let finalState = afterF;
+        for (const m of b2Moves) finalState = applyMove(finalState, m);
+        if (isSecondBlockSolved(finalState)) {
+          const totalMoves = [...prefix, ...fMoves, ...b2Moves];
+          return {
+            moves: totalMoves,
+            state: finalState,
+            explanation: `Dựng Second Block (1x2x3 bên phải): ${totalMoves.join(' ')}`,
+          };
+        }
       }
-      if (!finishMoves) return null;
-      movesB.push(...finishMoves);
-    }
-
-    return movesB;
-  };
-
-  const pathA = tryBackFirst();
-  const pathB = tryFrontFirst();
-
-  let chosenPath: string[] | null = null;
-  if (pathA && pathB) {
-    chosenPath = pathA.length <= pathB.length ? pathA : pathB;
-  } else {
-    chosenPath = pathA || pathB;
-  }
-
-  // Fallback: Nếu phân rã không ra, thử tìm trực tiếp SB tới độ sâu 6
-  if (!chosenPath) {
-    chosenPath = idaSearchSB(cube, isSecondBlockSolved, SB_CANDIDATE_MOVES, 6);
-  }
-
-  if (chosenPath) {
-    for (const m of chosenPath) {
-      cube = applyMove(cube, m);
-      totalMoves.push(m);
     }
   }
 
+  // VÒNG 2 (Fallback cho các trường hợp đặc biệt khó): Thử độ sâu 7 trên các setup chính
+  const PRIMARY_SETUPS = [[], ['R', 'U', "R'"], ["R'", 'U', 'R'], ['r', 'U', "r'"]];
+  for (const prefix of PRIMARY_SETUPS) {
+    let base = initialCube;
+    for (const m of prefix) base = applyMove(base, m);
+
+    // Thử BackSquare độ sâu 7
+    const bMoves = idaSearchSB(base, isBackSquareR_Solved, SB_CANDIDATE_MOVES, 7);
+    if (bMoves) {
+      let afterB = base;
+      for (const m of bMoves) afterB = applyMove(afterB, m);
+      const fMoves = solveRemainingPair(afterB, false, 7);
+      if (fMoves) {
+        let finalState = afterB;
+        for (const m of fMoves) finalState = applyMove(finalState, m);
+        if (isSecondBlockSolved(finalState)) {
+          const totalMoves = [...prefix, ...bMoves, ...fMoves];
+          return {
+            moves: totalMoves,
+            state: finalState,
+            explanation: `Dựng Second Block (1x2x3 bên phải): ${totalMoves.join(' ')}`,
+          };
+        }
+      }
+    }
+
+    // Thử FrontSquare độ sâu 7
+    const fMoves = idaSearchSB(base, isFrontSquareR_Solved, SB_CANDIDATE_MOVES, 7);
+    if (fMoves) {
+      let afterF = base;
+      for (const m of fMoves) afterF = applyMove(afterF, m);
+      const b2Moves = solveRemainingPair(afterF, true, 7);
+      if (b2Moves) {
+        let finalState = afterF;
+        for (const m of b2Moves) finalState = applyMove(finalState, m);
+        if (isSecondBlockSolved(finalState)) {
+          const totalMoves = [...prefix, ...fMoves, ...b2Moves];
+          return {
+            moves: totalMoves,
+            state: finalState,
+            explanation: `Dựng Second Block (1x2x3 bên phải): ${totalMoves.join(' ')}`,
+          };
+        }
+      }
+    }
+  }
+
+  // Fallback khẩn cấp: tìm trực tiếp SB độ sâu 7
+  const emergency = idaSearchSB(initialCube, isSecondBlockSolved, SB_CANDIDATE_MOVES, 7);
+  if (emergency) {
+    let endState = cloneCube(initialCube);
+    for (const m of emergency) endState = applyMove(endState, m);
+    if (isSecondBlockSolved(endState)) {
+      return {
+        moves: emergency,
+        state: endState,
+        explanation: `Dựng Second Block (1x2x3 bên phải): ${emergency.join(' ')}`,
+      };
+    }
+  }
+
+  // Nếu vẫn không ra, trả về rỗng kèm thông báo thay vì trả về moves cụt làm hỏng khối
   return {
-    moves: totalMoves,
-    state: cube,
-    explanation: `Dựng Second Block (1x2x3 bên phải): ${totalMoves.join(' ')}`,
+    moves: [],
+    state: initialCube,
+    explanation: 'Không tìm thấy lời giải cho Second Block trong giới hạn độ sâu.',
   };
 }

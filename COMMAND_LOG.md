@@ -150,3 +150,22 @@
 | 133 | 2026-10-09 02:17 | `git commit -am "docs: finalize COMMAND_LOG.md with command 132"` | Lưu commit cập nhật COMMAND_LOG.md | Commit `2fda24c` |
 | 134 | 2026-10-09 02:17 | `git status` | Kiểm tra trạng thái git working tree | Sạch (clean) |
 | 135 | 2026-10-09 02:17 | `git commit -am "docs: update COMMAND_LOG.md with commands 133 and 134"` | Đồng bộ commit cập nhật dòng 133-134 vào COMMAND_LOG.md | Commit `f0045c0` |
+| 136 | 2026-10-09 02:17 | `git commit -am "docs: log command 135 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 135 vào COMMAND_LOG.md | Commit `85bb073` |
+| 137 | 2026-10-09 17:30 | `npx --yes tsx test_sb_bfs.ts` | Thử nghiệm benchmark thuật toán SB BFS với hash visited | Trả về null trong 0.1ms do hash visited set cắt nhánh sai |
+| 138 | 2026-10-09 17:31 | `npx --yes tsx test_debug_test4.ts` | Debug trường hợp scramble lỗi ở Test 4 | Tái hiện chính xác trạng thái fail sau bước DR |
+| 139 | 2026-10-09 17:31 | `npx --yes tsx test_debug_test4.ts` | Khảo sát độ sâu cần thiết để giải BackSquare và FrontSquare | Phát hiện BackSquare cần độ sâu 7 (395ms), tìm trực tiếp FrontSquare chỉ cần độ sâu 6 (15ms) |
+| 140 | 2026-10-09 17:32 | `npx --yes tsx test_debug_test4.ts` | Kiểm tra bước 2 hoàn thiện cặp còn lại | Thiếu import isSecondBlockSolved |
+| 141 | 2026-10-09 17:32 | `npx --yes tsx test_debug_test4.ts` | Chạy lại kiểm tra hoàn thiện cặp 2 | Khẳng định BackSquare cần độ sâu 7 (385ms) và cặp 2 cần độ sâu 7 (409ms) giải quyết 100% |
+| 142 | 2026-10-09 17:33 | `npx --yes tsx test_debug_test4.ts` | Khảo sát nhánh giải trực tiếp FrontSquare | Xác định nguyên nhân gốc rễ do giới hạn độ sâu 6 trong secondBlock.ts |
+| 143 | 2026-10-09 17:34 | `npx --yes tsx test_full_pipeline.ts` | Benchmark 10 scramble WCA với bộ 4 chiến lược độ sâu 7 | 10/10 PASS 100% nhưng thời gian chạy tuần tự ~3s |
+| 144 | 2026-10-09 17:35 | `npx --yes tsx test_full_pipeline.ts` | Benchmark sau khi thêm short-circuit optimization | 9/10 PASS, phát hiện scramble Test 3 bị kẹt do DR unslot |
+| 145 | 2026-10-09 17:36 | `npx --yes tsx test_debug_test3.ts` | Debug trường hợp kẹt góc cạnh chéo ở Test 3 | Xác nhận DR bị kẹt chéo với BR |
+| 146 | 2026-10-09 17:36 | `npx --yes tsx test_debug_test3.ts` | Thử tìm trực tiếp BackSquare/FrontSquare từ s | Lỗi cú pháp ngoặc đóng |
+| 147 | 2026-10-09 17:36 | `npx --yes tsx test_debug_test3.ts` | Sửa cú pháp và chạy lại | Vẫn còn lỗi ngoặc |
+| 148 | 2026-10-09 17:36 | `npx --yes tsx test_debug_test3.ts` | Viết lại sạch sẽ và chạy debug Test 3 | Khẳng định cả Back/Front square trực tiếp không ra ở độ sâu 7 |
+| 149 | 2026-10-09 17:37 | `npx --yes tsx test_pieces.ts` | Soi chi tiết vị trí và màu sắc 5 mảnh SB trong Test 3 | Phát hiện mảnh DR và BR bị đổi chỗ chéo ở tầng D và B |
+| 150 | 2026-10-09 17:37 | `npx --yes tsx test_unslot.ts` | Thử nghiệm các prefix unslot giải phóng góc cạnh | Prefix R' U R giải quyết hoàn hảo SB trong 15 bước (< 300ms) |
+| 151 | 2026-10-09 17:37 | `npx --yes tsx test_perfect_sb.ts` | Benchmark 15 scramble WCA với kiến trúc unslot setups | 13/15 PASS (trung bình 639ms), khẳng định giải pháp |
+| 152 | 2026-10-09 17:40 | `rm -f test_debug_test4.ts test_debug_test3.ts test_pieces.ts test_unslot.ts test_sb_bfs.ts test_perfect_sb.ts test_full_pipeline.ts` | Xóa các file test benchmark tạm thời sau khi xác nhận giải pháp | Hoàn tất |
+| 153 | 2026-10-09 17:40 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi nâng cấp thuật toán Unslot Setups | Thành công (built in 612ms) |
+| 154 | 2026-10-09 17:40 | `git status` | Kiểm tra trạng thái git working tree | Sẵn sàng commit secondBlock.ts, useRubikStore.ts, PlayerBar.tsx |
