@@ -272,3 +272,4 @@
 | 248 | 2026-10-10 00:25 | `npm run build` | Kiểm tra biên dịch và đóng gói sau khi cập nhật README, plan.md và base vite | Thành công (built in 638ms) |
 | 249 | 2026-10-10 00:25 | `git status` | Kiểm tra trạng thái git working tree trước khi commit hoàn thiện docs & build | Nhận diện 3 file sửa đổi |
 | 250 | 2026-10-10 00:25 | `git add README.md plan.md vite.config.ts && git commit -m "docs(project): rewrite comprehensive README, complete roadmap in plan.md and configure relative base in vite"` | Commit cập nhật README chuyên nghiệp, đánh dấu roadmap hoàn tất và base path vite | Commit `0a6d078` |
+| 251 | 2026-10-10 00:26 | `git commit -am "docs: record commit 0a6d078 in COMMAND_LOG.md and CHANGELOG.md"` | Đồng bộ commit hash 0a6d078 vào tài liệu COMMAND_LOG và CHANGELOG | Commit `f36b0e5` |
