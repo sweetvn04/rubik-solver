@@ -6,6 +6,20 @@
 
 ## 📅 2026-10-10
 
+### 🎵 [Commit `17103ea`] — Triển khai Bộ phát Nhạc nền Cozy Lo-fi Ambient BGM Tổng hợp Thời gian thực
+* **Mục đích:** Tích hợp không gian âm thanh thư giãn (Cozy Lo-fi Ambient) lấy cảm hứng từ game *Messenger (Deliver on a planet)* giúp người dùng tập trung học và giải Rubik mà không tốn băng thông mạng.
+* **Files tác động:**
+  - `src/engine/lofiEngine.ts` *(Mới)*: Bộ tổng hợp âm thanh Lo-fi thời gian thực qua Web Audio API thuần (0% tải mạng, không cần file MP3):
+    * Lớp 1: Warm Rhodes Chords (vòng hòa thanh Fmaj7 $\rightarrow$ Em7 $\rightarrow$ Dm7 $\rightarrow$ Cmaj7 qua bộ lọc Low-pass băng từ cassette).
+    * Lớp 2: Vinyl Crackle & Tape Hiss (tiếng đĩa than lép bép analog hoài niệm).
+    * Lớp 3: Ambient Pentatonic Drops (những giọt nốt piano điện ngân vang ngẫu nhiên).
+    * Cơ chế Fade-in / Fade-out âm lượng mượt mà, lưu trạng thái vào localStorage.
+  - `src/store/useRubikStore.ts`: Bổ sung state `isLofiPlaying`, `lofiVolume` và action `toggleLofi`, `setLofiVolume`.
+  - `src/App.tsx`: Bổ sung nút Lo-fi BGM (icon `Music`) trên Header.
+  - `src/components/ui/PlayerBar.tsx`: Bổ sung nút Lo-fi BGM trên Dock điều khiển chính.
+
+---
+
 ### 📚 [Commit `2de1c62`] — Triển khai Thư viện Giáo trình 4 Bước Roux & Bộ Tra cứu 45 CMLL Trainer
 * **Mục đích:** Cung cấp hệ thống học lý thuyết chuẩn phương pháp Roux và bộ công cụ tra cứu, luyện tập 45 thế cờ CMLL trực quan, tích hợp tương tác trực tiếp lên khối Rubik 3D.
 * **Files tác động:**
