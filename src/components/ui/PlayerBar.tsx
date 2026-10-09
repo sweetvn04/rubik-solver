@@ -15,7 +15,6 @@ import {
   Wand2,
   GraduationCap,
 } from 'lucide-react';
-import { TutorCard } from './TutorCard';
 
 const BASIC_FACES = ['R', 'L', 'U', 'D', 'F', 'B'];
 
@@ -51,7 +50,6 @@ export function PlayerBar() {
   const isMuted = useRubikStore((s) => s.isMuted);
   const toggleMute = useRubikStore((s) => s.toggleMute);
   const solveFullCube = useRubikStore((s) => s.solveFullCube);
-  const isTutorActive = useRubikStore((s) => s.isTutorActive);
   const startTutorMode = useRubikStore((s) => s.startTutorMode);
 
   const [isMovePadOpen, setIsMovePadOpen] = useState(false);
@@ -94,11 +92,6 @@ export function PlayerBar() {
     if (!customAlg.trim()) return;
     enqueueAlgorithm(customAlg.trim());
   };
-
-  // Khi đang ở chế độ Tutor Mode, hiển thị thẻ TutorCard chuyên dụng
-  if (isTutorActive) {
-    return <TutorCard />;
-  }
 
   return (
     <div className="flex flex-col items-center gap-2 max-w-[95vw] px-2 select-none pointer-events-auto">

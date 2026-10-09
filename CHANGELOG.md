@@ -6,6 +6,23 @@
 
 ## 📅 2026-10-09
 
+### 📐 [Commit `PENDING`] — Tối ưu Vị trí TutorCard Tránh Che Khối Rubik (Floating Side Panel, Mini Bar & Responsive Offset)
+* **Nguyên nhân kỹ thuật & Thực trạng:** Ban đầu TutorCard nằm cố định chính giữa đáy màn hình, với chiều cao ~360px đã che mất một nửa phần dưới của khối Rubik 3D, khiến người dùng không thể quan sát toàn diện trạng thái các tầng khi làm theo hướng dẫn.
+* **Giải pháp khắc phục:**
+  - `src/components/ui/TutorCard.tsx`:
+    * Chuyển vị trí mặc định trên Desktop sang **Floating Side Panel góc phải** (`sm:right-6 sm:bottom-6`), giải phóng 100% không gian trung tâm cho khối Rubik 3D.
+    * Bổ sung tính năng **Thu gọn (Collapse)** với nút `ChevronDown` / `ChevronUp`: thu nhỏ card thành thanh **Mini Bar** siêu mỏng chỉ ~52px (`[FB] Bước 2/9: U | Lùi | Xoay | Mở rộng | Thoát`), hoàn toàn không che khối Rubik.
+    * Bổ sung nút **Đổi bên (Switch Side)** với icon `ArrowLeftRight`: cho phép chuyển card linh hoạt giữa góc phải và góc trái theo thói quen quan sát của người dùng.
+    * Tinh chỉnh padding và typography gọn gàng, tăng diện tích thở cho khung nhìn 3D.
+  - `src/App.tsx`:
+    * Tách độc lập việc render `TutorCard` ra khỏi container `footer` căn giữa của `PlayerBar`. Khi Tutor bật, `TutorCard` hiển thị tự do theo tọa độ góc màn hình.
+  - `src/components/cube/RubikCanvas.tsx`:
+    * Tích hợp cơ chế **Responsive Vertical Offset**: Khi Tutor Mode kích hoạt trên màn hình di động, khối Rubik và bóng sàn tự động nâng nhẹ lên nửa trên màn hình (`y = 0.65`), tách biệt hoàn toàn với thanh điều khiển ở nửa dưới.
+  - `src/components/ui/PlayerBar.tsx`:
+    * Dọn dẹp code thừa sau khi chuyển giao quyền render TutorCard cho `App.tsx`.
+
+---
+
 ### 🎓 [Commit `8873931`] — Triển khai Chế độ Hướng dẫn Giải từng bước (Interactive Step-by-Step Tutor Mode)
 * **Mục đích:** Cung cấp tính năng Tutor Mode tương tác trực quan cho phép người dùng tự tay cầm khối Rubik vật lý xoay theo từng bước hướng dẫn trên màn hình 3D.
 * **Files tác động:**

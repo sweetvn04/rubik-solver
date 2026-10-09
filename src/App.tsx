@@ -1,9 +1,12 @@
 import { RubikCanvas } from './components/cube/RubikCanvas';
 import { PlayerBar } from './components/ui/PlayerBar';
+import { TutorCard } from './components/ui/TutorCard';
+import { useRubikStore } from './store/useRubikStore';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
 
 export default function App() {
   useKeyboardControls();
+  const isTutorActive = useRubikStore((s) => s.isTutorActive);
 
   return (
     <main className="w-screen h-dvh min-h-dvh max-h-dvh flex flex-col bg-[#f6f2e9] text-[#332b25] relative overflow-hidden select-none">
@@ -23,7 +26,7 @@ export default function App() {
       <section className="flex-1 w-full h-full relative">
         <RubikCanvas />
 
-        {/* Cozy Studio Vignette Overlay: Spotlight dịu dàng ở trung tâm và viền tối ấm ở 4 góc (0 draw call, 0% GPU) */}
+        {/* Cozy Studio Vignette Overlay: Spotlight dịu dàng ở trung tâm và viền tối ấm ở 4 góc */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -33,11 +36,15 @@ export default function App() {
         />
       </section>
 
-      {/* Bottom Floating Player Bar - Căn chuẩn đáy màn hình di động có tính Safe Area */}
-      <footer className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))] left-1/2 -translate-x-1/2 z-20 pointer-events-auto w-full flex justify-center px-2">
-        <PlayerBar />
-      </footer>
+      {/* Tutor Mode Card: Nằm fixed ở góc phải màn hình Desktop, hoặc ở đáy có chế độ thu gọn trên Mobile */}
+      {isTutorActive ? (
+        <TutorCard />
+      ) : (
+        /* Bottom Floating Player Bar - Căn chuẩn đáy màn hình di động có tính Safe Area */
+        <footer className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))] left-1/2 -translate-x-1/2 z-20 pointer-events-auto w-full flex justify-center px-2">
+          <PlayerBar />
+        </footer>
+      )}
     </main>
   );
 }
-
