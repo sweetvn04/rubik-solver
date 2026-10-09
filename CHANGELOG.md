@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-09
 
-### 🐛 [Fix] — Khắc phục Triệt để Lỗi Second Block bị Kẹt/Dở dang bằng Unslot Triggers & Validation Guard
+### 🐛 [Commit `460331c`] — Khắc phục Triệt để Lỗi Second Block bị Kẹt/Dở dang bằng Unslot Triggers & Validation Guard
 * **Nguyên nhân kỹ thuật (Root Cause):**
   1. Khi các viên góc và cạnh của Second Block (DR, BR, DBR, FR, DFR) bị kẹt chéo ở các khe tầng dưới (tầng D và R), các nhánh tìm kiếm trước đó bị giới hạn ở độ sâu 6 nên không tìm thấy lời giải, dẫn đến việc thuật toán trả về moves dở dang (chỉ xoay vài bước DR) trong khi toàn bộ Second Block vẫn chưa hoàn tất.
   2. Thiếu Validation Guard: Khi Second Block chưa được giải xong 100%, hệ thống vẫn nạp các moves cụt vào 3D canvas khiến Rubik chỉ giải xong FB còn SB lộn xộn.
