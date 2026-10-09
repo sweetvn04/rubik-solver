@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-10
 
-### 💡 [Commit `PENDING`] — Triển khai Hệ thống Focus Block & Phase-based Dimming
+### 💡 [Commit `e9beace`] — Triển khai Hệ thống Focus Block & Phase-based Dimming
 * **Mục đích:** Làm nổi bật rực rỡ các viên cubie thuộc giai đoạn đang giải (FB, SB, CMLL) và làm mờ (dim/desaturate) các viên không liên quan, giúp người học định hình cấu trúc khối ngay lập tức mà không bị rối mắt.
 * **Files tác động:**
   - `src/engine/highlightRules.ts` *(Mới)*: Module xác định các viên thuộc từng giai đoạn Roux (FB: 6 viên trái, SB: 6 viên phải, CMLL: 4 góc đỉnh, LSE: toàn khối).
