@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-09
 
-### 👑 [Phase 3 CMLL] — Triển khai Hoàn chỉnh Bộ giải CMLL (45 Thuật toán Roux) & Tích hợp UI
+### 👑 [Commit `a098b54`] — Triển khai Hoàn chỉnh Bộ giải CMLL (45 Thuật toán Roux) & Tích hợp UI
 * **Mục đích:** Hoàn thành Phase 3 trong phương pháp giải Roux — định hướng và hoán vị toàn bộ 4 góc tầng trên (U layer) đồng thời mà không làm ảnh hưởng đến First Block (FB) và Second Block (SB).
 * **Files tác động:**
   - `src/engine/solver/cmllData.ts` *(Mới)*:
