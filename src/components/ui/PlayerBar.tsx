@@ -14,6 +14,7 @@ import {
   VolumeX,
   Wand2,
   GraduationCap,
+  Music,
 } from 'lucide-react';
 
 const BASIC_FACES = ['R', 'L', 'U', 'D', 'F', 'B'];
@@ -51,6 +52,8 @@ export function PlayerBar() {
   const toggleMute = useRubikStore((s) => s.toggleMute);
   const solveFullCube = useRubikStore((s) => s.solveFullCube);
   const startTutorMode = useRubikStore((s) => s.startTutorMode);
+  const isLofiPlaying = useRubikStore((s) => s.isLofiPlaying);
+  const toggleLofi = useRubikStore((s) => s.toggleLofi);
 
   const [isMovePadOpen, setIsMovePadOpen] = useState(false);
   const [isInputOpen, setIsInputOpen] = useState(false);
@@ -404,13 +407,27 @@ export function PlayerBar() {
               ? 'bg-[#faf6ee] text-[#b0a293] border-[#e2d8c7]'
               : 'bg-[#faf6ee] hover:bg-white text-[#e07a5f] border-[#e2d8c7]'
           }`}
-          title={isMuted ? 'Bật âm thanh click (ASMR)' : 'Tắt âm thanh'}
+          title={isMuted ? 'Bật âm thanh click (ASMR)' : 'Tắt âm thanh click'}
         >
           {isMuted ? (
             <VolumeX className="w-3.5 h-3.5" />
           ) : (
             <Volume2 className="w-3.5 h-3.5" />
           )}
+        </button>
+
+        {/* Nút bật/tắt Nhạc nền Lo-fi thư giãn */}
+        <button
+          type="button"
+          onClick={toggleLofi}
+          className={`p-1.5 text-xs rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+            isLofiPlaying
+              ? 'bg-[#fbf0ec] text-[#e07a5f] border-[#f4c8bc] shadow-xs'
+              : 'bg-[#faf6ee] text-[#b0a293] border-[#e2d8c7] hover:bg-white'
+          }`}
+          title={isLofiPlaying ? 'Nhạc nền Lo-fi: Đang phát (Click để tắt)' : 'Bật nhạc nền Lo-fi thư giãn'}
+        >
+          <Music className={`w-3.5 h-3.5 ${isLofiPlaying ? 'animate-pulse' : ''}`} />
         </button>
 
         {/* Trợ giúp phím tắt - Ẩn trên Mobile vì điện thoại không có bàn phím cứng */}

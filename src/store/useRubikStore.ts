@@ -6,6 +6,7 @@ import { createInitialCubies } from '../engine/cubeModel';
 import { parseAlgorithm, getMoveExecutionInfo } from '../engine/moveParser';
 import { generateScramble } from '../engine/scrambler';
 import { soundEngine } from '../engine/soundEngine';
+import { lofiEngine } from '../engine/lofiEngine';
 import {
   cubiesToSolverState,
   isFirstBlockSolved,
@@ -51,6 +52,10 @@ interface RubikStore {
   // Focus Mode State (Làm nổi bật các viên của phase đang giải)
   isFocusMode: boolean;
 
+  // Lo-fi Ambient BGM State
+  isLofiPlaying: boolean;
+  lofiVolume: number;
+
   // Actions
   enqueueMove: (moveOrRaw: Move | string) => void;
   enqueueAlgorithm: (alg: string) => void;
@@ -61,6 +66,8 @@ interface RubikStore {
   setTurnDuration: (duration: number) => void;
   toggleMute: () => void;
   toggleFocusMode: () => void;
+  toggleLofi: () => void;
+  setLofiVolume: (vol: number) => void;
   solveFirstTwoBlocks: () => SolveResult | null;
   solveFullCube: () => FullRouxSolution | null;
 
@@ -135,6 +142,20 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   toggleFocusMode: () => {
     set((state) => ({ isFocusMode: !state.isFocusMode }));
     invalidate();
+  },
+
+  // Lo-fi Ambient BGM State
+  isLofiPlaying: lofiEngine.getIsPlaying(),
+  lofiVolume: lofiEngine.getVolume(),
+
+  toggleLofi: () => {
+    const playing = lofiEngine.toggle();
+    set({ isLofiPlaying: playing });
+  },
+
+  setLofiVolume: (vol: number) => {
+    lofiEngine.setVolume(vol);
+    set({ lofiVolume: vol });
   },
 
   enqueueMove: (moveOrRaw) => {

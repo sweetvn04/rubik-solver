@@ -5,11 +5,13 @@ import { TutorCard } from './components/ui/TutorCard';
 import { LessonDrawer } from './components/ui/LessonDrawer';
 import { useRubikStore } from './store/useRubikStore';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Music } from 'lucide-react';
 
 export default function App() {
   useKeyboardControls();
   const isTutorActive = useRubikStore((s) => s.isTutorActive);
+  const isLofiPlaying = useRubikStore((s) => s.isLofiPlaying);
+  const toggleLofi = useRubikStore((s) => s.toggleLofi);
   const [isLessonOpen, setIsLessonOpen] = useState(false);
 
   return (
@@ -26,8 +28,28 @@ export default function App() {
           </span>
         </div>
 
-        {/* Nút mở Thư viện Giáo trình & Tra cứu 45 CMLL */}
-        <div className="pointer-events-auto">
+        {/* Nhóm nút góc phải Header */}
+        <div className="flex items-center gap-1.5 pointer-events-auto">
+          {/* Nút Bật/Tắt Nhạc nền Lo-fi thư giãn */}
+          <button
+            type="button"
+            onClick={toggleLofi}
+            className={`flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-xl border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+              isLofiPlaying
+                ? 'bg-[#fbf0ec] text-[#e07a5f] border-[#f4c8bc] shadow-xs'
+                : 'bg-white/80 hover:bg-white text-[#7a6f64] border-[#e8dfcf]'
+            }`}
+            title={
+              isLofiPlaying
+                ? 'Nhạc nền Lo-fi: Đang phát (Click để tắt)'
+                : 'Bật nhạc nền Lo-fi thư giãn'
+            }
+          >
+            <Music className={`w-3.5 h-3.5 ${isLofiPlaying ? 'animate-pulse' : ''}`} />
+            <span className="hidden sm:inline">Lo-fi</span>
+          </button>
+
+          {/* Nút mở Thư viện Giáo trình & Tra cứu 45 CMLL */}
           <button
             type="button"
             onClick={() => setIsLessonOpen(true)}
