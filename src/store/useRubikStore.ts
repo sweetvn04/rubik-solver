@@ -15,6 +15,7 @@ import {
 import { solveFirstBlock } from '../engine/solver/firstBlock';
 import { solveSecondBlock } from '../engine/solver/secondBlock';
 import { solveCMLL } from '../engine/solver/cmllSolver';
+import { solveCompleteRoux, type FullRouxSolution } from '../engine/solver/rouxSolver';
 
 export interface SolveResult {
   fbMoves: string[];
@@ -46,6 +47,7 @@ interface RubikStore {
   setTurnDuration: (duration: number) => void;
   toggleMute: () => void;
   solveFirstTwoBlocks: () => SolveResult | null;
+  solveFullCube: () => FullRouxSolution | null;
 }
 
 /**
@@ -263,4 +265,19 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       isAlreadySolved: false,
     };
   },
+
+  solveFullCube: () => {
+    const { cubies, isAnimating, moveQueue } = get();
+    if (isAnimating || moveQueue.length > 0) return null;
+
+    const solverState = cubiesToSolverState(cubies);
+    const solution = solveCompleteRoux(solverState);
+
+    if (solution.isSuccess && solution.allMoves.length > 0) {
+      get().enqueueAlgorithm(solution.allMoves.join(' '));
+    }
+
+    return solution;
+  },
 }));
+

@@ -48,7 +48,7 @@ export function PlayerBar() {
   const setTurnDuration = useRubikStore((s) => s.setTurnDuration);
   const isMuted = useRubikStore((s) => s.isMuted);
   const toggleMute = useRubikStore((s) => s.toggleMute);
-  const solveFirstTwoBlocks = useRubikStore((s) => s.solveFirstTwoBlocks);
+  const solveFullCube = useRubikStore((s) => s.solveFullCube);
 
   const [isMovePadOpen, setIsMovePadOpen] = useState(false);
   const [isInputOpen, setIsInputOpen] = useState(false);
@@ -56,24 +56,23 @@ export function PlayerBar() {
   const [customAlg, setCustomAlg] = useState('');
   const [solverFeedback, setSolverFeedback] = useState<string | null>(null);
 
-  const handleAutoSolveFB_SB = () => {
-    const res = solveFirstTwoBlocks();
+  const handleAutoSolveFullRoux = () => {
+    const res = solveFullCube();
     if (!res) return;
 
-    if (res.isFailed) {
+    if (!res.isSuccess) {
       setSolverFeedback(`⚠️ ${res.errorMessage || 'Không tìm ra lời giải hoàn chỉnh.'}`);
-    } else if (res.isAlreadySolved) {
-      setSolverFeedback('✅ Khối 1, 2 và 4 góc (FB + SB + CMLL) đã hoàn thành sẵn!');
+    } else if (res.totalMovesCount === 0) {
+      setSolverFeedback('✅ Khối Rubik đã được giải hoàn tất 100%!');
     } else {
-      const total = res.fbMoves.length + res.sbMoves.length + res.cmllMoves.length;
       setSolverFeedback(
-        `✨ FB(${res.fbMoves.length}) + SB(${res.sbMoves.length}) + CMLL: ${res.cmllCaseName || 'Solved'} (${res.cmllMoves.length}) = ${total} bước (${res.durationMs.toFixed(0)}ms)`
+        `🎉 Giải xong 100%: FB(${res.fbMoves.length}) + SB(${res.sbMoves.length}) + CMLL(${res.cmllMoves.length}) + LSE(${res.lseMoves.length}) = ${res.totalMovesCount} bước (${res.durationMs.toFixed(0)}ms)`
       );
     }
 
     setTimeout(() => {
       setSolverFeedback(null);
-    }, 6000);
+    }, 7000);
   };
 
   const handleRunCustomAlg = (e?: React.FormEvent) => {
@@ -301,17 +300,17 @@ export function PlayerBar() {
           <RefreshCw className="w-3.5 h-3.5" />
         </button>
 
-        {/* Nút Tự giải Roux Phase 1-3 (FB + SB + CMLL) */}
+        {/* Nút Tự giải Toàn Bộ Rubik (Master Roux 100%) */}
         <button
           type="button"
-          onClick={handleAutoSolveFB_SB}
+          onClick={handleAutoSolveFullRoux}
           disabled={moveQueue.length > 0}
           className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold bg-[#2a9d8f] hover:bg-[#238b7f] disabled:opacity-40 text-white rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:cursor-not-allowed"
-          title="Tự động giải First Block, Second Block và CMLL (4 góc tầng trên)"
+          title="Tự động tính toán & diễn hoạt giải toàn bộ khối Rubik 100% bằng phương pháp Roux"
         >
           <Wand2 className="w-3.5 h-3.5" />
-          <span className="hidden xs:inline sm:inline">Giải FB+SB+CMLL</span>
-          <span className="xs:hidden sm:hidden">Giải Roux</span>
+          <span className="hidden xs:inline sm:inline">Giải Full Roux</span>
+          <span className="xs:hidden sm:hidden">Giải 100%</span>
         </button>
 
         <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5" />

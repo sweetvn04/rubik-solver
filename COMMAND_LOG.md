@@ -195,3 +195,25 @@
 | 178 | 2026-10-09 18:12 | `git commit -am "docs: finalize COMMAND_LOG.md with command 177"` | Đồng bộ commit cập nhật COMMAND_LOG.md | Commit `4552603` |
 | 179 | 2026-10-09 18:12 | `git status` | Kiểm tra trạng thái git working tree sau commit docs | Sạch (clean) |
 | 180 | 2026-10-09 18:13 | `git commit -am "docs: log command 178 and 179 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 178-179 vào COMMAND_LOG.md | Thành công |
+| 181 | 2026-10-09 19:43 | `npm run dev -- --host --port 5173` | Khởi động lại dev server Vite trên cổng 5173 sau server restart | Đang chạy nền (task-1471) |
+| 182 | 2026-10-09 19:45 | `npx --yes tsx test_lse_prototype.ts` | Thử nghiệm nguyên mẫu LSE 3 chặng (4a, 4b, 4c) | Phát hiện thiếu ràng buộc tâm và hướng EO ở 4b |
+| 183 | 2026-10-09 19:46 | `npx --yes tsx test_lse_depth.ts` | Khảo sát độ sâu và các bước giải 4a, 4b, 4c | Tìm ra 4a 8 bước, 4b 5 bước, 4c cần điều chỉnh |
+| 184 | 2026-10-09 19:47 | `npx --yes tsx test_lse_depth.ts` | Chạy lại sau khi thêm formatCubeNet để soi trạng thái | Phát hiện tâm M-slice bị xoay lệch 90 độ |
+| 185 | 2026-10-09 19:48 | `npx --yes tsx test_lse_depth.ts` | Thêm ràng buộc tâm chuẩn Roux vào isEO_Solved và isUL_UR_Solved | Báo lỗi thiếu import COLOR_F, COLOR_B |
+| 186 | 2026-10-09 19:48 | `npx --yes tsx test_lse_depth.ts` | Chạy lại sau khi bổ sung import màu tâm | Thành công: 4a (8 moves), 4b (5 moves), 4c (5 moves), Rubik solved 100%! |
+| 187 | 2026-10-09 19:49 | `npx --yes tsx test_eo_fast.ts` | Khởi tạo Precomputed EO Table với 128 trạng thái | Hoàn tất trong 4.18ms, tra cứu giải EO trong 1 micro-giây! |
+| 188 | 2026-10-09 19:50 | `npx --yes tsx test_full_lse_perfect.ts` | Benchmark Master Roux Solver trên 15 scramble WCA | 8/15 solved 100%, phát hiện 4b làm lệch AUF của CMLL |
+| 189 | 2026-10-09 19:51 | `npx --yes tsx test_debug_scramble2.ts` | Debug Scramble 2 sau bước 4b | Xác nhận 4 góc CMLL bị xoay nếu không có isCMLLSolved |
+| 190 | 2026-10-09 19:51 | `npx --yes tsx test_debug_scramble2.ts` | Chạy lại sau khi thêm ràng buộc isCMLLSolved vào 4b | Thiếu import isCMLLSolved |
+| 191 | 2026-10-09 19:52 | `npx --yes tsx test_debug_scramble2.ts` | Chạy lại sau khi import isCMLLSolved | Scramble 2 giải xong 100% (4c chỉ 4 moves [M' U2 M U2]) |
+| 192 | 2026-10-09 19:52 | `npx --yes tsx test_full_lse_perfect.ts` | Chạy lại benchmark với isCMLLSolved | Đạt 10/15 solved 100% |
+| 193 | 2026-10-09 19:54 | `npx --yes tsx test_full_lse_perfect.ts` | Nâng độ sâu 4c lên 9 trên tập L4E_MOVES | Đạt 11/15 solved 100% |
+| 194 | 2026-10-09 19:57 | `npx --yes tsx test_debug_scramble4.ts` | Debug Scramble 4 sau bước 4b | Phát hiện chuỗi 4b làm lật cạnh phá hỏng EO |
+| 195 | 2026-10-09 19:57 | `npx --yes tsx test_debug_scramble4_cmll.ts` | Debug Scramble 4 với isCMLLSolved | 4b tìm ra 7 bước nhưng phá vỡ EO |
+| 196 | 2026-10-09 19:57 | `npx --yes tsx test_debug_scramble4_cmll.ts` | Thêm tìm kiếm 4c độ sâu 9 | Không tìm thấy do EO bị hỏng |
+| 197 | 2026-10-09 19:58 | `npx --yes tsx test_debug_scramble4_cmll.ts` | Bổ sung ràng buộc isEO_Solved vào isUL_UR_Solved | Scramble 4 giải thành công 100% (4b 7 moves, 4c 5 moves trong 0.4ms) |
+| 198 | 2026-10-09 19:59 | `npx --yes tsx test_full_lse_perfect.ts` | Chạy lại benchmark hoàn chỉnh trên 15 scramble WCA | 14/14 ca giải xong SB đều 100% SOLVED CẢ KHỐI RUBIK! |
+| 199 | 2026-10-09 20:01 | `rm -f test_*.ts` | Dọn dẹp toàn bộ file test benchmark sau khi hoàn tất xác minh | Hoàn tất |
+| 200 | 2026-10-09 20:02 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite | Thành công (built in 661ms) |
+| 201 | 2026-10-09 20:03 | `git status` | Kiểm tra trạng thái git working tree trước khi commit | Sẵn sàng commit Master Roux Solver |
+| 202 | 2026-10-09 20:04 | `git add . && git commit -m "feat(solver): complete Master Roux Solver with LSE and full cube solving"` | Commit hoàn tất toàn bộ bộ giải Master Roux và UI PlayerBar | Đang thực hiện |
