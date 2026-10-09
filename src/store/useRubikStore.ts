@@ -6,13 +6,21 @@ import { createInitialCubies } from '../engine/cubeModel';
 import { parseAlgorithm, getMoveExecutionInfo } from '../engine/moveParser';
 import { generateScramble } from '../engine/scrambler';
 import { soundEngine } from '../engine/soundEngine';
-import { cubiesToSolverState, isFirstBlockSolved, isSecondBlockSolved } from '../engine/solver/cubeState';
+import {
+  cubiesToSolverState,
+  isFirstBlockSolved,
+  isSecondBlockSolved,
+  isCMLLSolved,
+} from '../engine/solver/cubeState';
 import { solveFirstBlock } from '../engine/solver/firstBlock';
 import { solveSecondBlock } from '../engine/solver/secondBlock';
+import { solveCMLL } from '../engine/solver/cmllSolver';
 
 export interface SolveResult {
   fbMoves: string[];
   sbMoves: string[];
+  cmllMoves: string[];
+  cmllCaseName?: string;
   durationMs: number;
   isAlreadySolved: boolean;
   isFailed?: boolean;
@@ -176,11 +184,13 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
 
     const isFBAlready = isFirstBlockSolved(solverState);
     const isSBAlready = isSecondBlockSolved(solverState);
+    const isCMLLAlready = isCMLLSolved(solverState);
 
-    if (isFBAlready && isSBAlready) {
+    if (isFBAlready && isSBAlready && isCMLLAlready) {
       return {
         fbMoves: [],
         sbMoves: [],
+        cmllMoves: [],
         durationMs: performance.now() - t0,
         isAlreadySolved: true,
       };
@@ -195,6 +205,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       return {
         fbMoves: [],
         sbMoves: [],
+        cmllMoves: [],
         durationMs: performance.now() - t0,
         isAlreadySolved: false,
         isFailed: true,
@@ -211,6 +222,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       return {
         fbMoves: fbRes.moves,
         sbMoves: [],
+        cmllMoves: [],
         durationMs: performance.now() - t0,
         isAlreadySolved: false,
         isFailed: true,
@@ -218,8 +230,25 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       };
     }
 
+    // Phase 3: CMLL
+    const cmllRes = isCMLLAlready
+      ? { moves: [] as string[], caseName: 'Skip (Đã giải sẵn)', state: sbRes.state }
+      : solveCMLL(sbRes.state);
+
+    if (!cmllRes || !isCMLLSolved(cmllRes.state)) {
+      return {
+        fbMoves: fbRes.moves,
+        sbMoves: sbRes.moves,
+        cmllMoves: [],
+        durationMs: performance.now() - t0,
+        isAlreadySolved: false,
+        isFailed: true,
+        errorMessage: 'Chưa tìm ra thuật toán CMLL khớp cho 4 góc.',
+      };
+    }
+
     const durationMs = performance.now() - t0;
-    const allMovesStr = [...fbRes.moves, ...sbRes.moves].join(' ');
+    const allMovesStr = [...fbRes.moves, ...sbRes.moves, ...cmllRes.moves].join(' ');
 
     if (allMovesStr) {
       get().enqueueAlgorithm(allMovesStr);
@@ -228,6 +257,8 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     return {
       fbMoves: fbRes.moves,
       sbMoves: sbRes.moves,
+      cmllMoves: cmllRes.moves,
+      cmllCaseName: cmllRes.caseName,
       durationMs,
       isAlreadySolved: false,
     };

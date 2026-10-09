@@ -178,3 +178,15 @@
 | 161 | 2026-10-09 17:42 | `npm run dev -- --host --port 5173` | Khởi động lại dev server Vite trên cổng 5173 sau server restart | Đang chạy nền (task-1298) |
 | 162 | 2026-10-09 17:42 | `git status` | Kiểm tra trạng thái git working tree sau context recovery | Sạch sẽ, chỉ có file COMMAND_LOG.md chưa commit |
 | 163 | 2026-10-09 17:43 | `git commit -am "docs: update COMMAND_LOG.md with command 162"` | Lưu commit cập nhật COMMAND_LOG.md sau recovery | Thành công |
+| 164 | 2026-10-09 18:00 | `ls -la src/engine/solver/` | Kiểm tra cấu trúc thư mục solver để chuẩn bị cho CMLL | Đã có cubeState.ts, firstBlock.ts, secondBlock.ts |
+| 165 | 2026-10-09 18:05 | `node -e '...regex candidate algs...'` | Trích xuất các công thức sơ bộ từ content.md tải về | Tìm thấy các chuỗi công thức CMLL |
+| 166 | 2026-10-09 18:05 | `node -e '...clean text filter CMLL...'` | Lọc văn bản sạch từ trang all-cmll của rouxmethodvn | Đã phát hiện đủ 7 nhóm CMLL |
+| 167 | 2026-10-09 18:05 | `node -e '...extract cmll_raw.txt...'` | Trích xuất toàn bộ 242 dòng dữ liệu thuật toán CMLL vào cmll_raw.txt | Thành công (242 dòng) |
+| 168 | 2026-10-09 18:06 | `npx --yes tsx test_cmll_invariance.ts` | Kiểm tra tính bất biến bảo toàn FB & SB của 45 thuật toán CMLL | 45/45 thuật toán đạt chuẩn 100% |
+| 169 | 2026-10-09 18:07 | `npx --yes tsx test_cmll_coverage.ts` | Benchmark độ phủ thuật toán CMLL trên 100 trạng thái góc ngẫu nhiên | Giải thành công 100/100 ca, tốc độ trung bình 0.49ms |
+| 170 | 2026-10-09 18:07 | `npx --yes tsx test_full_to_cmll.ts` | Chạy benchmark full pipeline FB -> SB -> CMLL trên 15 scramble WCA | 14/14 ca giải xong SB đều giải CMLL thành công (tốc độ 0.05-1.04ms) |
+| 171 | 2026-10-09 18:09 | `rm -f test_cmll_invariance.ts test_cmll_coverage.ts test_full_to_cmll.ts cmll_raw.txt` | Dọn dẹp các file test benchmark tạm thời sau khi xác nhận | Hoàn tất dọn dẹp |
+| 172 | 2026-10-09 18:10 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite | Báo lỗi type-only import trong cmllSolver.ts |
+| 173 | 2026-10-09 18:11 | `npm run build` | Kiểm tra biên dịch lại sau khi bổ sung type-only imports | Thành công (built in 536ms) |
+| 174 | 2026-10-09 18:11 | `git status` | Kiểm tra trạng thái git working tree trước khi commit | Sẵn sàng commit CMLL |
+| 175 | 2026-10-09 18:12 | `git add . && git commit -m "feat(solver): implement Phase 3 CMLL solver with 45 algorithms and UI integration"` | Commit triển khai hoàn chỉnh Phase 3 CMLL và tích hợp vào UI PlayerBar | Đang thực hiện |

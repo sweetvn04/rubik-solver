@@ -63,17 +63,17 @@ export function PlayerBar() {
     if (res.isFailed) {
       setSolverFeedback(`⚠️ ${res.errorMessage || 'Không tìm ra lời giải hoàn chỉnh.'}`);
     } else if (res.isAlreadySolved) {
-      setSolverFeedback('✅ Khối 1 & 2 (FB & SB) đã hoàn thành sẵn!');
+      setSolverFeedback('✅ Khối 1, 2 và 4 góc (FB + SB + CMLL) đã hoàn thành sẵn!');
     } else {
-      const total = res.fbMoves.length + res.sbMoves.length;
+      const total = res.fbMoves.length + res.sbMoves.length + res.cmllMoves.length;
       setSolverFeedback(
-        `✨ FB (${res.fbMoves.length}) + SB (${res.sbMoves.length}) = ${total} bước (${res.durationMs.toFixed(0)}ms)`
+        `✨ FB(${res.fbMoves.length}) + SB(${res.sbMoves.length}) + CMLL: ${res.cmllCaseName || 'Solved'} (${res.cmllMoves.length}) = ${total} bước (${res.durationMs.toFixed(0)}ms)`
       );
     }
 
     setTimeout(() => {
       setSolverFeedback(null);
-    }, 5000);
+    }, 6000);
   };
 
   const handleRunCustomAlg = (e?: React.FormEvent) => {
@@ -301,17 +301,17 @@ export function PlayerBar() {
           <RefreshCw className="w-3.5 h-3.5" />
         </button>
 
-        {/* Nút Tự giải FB & SB */}
+        {/* Nút Tự giải Roux Phase 1-3 (FB + SB + CMLL) */}
         <button
           type="button"
           onClick={handleAutoSolveFB_SB}
           disabled={moveQueue.length > 0}
           className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold bg-[#2a9d8f] hover:bg-[#238b7f] disabled:opacity-40 text-white rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:cursor-not-allowed"
-          title="Tự động tính toán & diễn hoạt giải First Block và Second Block"
+          title="Tự động giải First Block, Second Block và CMLL (4 góc tầng trên)"
         >
           <Wand2 className="w-3.5 h-3.5" />
-          <span className="hidden xs:inline sm:inline">Giải FB+SB</span>
-          <span className="xs:hidden sm:hidden">Giải</span>
+          <span className="hidden xs:inline sm:inline">Giải FB+SB+CMLL</span>
+          <span className="xs:hidden sm:hidden">Giải Roux</span>
         </button>
 
         <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5" />

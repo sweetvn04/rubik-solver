@@ -6,6 +6,26 @@
 
 ## 📅 2026-10-09
 
+### 👑 [Phase 3 CMLL] — Triển khai Hoàn chỉnh Bộ giải CMLL (45 Thuật toán Roux) & Tích hợp UI
+* **Mục đích:** Hoàn thành Phase 3 trong phương pháp giải Roux — định hướng và hoán vị toàn bộ 4 góc tầng trên (U layer) đồng thời mà không làm ảnh hưởng đến First Block (FB) và Second Block (SB).
+* **Files tác động:**
+  - `src/engine/solver/cmllData.ts` *(Mới)*:
+    * Tập hợp 45 thuật toán CMLL chuẩn của giáo trình Roux Method VN & Kian Mansour (chia đủ 8 nhóm: O, H, Pi, T, U, As, L, S).
+    * 100% bảo toàn tính bất biến FB & SB, sử dụng hoàn toàn các phép quay WCA chuẩn không cần cube rotation.
+  - `src/engine/solver/cmllSolver.ts` *(Mới)*:
+    * Thuật toán nhận diện và giải quyết 4 góc trong < 1ms bằng cơ chế 3 giai đoạn: AUF1 $\rightarrow$ Bảng tra thuật toán CMLL $\rightarrow$ AUF2.
+    * Tối ưu hóa trước (pre-parsed move cache) cho tốc độ tính toán trung bình chỉ ~0.05ms–0.49ms.
+    * Hỗ trợ nhận diện và bỏ qua (Skip) khi 4 góc đã đúng sẵn.
+  - `src/store/useRubikStore.ts`:
+    * Nâng cấp action `solveFirstTwoBlocks`: Tự động xâu chuỗi giải tuần tự First Block $\rightarrow$ Second Block $\rightarrow$ CMLL.
+    * Thẩm định nghiêm ngặt qua `isCMLLSolved(state)` trước khi nạp vào hàng đợi visualizer `moveQueue`.
+    * Cung cấp thông tin chi tiết tên thế cờ CMLL (`cmllCaseName`) và số bước của từng phase.
+  - `src/components/ui/PlayerBar.tsx`:
+    * Cập nhật nhãn nút bấm thành "Giải FB+SB+CMLL" (icon Wand2).
+    * Banner Toast phản hồi hiển thị đầy đủ chi tiết: số bước FB, SB, tên case CMLL và thời gian giải siêu tốc.
+
+---
+
 ### 🐛 [Commit `460331c`] — Khắc phục Triệt để Lỗi Second Block bị Kẹt/Dở dang bằng Unslot Triggers & Validation Guard
 * **Nguyên nhân kỹ thuật (Root Cause):**
   1. Khi các viên góc và cạnh của Second Block (DR, BR, DBR, FR, DFR) bị kẹt chéo ở các khe tầng dưới (tầng D và R), các nhánh tìm kiếm trước đó bị giới hạn ở độ sâu 6 nên không tìm thấy lời giải, dẫn đến việc thuật toán trả về moves dở dang (chỉ xoay vài bước DR) trong khi toàn bộ Second Block vẫn chưa hoàn tất.
