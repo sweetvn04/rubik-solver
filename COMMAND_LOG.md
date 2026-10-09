@@ -269,3 +269,6 @@
 | 245 | 2026-10-10 00:23 | `git commit -am "docs: log command 244 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 244 vào COMMAND_LOG.md | Commit `2fbb1ce` |
 | 246 | 2026-10-10 00:23 | `git commit -am "docs: log command 245 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 245 vào COMMAND_LOG.md | Commit `a0041ea` |
 | 247 | 2026-10-10 00:24 | `git status` | Kiểm tra trạng thái git working tree sau chuỗi commit | Sạch sẽ 100% |
+| 248 | 2026-10-10 00:25 | `npm run build` | Kiểm tra biên dịch và đóng gói sau khi cập nhật README, plan.md và base vite | Thành công (built in 638ms) |
+| 249 | 2026-10-10 00:25 | `git status` | Kiểm tra trạng thái git working tree trước khi commit hoàn thiện docs & build | Nhận diện 3 file sửa đổi |
+| 250 | 2026-10-10 00:25 | `git add README.md plan.md vite.config.ts && git commit -m "docs(project): rewrite comprehensive README, complete roadmap in plan.md and configure relative base in vite"` | Commit cập nhật README chuyên nghiệp, đánh dấu roadmap hoàn tất và base path vite | Commit `0a6d078` |

@@ -6,6 +6,15 @@
 
 ## 📅 2026-10-10
 
+### 📖 [Commit `0a6d078`] — Hoàn thiện Toàn diện README Portfolio, Đánh dấu Kế hoạch plan.md & Cấu hình Relative Base Vite
+* **Mục đích:** Chuẩn hóa tài liệu đồ án chuyên nghiệp phục vụ portfolio cá nhân, xác nhận hoàn thành 100% roadmap đề ra và tối ưu cấu hình build cho môi trường static hosting (GitHub Pages / Vercel).
+* **Files tác động:**
+  - `README.md`: Viết lại toàn bộ tài liệu dự án chuyên nghiệp: showcase hình ảnh, tổng hợp kiến trúc đồ họa Crayon/Claymation, hệ thống Roux Solver 4 bước, TutorCard linh hoạt, Focus Dimming, Lo-fi Web Audio Synthesizer, bảng phím tắt cuber và hướng dẫn cài đặt.
+  - `plan.md`: Đánh dấu hoàn tất toàn bộ các bước từ Phase 0 đến Phase 6 trong lộ trình phát triển.
+  - `vite.config.ts`: Thiết lập `base: './'` để hỗ trợ các đường dẫn tài nguyên relative khi deploy static site.
+
+---
+
 ### 🎵 [Commit `17103ea`] — Triển khai Bộ phát Nhạc nền Cozy Lo-fi Ambient BGM Tổng hợp Thời gian thực
 * **Mục đích:** Tích hợp không gian âm thanh thư giãn (Cozy Lo-fi Ambient) lấy cảm hứng từ game *Messenger (Deliver on a planet)* giúp người dùng tập trung học và giải Rubik mà không tốn băng thông mạng.
 * **Files tác động:**
