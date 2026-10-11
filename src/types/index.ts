@@ -71,3 +71,20 @@ export const CUBE_PALETTE = {
   DIMMED: '#4a443e', // Xám chì mờ khi không thuộc nhóm highlight
 } as const;
 
+/** Sub-step của từng bài học Roux (FB/SB/CMLL/LSE) */
+export interface LessonStep {
+  /** Tiêu đề ngắn gọn của sub-step */
+  title: string;
+  /** Mô tả chi tiết cần làm ở sub-step này */
+  description: string;
+  /** Config SVG diagram 2D minh hoạ trạng thái mặt Rubik */
+  diagram?: import('../components/ui/CubeDiagram2D').CubeDiagramConfig;
+  /** Chuỗi moves để minh hoạ kỹ thuật này trên khối 3D (chạy sau setupAlg) */
+  demoAlg?: string;
+  /** Setup state trước khi chạy demoAlg (reset về trạng thái phù hợp) */
+  setupAlg?: string;
+  /** Phase highlight trên khối 3D khi xem sub-step này */
+  highlightPhase?: 'fb' | 'sb' | 'cmll' | 'lse' | 'all';
+  /** Tooltip / ghi chú thêm */
+  note?: string;
+}
