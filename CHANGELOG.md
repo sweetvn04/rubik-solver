@@ -6,6 +6,26 @@
 
 ## 📅 2026-10-11
 
+### 🎨 [Commit `d02f535`] — Tính năng Nhập Khối Rubik Ngoài Đời Thật (Physical Cube State Input & Auto-Tutor)
+
+* **Mục đích:** Người dùng khi giải khối Rubik thực tế ngoài đời và bị bí nước đi có thể nhập màu 6 mặt vào ứng dụng; hệ thống tự động kiểm tra tính hợp lệ về mặt vật lý của khối, nhận diện giai đoạn Roux hiện tại và tự động kích hoạt chế độ Tutor Mode để hướng dẫn người dùng giải tiếp từ đúng vị trí đó.
+* **Files tác động:**
+  - `src/components/ui/CubeInputModal.tsx` *(Mới)*:
+    * Modal tương tác cho phép chọn màu sáp và tô lên từng sticker của 6 mặt Rubik.
+    * Hỗ trợ 2 chế độ hiển thị linh hoạt: **Từng mặt** (nút to, có chuyển nhanh mặt tiếp theo, cực kỳ tối ưu cho màn hình cảm ứng di động) và **Trải phẳng (2D Net)** (dạng chữ thập quan sát tổng quan cho desktop).
+    * Khóa cố định 6 ô tâm (Center stickers) theo chuẩn màu Roux (U: Vàng, D: Trắng, F: Xanh lá, B: Xanh lam, L: Cam, R: Đỏ) giúp người dùng không bao giờ bị nhầm lẫn phương hướng hoặc tâm.
+    * Thanh bảng màu (Color Palette Bar) hiển thị số lượng ô đã chọn trong thời gian thực (`X/9` ô), cảnh báo khi thiếu hoặc thừa màu.
+    * Nút công cụ nhanh: "Nạp Đã Giải" (tiết kiệm thời gian khi chỉ cần sửa vài viên xáo) và "Xóa trắng" (nhập lại từ đầu).
+    * Thanh trạng thái hiển thị chi tiết lỗi vi phạm vật lý hoặc báo hợp lệ 100%.
+  - `src/engine/solver/cubeState.ts`:
+    * Thêm `COLOR_ID_TO_HEX` và `createSolvedSolverState()`.
+    * Thêm `solverStateToCubies(cube)`: Chuyển đổi trạng thái 54 facelet sang mảng 26 `CubieState` 3D để hiển thị chính xác trên Three.js / WebGL.
+    * Thêm `validateCubeState(state)`: Bộ kiểm tra tính hợp lệ vật lý toàn diện: kiểm tra đủ 54 ô (9 ô/màu), kiểm tra 12 viên cạnh (không trùng màu, không có 2 màu đối diện, không trùng lặp cạnh), kiểm tra 8 viên góc (không có các mặt cùng màu, không chứa màu đối diện, không trùng lặp góc).
+  - `src/store/useRubikStore.ts`:
+    * Thêm action `applyCustomCubeState(solverState)`: Kiểm tra tính hợp lệ, tính toán toàn bộ lời giải bằng `solveCompleteRoux`, tự động bỏ qua các phase đã hoàn thành (nếu người dùng đã giải sẵn FB hoặc SB trên khối thật), nạp vào khối 3D và tự động khởi động **Tutor Mode** từ bước tiếp theo.
+  - `src/App.tsx`:
+    * Thêm nút **"Nhập Rubik thật"** (icon `Palette`) trên thanh Header, kết nối với state mở/đóng modal `CubeInputModal`.
+
 ### 🧭 [Commit `0990756`] — Hệ thống hướng dẫn giải tương tác (Phase 1 + Phase 2)
 
 #### Phase 1 — Orientation UX: Quy ước mặt & Reset góc nhìn
