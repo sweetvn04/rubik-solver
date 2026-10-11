@@ -311,5 +311,7 @@
 | 287 | 2026-10-11 23:49 | `git status` | Kiểm tra trạng thái git working tree | Modified: src/data/lessonsData.ts |
 | 288 | 2026-10-11 23:49 | `git diff --stat` | Thống kê số lượng dòng thay đổi trong lessonsData.ts | +174 -79 dòng |
 | 289 | 2026-10-11 23:49 | `git add src/data/lessonsData.ts && git commit -m "feat: expand First Block and Second Block with 12 comprehensive block-building lessons, diagrams, and 3D demos"` | Commit tính năng mở rộng 12 sub-steps cho First Block và Second Block | Commit `749cb6a` |
+| 290 | 2026-10-11 23:50 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 749cb6a"` | Đồng bộ commit hash 749cb6a vào CHANGELOG và COMMAND_LOG | Commit `f3c4ff4` |
+
 
 
