@@ -4,6 +4,35 @@
 
 ---
 
+## 📅 2026-10-12
+
+### 🚀 [Commit `fb315a8`] — Tích Hợp Toàn Bộ 100% Nội Dung & Công Thức Còn Lại Từ Google Site RouxMethodVN (Fast EO, Dots Skipping, EOLR, Kỹ Thuật Pro, OH CMLL, Sub-X, Meyer 4×4)
+
+* **Mục đích:**
+  - Hoàn thiện 100% mọi công thức, kỹ thuật, cẩm nang và tài liệu có trên Google Site `rouxmethodvn` theo yêu cầu của người dùng ("thêm all").
+  - Xây dựng module dữ liệu có cấu trúc `src/data/rouxAdvancedData.ts` và nâng cấp toàn diện giao diện `LessonDrawer.tsx`:
+    * **1. Fast EO Recognition (Nhận biết nhanh EO qua 1 sticker FD):**
+      - Nguyên lý tổng số Bad edges trên toàn khối luôn là số chẵn.
+      - Quy tắc đếm cạnh sai trên U + kiểm tra duy nhất 1 sticker ở vị trí FD (mặt trước cạnh DF) để kết luận ngay trường hợp EO của cả khối trong < 1 giây mà **không cần lật đáy Rubik lên nhìn**.
+      - Bảng tra cứu tương tác hiển thị rõ ràng số Bad ở U, trạng thái FD (Good/Bad), và thế cờ suy luận tương ứng.
+    * **2. Dots Skipping & Ez L4E:**
+      - Giải quyết vấn đề nhức nhối khi dính thế D-Dots (chấm đối tâm đáy D) sau khi làm xong UL/UR (phải tốn `E2 M E2 M'` hoặc chuỗi dài 12 moves).
+      - Kỹ thuật điều khiển cạnh UL/UR và màu góc ở F theo 3 mẫu (Thanh ngang trắng, Thanh dọc vàng, Mình ta cô đơn) để né hoàn toàn D-Dots, đưa về thế Good L4E chỉ 5–7 moves hoặc Skip hoàn toàn L4E!
+    * **3. EOLR Master Guide:**
+      - Kỹ thuật đỉnh cao của Roux LSE: định hướng 6 cạnh đồng thời đưa 2 cạnh UL/UR về sẵn tầng đáy D (DF và DB), giảm từ 13–16 moves xuống còn 5–7 moves (chỉ cần 1 nước `M2` để hoàn tất bước 4b).
+      - Cung cấp các thế cờ thực chiến tiêu biểu (3/1 F UF DF, 3/1 F UR DB, 4/0 UF UB, 4/2 UR DB) kèm các nút "Tập thế cờ" và "Chạy EOLR" tương tác 3D.
+    * **4. Bộ công thức CMLL chuyên dụng cho One-Handed (OH — 42 cases):**
+      - Tích hợp công tắc chuyển đổi linh hoạt **"Hai Tay (2H Chuẩn)"** và **"Một Tay (OH Tối Ưu)"** ngay trong Tab 45 CMLL.
+      - 42 thuật toán OH tối ưu triệt tiêu các move xoay F và M (vốn rất khó finger-trick bằng 1 tay), ưu tiên tối đa các move $\langle R, U, D, r \rangle$.
+      - Hiển thị công thức 2H gốc đối chiếu và chú thích finger-trick chuyên cho người giải 1 tay.
+    * **5. Tab Mới "Nâng Cao & Pro" (Kỹ Thuật Pro, Lộ Trình Sub-X, Meyer 4×4):**
+      - **Kỹ thuật Pro:** Non-Matching Centres (NMC kèm công thức sửa tâm `u M' u'`), Free Blockbuilding, Non-Matching Blocks (NMB), và Influencing EO từ CMLL.
+      - **Lộ trình Sub-X:** Ma trận phân bổ Movecount cho từng phase (FB, SB, CMLL, LSE), tỷ lệ thời gian chuẩn, và trọng tâm luyện tập từ Mới chơi (>1:00) đến Sub-10 đẳng cấp thế giới.
+      - **Meyer Method (Roux 4×4×4):** Hướng dẫn 5 bước ứng dụng tư duy Roux lên khối lớn 4×4×4 kèm công thức xử lý OLL Parity và PLL Parity.
+* **Files tác động:**
+  - `src/data/rouxAdvancedData.ts` *(Mới)*: Khai báo toàn bộ dữ liệu có cấu trúc cho Fast EO, Dots Skipping, EOLR, Pro Techniques, OH CMLL, Sub-X Roadmap, Meyer 4×4.
+  - `src/components/ui/LessonDrawer.tsx`: Bổ sung Tab thứ 5 "Nâng Cao & Pro", nút toggle chuyển đổi 2H/OH trong Tab CMLL, và 3 sub-tabs nâng cao trong Cẩm nang LSE.
+
 ## 📅 2026-10-11
 
 ### 🧱 [Commit `749cb6a`] — Nâng Cấp Toàn Diện Hướng Dẫn First Block (FB) & Second Block (SB) Với 12 Sub-steps Chuyên Sâu, Tư Duy Block-Building & Demo 3D

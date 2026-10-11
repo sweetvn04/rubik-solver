@@ -328,6 +328,19 @@
 | 304 | 2026-10-12 00:30 | `python3 .../scratch/dump_fb_eo.py` | Trích xuất chuyên sâu nội dung FB và nhận biết nhanh EO | Trích xuất thành công 100% chi tiết các bảng tra cứu |
 | 305 | 2026-10-12 00:30 | `git status` | Kiểm tra trạng thái git working tree sau chuỗi rà soát Google Site | Modified COMMAND_LOG.md |
 | 306 | 2026-10-12 00:30 | `git commit -am "docs: update COMMAND_LOG.md with Google Site audit commands" && git status` | Lưu commit nhật ký lệnh kiểm tra Google Site | Commit `faee3e9` — Clean 100% |
+| 307 | 2026-10-12 00:32 | `python3 .../scratch/extract_oh_and_inf.py` | Bóc tách toàn văn bảng công thức CMLL OH và Influencing CMLL | Trích xuất thành công 42 công thức OH CMLL |
+| 308 | 2026-10-12 00:32 | `python3 .../scratch/extract_all_advanced.py` | Bóc tách nội dung chi tiết EOLR, Dots Skipping, Ez L4E, Techniques | Trích xuất thành công toàn bộ nội dung chuyên sâu |
+| 309 | 2026-10-12 00:33 | `python3 .../scratch/check_subx_meyer.py` | Kiểm tra nội dung Sub-X và Meyer 4x4x4 | File ban đầu chưa có trong danh sách crawl |
+| 310 | 2026-10-12 00:33 | `python3 .../scratch/crawl_more.py` | Tải bổ sung 2 trang khac/subx và khac/meyer | Đã lưu thành công 2 trang (15.4KB và 5.1KB) |
+| 311 | 2026-10-12 00:33 | `python3 .../scratch/check_subx_meyer.py` | Xem nội dung chi tiết của Sub-X và Meyer method | Trích xuất thành công lộ trình Sub-X và giáo trình Meyer 4x4 |
+| 312 | 2026-10-12 00:36 | `npm run build` | Kiểm tra build TypeScript sau khi tạo module rouxAdvancedData.ts | Exit 0 — Build thành công trong 595ms |
+| 313 | 2026-10-12 00:41 | `npm run build` | Kiểm tra build sau khi tích hợp toàn bộ UI nâng cao vào LessonDrawer.tsx | Exit 2 — Phát hiện 4 unused icon imports |
+| 314 | 2026-10-12 00:41 | `npm run build` | Kiểm tra lại build sau khi loại bỏ 4 unused icons | Exit 0 — Build thành công trong 590ms |
+| 315 | 2026-10-12 00:42 | `git status` | Kiểm tra danh sách các file modified và untracked trước khi commit | Nhận diện rouxAdvancedData.ts và LessonDrawer.tsx |
+| 316 | 2026-10-12 00:42 | `git add src/data/rouxAdvancedData.ts src/components/ui/LessonDrawer.tsx && git commit -m "feat: integrate all advanced Roux modules from rouxmethodvn (Fast EO, Dots Skipping, EOLR, Pro Techniques, OH CMLL, Sub-X, Meyer 4x4)"` | Commit tính năng tích hợp 100% nội dung nâng cao từ rouxmethodvn | Commit `fb315a8` |
+
+
+
 
 
 
