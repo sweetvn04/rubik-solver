@@ -9,9 +9,12 @@ import { soundEngine } from '../engine/soundEngine';
 import { lofiEngine } from '../engine/lofiEngine';
 import {
   cubiesToSolverState,
+  solverStateToCubies,
+  validateCubeState,
   isFirstBlockSolved,
   isSecondBlockSolved,
   isCMLLSolved,
+  type SolverCubeState,
 } from '../engine/solver/cubeState';
 import { solveFirstBlock } from '../engine/solver/firstBlock';
 import { solveSecondBlock } from '../engine/solver/secondBlock';
@@ -73,6 +76,11 @@ interface RubikStore {
 
   // Tutor Mode Actions
   startTutorMode: () => { success: boolean; message?: string };
+  applyCustomCubeState: (solverState: SolverCubeState) => {
+    success: boolean;
+    message?: string;
+    phaseId?: string;
+  };
   tutorNextStep: () => void;
   tutorPrevStep: () => void;
   tutorPlayCurrentPhase: () => void;
@@ -377,6 +385,66 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     });
 
     return { success: true };
+  },
+
+  applyCustomCubeState: (solverState) => {
+    const { isAnimating, moveQueue } = get();
+    if (isAnimating || moveQueue.length > 0) {
+      return { success: false, message: 'Khối đang xoay, vui lòng chờ một chút trước khi nạp trạng thái.' };
+    }
+
+    const validation = validateCubeState(solverState);
+    if (!validation.isValid) {
+      return { success: false, message: validation.message };
+    }
+
+    const solution = solveCompleteRoux(solverState);
+    if (!solution.isSuccess) {
+      return {
+        success: false,
+        message: solution.errorMessage || 'Không tìm thấy đường giải Roux cho trạng thái này. Vui lòng kiểm tra lại màu các ô.',
+      };
+    }
+
+    const newCubies = solverStateToCubies(solverState);
+    soundEngine.playResetSound();
+
+    if (solution.allMoves.length === 0) {
+      set({
+        cubies: newCubies,
+        isAnimating: false,
+        moveQueue: [],
+        currentMove: null,
+        moveHistory: [],
+        isTutorActive: false,
+        tutorPhases: [],
+        tutorAllMoves: [],
+        tutorCurrentIndex: 0,
+      });
+      invalidate();
+      return { success: true, message: 'Khối Rubik đã được giải hoàn tất 100% rồi!' };
+    }
+
+    const phases = createTutorPhases(solution);
+    set({
+      cubies: newCubies,
+      isAnimating: false,
+      moveQueue: [],
+      currentMove: null,
+      moveHistory: [],
+      isTutorActive: true,
+      tutorPhases: phases,
+      tutorAllMoves: solution.allMoves,
+      tutorCurrentIndex: 0,
+    });
+    invalidate();
+
+    const firstPhase = phases[0];
+    return {
+      success: true,
+      message: `Đã nạp thành công! Bắt đầu hướng dẫn từ ${firstPhase ? firstPhase.title : 'bước tiếp theo'}.`,
+      phaseId: firstPhase?.id,
+    };
   },
 
   tutorNextStep: () => {

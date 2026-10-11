@@ -3,10 +3,11 @@ import { RubikCanvas } from './components/cube/RubikCanvas';
 import { PlayerBar } from './components/ui/PlayerBar';
 import { TutorCard } from './components/ui/TutorCard';
 import { LessonDrawer } from './components/ui/LessonDrawer';
+import { CubeInputModal } from './components/ui/CubeInputModal';
 import { OrientationLegend } from './components/ui/OrientationLegend';
 import { useRubikStore } from './store/useRubikStore';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
-import { BookOpen, Music, LocateFixed } from 'lucide-react';
+import { BookOpen, Music, LocateFixed, Palette } from 'lucide-react';
 
 export default function App() {
   useKeyboardControls();
@@ -14,6 +15,7 @@ export default function App() {
   const isLofiPlaying = useRubikStore((s) => s.isLofiPlaying);
   const toggleLofi = useRubikStore((s) => s.toggleLofi);
   const [isLessonOpen, setIsLessonOpen] = useState(false);
+  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
 
   // Reset camera callback được expose từ RubikCanvas
   const resetCameraRef = useRef<(() => void) | null>(null);
@@ -37,6 +39,18 @@ export default function App() {
 
         {/* Nhóm nút góc phải Header */}
         <div className="flex items-center gap-1.5 pointer-events-auto">
+          {/* Nút Nhập Khối Rubik Ngoài Đời Thật */}
+          <button
+            type="button"
+            onClick={() => setIsInputModalOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-xl border bg-white/80 hover:bg-white text-[#2c221e] border-[#e8dfcf] shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            title="Nhập màu khối Rubik ngoài đời thật để app hướng dẫn giải tiếp"
+          >
+            <Palette className="w-3.5 h-3.5 text-[#e07a5f]" />
+            <span className="hidden sm:inline">Nhập Rubik thật</span>
+            <span className="sm:hidden">Nhập</span>
+          </button>
+
           {/* Nút Reset góc nhìn về chuẩn Roux */}
           <button
             type="button"
@@ -112,6 +126,12 @@ export default function App() {
       <LessonDrawer
         isOpen={isLessonOpen}
         onClose={() => setIsLessonOpen(false)}
+      />
+
+      {/* Modal Nhập Khối Rubik Ngoài Đời Thật */}
+      <CubeInputModal
+        isOpen={isInputModalOpen}
+        onClose={() => setIsInputModalOpen(false)}
       />
     </main>
   );

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import type { CubieState, Move } from '../../types';
+import { type CubieState, type Move, CUBE_PALETTE } from '../../types';
 import { getMoveExecutionInfo, parseAlgorithm } from '../moveParser';
 
 /**
@@ -497,3 +497,255 @@ ${ch(42)}${ch(43)}${ch(44)} ${ch(24)}${ch(25)}${ch(26)} ${ch(51)}${ch(52)}${ch(5
     ${ch(15)}${ch(16)}${ch(17)}
   `.trim();
 }
+
+/**
+ * Ánh xạ mã màu ColorId sang mã màu hex thực tế của ứng dụng
+ */
+export const COLOR_ID_TO_HEX: Record<ColorId, string> = {
+  [COLOR_U]: CUBE_PALETTE.U,
+  [COLOR_D]: CUBE_PALETTE.D,
+  [COLOR_F]: CUBE_PALETTE.F,
+  [COLOR_B]: CUBE_PALETTE.B,
+  [COLOR_L]: CUBE_PALETTE.L,
+  [COLOR_R]: CUBE_PALETTE.R,
+};
+
+/**
+ * Tạo trạng thái SolverCubeState ở trạng thái đã giải hoàn tất 100%
+ */
+export function createSolvedSolverState(): SolverCubeState {
+  const c = new Uint8Array(54);
+  for (let i = 0; i < 54; i++) {
+    c[i] = FACELET_DEFS[i].face;
+  }
+  return c;
+}
+
+/**
+ * Chuyển đổi SolverCubeState (54 facelets) thành 26 CubieState 3D cho giao diện WebGL
+ */
+export function solverStateToCubies(cube: SolverCubeState): CubieState[] {
+  const cubies: CubieState[] = [];
+
+  for (let x = -1; x <= 1; x++) {
+    for (let y = -1; y <= 1; y++) {
+      for (let z = -1; z <= 1; z++) {
+        if (x === 0 && y === 0 && z === 0) continue;
+
+        const id = `cubie_${x}_${y}_${z}`;
+        const colors: CubieState['colors'] = {};
+
+        if (y === 1) {
+          const idx = findFaceletIndex(x, y, z, 0, 1, 0);
+          if (idx !== -1) colors.U = COLOR_ID_TO_HEX[cube[idx] as ColorId];
+        }
+        if (y === -1) {
+          const idx = findFaceletIndex(x, y, z, 0, -1, 0);
+          if (idx !== -1) colors.D = COLOR_ID_TO_HEX[cube[idx] as ColorId];
+        }
+        if (z === 1) {
+          const idx = findFaceletIndex(x, y, z, 0, 0, 1);
+          if (idx !== -1) colors.F = COLOR_ID_TO_HEX[cube[idx] as ColorId];
+        }
+        if (z === -1) {
+          const idx = findFaceletIndex(x, y, z, 0, 0, -1);
+          if (idx !== -1) colors.B = COLOR_ID_TO_HEX[cube[idx] as ColorId];
+        }
+        if (x === -1) {
+          const idx = findFaceletIndex(x, y, z, -1, 0, 0);
+          if (idx !== -1) colors.L = COLOR_ID_TO_HEX[cube[idx] as ColorId];
+        }
+        if (x === 1) {
+          const idx = findFaceletIndex(x, y, z, 1, 0, 0);
+          if (idx !== -1) colors.R = COLOR_ID_TO_HEX[cube[idx] as ColorId];
+        }
+
+        cubies.push({
+          id,
+          initialPos: [x, y, z],
+          currentPos: [x, y, z],
+          quaternion: [0, 0, 0, 1],
+          colors,
+          isDimmed: false,
+        });
+      }
+    }
+  }
+
+  return cubies;
+}
+
+export interface CubeValidationResult {
+  isValid: boolean;
+  message?: string;
+  counts: Record<ColorId, number>;
+  unassignedCount: number;
+}
+
+const OPPOSITE_COLORS: Record<ColorId, ColorId> = {
+  [COLOR_U]: COLOR_D,
+  [COLOR_D]: COLOR_U,
+  [COLOR_F]: COLOR_B,
+  [COLOR_B]: COLOR_F,
+  [COLOR_L]: COLOR_R,
+  [COLOR_R]: COLOR_L,
+};
+
+const CUBE_EDGES: [number, number][] = [
+  [FACELETS.U_B, FACELETS.B_U],
+  [FACELETS.U_L, FACELETS.L_U],
+  [FACELETS.U_R, FACELETS.R_U],
+  [FACELETS.U_F, FACELETS.F_U],
+  [FACELETS.D_F, FACELETS.F_D],
+  [FACELETS.D_L, FACELETS.L_D],
+  [FACELETS.D_R, FACELETS.R_D],
+  [FACELETS.D_B, FACELETS.B_D],
+  [FACELETS.F_L, FACELETS.L_F],
+  [FACELETS.F_R, FACELETS.R_F],
+  [FACELETS.B_L, FACELETS.L_B],
+  [FACELETS.B_R, FACELETS.R_B],
+];
+
+const CUBE_CORNERS: [number, number, number][] = [
+  [FACELETS.U_FL, FACELETS.F_UL, FACELETS.L_UF],
+  [FACELETS.U_FR, FACELETS.F_UR, FACELETS.R_UF],
+  [FACELETS.U_BL, FACELETS.B_UL, FACELETS.L_UB],
+  [FACELETS.U_BR, FACELETS.B_UR, FACELETS.R_UB],
+  [FACELETS.D_FL, FACELETS.F_DL, FACELETS.L_DF],
+  [FACELETS.D_FR, FACELETS.F_DR, FACELETS.R_DF],
+  [FACELETS.D_BL, FACELETS.B_DL, FACELETS.L_DB],
+  [FACELETS.D_BR, FACELETS.B_DR, FACELETS.R_DB],
+];
+
+/**
+ * Kiểm tra tính hợp lệ về mặt vật lý của khối Rubik dựa trên 54 ô màu
+ */
+export function validateCubeState(state: ArrayLike<number | null>): CubeValidationResult {
+  const counts: Record<ColorId, number> = {
+    [COLOR_U]: 0,
+    [COLOR_D]: 0,
+    [COLOR_F]: 0,
+    [COLOR_B]: 0,
+    [COLOR_L]: 0,
+    [COLOR_R]: 0,
+  };
+
+  let unassignedCount = 0;
+  for (let i = 0; i < 54; i++) {
+    const val = state[i];
+    if (val === null || val === undefined || val < 0 || val > 5) {
+      unassignedCount++;
+    } else {
+      counts[val as ColorId] = (counts[val as ColorId] || 0) + 1;
+    }
+  }
+
+  if (unassignedCount > 0) {
+    return {
+      isValid: false,
+      message: `Còn ${unassignedCount} ô chưa được chọn màu.`,
+      counts,
+      unassignedCount,
+    };
+  }
+
+  // 1. Kiểm tra số lượng mỗi màu phải đúng 9 ô
+  for (let c = 0; c <= 5; c++) {
+    const cid = c as ColorId;
+    if (counts[cid] !== 9) {
+      return {
+        isValid: false,
+        message: `Màu ${COLOR_NAMES[cid]} có ${counts[cid]}/9 ô (cần đúng 9 ô).`,
+        counts,
+        unassignedCount: 0,
+      };
+    }
+  }
+
+  // 2. Kiểm tra các viên cạnh (12 edges)
+  const seenEdges = new Set<string>();
+  for (let i = 0; i < CUBE_EDGES.length; i++) {
+    const [idx1, idx2] = CUBE_EDGES[i];
+    const c1 = state[idx1] as ColorId;
+    const c2 = state[idx2] as ColorId;
+
+    if (c1 === c2) {
+      return {
+        isValid: false,
+        message: `Phát hiện viên cạnh có 2 màu trùng nhau (${COLOR_NAMES[c1]}).`,
+        counts,
+        unassignedCount: 0,
+      };
+    }
+
+    if (OPPOSITE_COLORS[c1] === c2) {
+      return {
+        isValid: false,
+        message: `Phát hiện viên cạnh có 2 màu đối diện (${COLOR_NAMES[c1]} và ${COLOR_NAMES[c2]}).`,
+        counts,
+        unassignedCount: 0,
+      };
+    }
+
+    const edgeKey = [Math.min(c1, c2), Math.max(c1, c2)].join('-');
+    if (seenEdges.has(edgeKey)) {
+      return {
+        isValid: false,
+        message: `Phát hiện viên cạnh bị trùng lặp màu (${COLOR_NAMES[c1]} - ${COLOR_NAMES[c2]}).`,
+        counts,
+        unassignedCount: 0,
+      };
+    }
+    seenEdges.add(edgeKey);
+  }
+
+  // 3. Kiểm tra các viên góc (8 corners)
+  const seenCorners = new Set<string>();
+  for (let i = 0; i < CUBE_CORNERS.length; i++) {
+    const [idx1, idx2, idx3] = CUBE_CORNERS[i];
+    const c1 = state[idx1] as ColorId;
+    const c2 = state[idx2] as ColorId;
+    const c3 = state[idx3] as ColorId;
+
+    if (c1 === c2 || c1 === c3 || c2 === c3) {
+      return {
+        isValid: false,
+        message: 'Phát hiện viên góc có các mặt cùng màu.',
+        counts,
+        unassignedCount: 0,
+      };
+    }
+
+    if (
+      OPPOSITE_COLORS[c1] === c2 ||
+      OPPOSITE_COLORS[c1] === c3 ||
+      OPPOSITE_COLORS[c2] === c3
+    ) {
+      return {
+        isValid: false,
+        message: `Phát hiện viên góc chứa 2 màu đối diện không thể đứng cạnh nhau.`,
+        counts,
+        unassignedCount: 0,
+      };
+    }
+
+    const cornerKey = [c1, c2, c3].sort().join('-');
+    if (seenCorners.has(cornerKey)) {
+      return {
+        isValid: false,
+        message: 'Phát hiện 2 viên góc có cùng tổ hợp 3 màu.',
+        counts,
+        unassignedCount: 0,
+      };
+    }
+    seenCorners.add(cornerKey);
+  }
+
+  return {
+    isValid: true,
+    message: 'Khối Rubik hợp lệ! Sẵn sàng giải.',
+    counts,
+    unassignedCount: 0,
+  };
+}
+
