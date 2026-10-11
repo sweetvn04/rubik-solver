@@ -327,6 +327,8 @@
 | 303 | 2026-10-12 00:29 | `python3 .../scratch/dump_details.py` | Trích xuất chi tiết công thức FB, SB, EO nhận biết nhanh, OH CMLL, Influencing | Trích xuất thành công CMLL OH và Influencing CMLL |
 | 304 | 2026-10-12 00:30 | `python3 .../scratch/dump_fb_eo.py` | Trích xuất chuyên sâu nội dung FB và nhận biết nhanh EO | Trích xuất thành công 100% chi tiết các bảng tra cứu |
 | 305 | 2026-10-12 00:30 | `git status` | Kiểm tra trạng thái git working tree sau chuỗi rà soát Google Site | Modified COMMAND_LOG.md |
+| 306 | 2026-10-12 00:30 | `git commit -am "docs: update COMMAND_LOG.md with Google Site audit commands" && git status` | Lưu commit nhật ký lệnh kiểm tra Google Site | Commit `faee3e9` — Clean 100% |
+
 
 
 
