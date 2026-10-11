@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-11
 
-### 🖼️ [Commit pending] — Hình Minh Hoạ Trực Quan (SVG Visual Diagrams) Toàn Diện Cho 45 CMLL & Cẩm Nang LSE (EO & L4E)
+### 🖼️ [Commit `528f06f`] — Hình Minh Hoạ Trực Quan (SVG Visual Diagrams) Toàn Diện Cho 45 CMLL & Cẩm Nang LSE (EO & L4E)
 
 * **Mục đích:**
   - Bổ sung hệ thống hình vẽ minh hoạ trực quan cho toàn bộ 45 thế CMLL và toàn bộ các thế cờ trong Cẩm nang LSE theo yêu cầu của người dùng, giúp người học dễ dàng đối chiếu hình ảnh thực tế trên tay mà không cần phải tự suy đoán.

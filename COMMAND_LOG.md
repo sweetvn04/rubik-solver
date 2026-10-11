@@ -303,3 +303,4 @@
 | 279 | 2026-10-11 23:18 | `rm -f scratch/test_cmll_visual.ts` | Dọn dẹp script test trích xuất màu CMLL | Hoàn tất |
 | 280 | 2026-10-11 23:20 | `npm run build` | Build kiểm tra TypeScript & Vite sau khi tạo ReferenceDiagrams và tích hợp vào LessonDrawer | Exit 0 — Build thành công trong 620ms |
 | 281 | 2026-10-11 23:21 | `git status` | Kiểm tra trạng thái git working tree trước khi commit tính năng hình minh hoạ | Nhận diện LessonDrawer.tsx và ReferenceDiagrams.tsx |
+| 282 | 2026-10-11 23:21 | `git add -A && git commit -m "feat: add comprehensive SVG visual diagrams for 45 CMLL and LSE handbook"` | Commit tính năng hình minh hoạ trực quan SVG cho 45 CMLL và cẩm nang LSE | Commit `528f06f` |
