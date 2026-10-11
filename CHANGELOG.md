@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-11
 
-### 🧩 [Commit pending] — Cẩm nang 2-Look CMLL & LSE Toàn Diện, Lộ Trình Giải Theo Cụm (Chunk Breakdown) & Tư Duy Block-Building
+### 🧩 [Commit `ecdd617`] — Cẩm nang 2-Look CMLL & LSE Toàn Diện, Lộ Trình Giải Theo Cụm (Chunk Breakdown) & Tư Duy Block-Building
 
 * **Mục đích:**
   - Giải quyết bài toán người học bấm theo từng move rời rạc ("R", "U", "R'") trong Tutor Mode nhưng không hiểu bản chất tư duy khối để tự làm lại một mình: Phân rã lộ trình giải thành các **cụm mục tiêu (Chunks)** cụ thể (FB: mỏ neo DL, cặp 1x2x2, hoàn tất 1x2x3; SB: mỏ neo DR, cặp thứ nhất, hoàn tất 1x2x3; CMLL: giải 4 góc; LSE: 4a EO, 4b UL/UR, 4c L4E) kèm giải thích chi tiết mục đích khối (Block-building intent) và dấu hiệu nhận biết (Recognition tips).

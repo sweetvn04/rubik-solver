@@ -295,3 +295,4 @@
 | 271 | 2026-10-11 23:13 | `rm -f scratch/test_tutor_chunks.ts` | Dọn dẹp script test benchmark tạm thời | Hoàn tất |
 | 272 | 2026-10-11 23:13 | `npm run build` | Build kiểm tra lần cuối trước khi commit | Exit 0 — Build thành công trong 713ms |
 | 273 | 2026-10-11 23:13 | `git status` | Kiểm tra trạng thái git working tree trước khi commit tài liệu | Working tree sẵn sàng |
+| 274 | 2026-10-11 23:13 | `git add -A && git commit -m "feat: 2-look CMLL handbook, comprehensive LSE EO guide, and block-building chunk roadmap"` | Commit triển khai cẩm nang 2-Look CMLL, LSE toàn diện và tính năng Lộ trình giải theo cụm | Commit `ecdd617` |
