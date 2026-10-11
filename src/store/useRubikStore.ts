@@ -22,8 +22,10 @@ import { solveCMLL } from '../engine/solver/cmllSolver';
 import { solveCompleteRoux, type FullRouxSolution } from '../engine/solver/rouxSolver';
 import {
   createTutorPhases,
+  createTutorChunks,
   invertMove,
   type TutorPhase,
+  type TutorChunk,
 } from '../engine/tutorHelper';
 
 export interface SolveResult {
@@ -49,6 +51,7 @@ interface RubikStore {
   // Tutor Mode State
   isTutorActive: boolean;
   tutorPhases: TutorPhase[];
+  tutorChunks: TutorChunk[];
   tutorAllMoves: string[];
   tutorCurrentIndex: number;
 
@@ -84,6 +87,7 @@ interface RubikStore {
   tutorNextStep: () => void;
   tutorPrevStep: () => void;
   tutorPlayCurrentPhase: () => void;
+  tutorPlayChunk: (chunkId: string) => void;
   exitTutorMode: () => void;
 }
 
@@ -136,6 +140,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   // Tutor Mode State
   isTutorActive: false,
   tutorPhases: [],
+  tutorChunks: [],
   tutorAllMoves: [],
   tutorCurrentIndex: 0,
 
@@ -377,9 +382,11 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     }
 
     const phases = createTutorPhases(solution);
+    const chunks = createTutorChunks(solution, solverState);
     set({
       isTutorActive: true,
       tutorPhases: phases,
+      tutorChunks: chunks,
       tutorAllMoves: solution.allMoves,
       tutorCurrentIndex: 0,
     });
@@ -418,6 +425,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
         moveHistory: [],
         isTutorActive: false,
         tutorPhases: [],
+        tutorChunks: [],
         tutorAllMoves: [],
         tutorCurrentIndex: 0,
       });
@@ -426,6 +434,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     }
 
     const phases = createTutorPhases(solution);
+    const chunks = createTutorChunks(solution, solverState);
     set({
       cubies: newCubies,
       isAnimating: false,
@@ -434,6 +443,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       moveHistory: [],
       isTutorActive: true,
       tutorPhases: phases,
+      tutorChunks: chunks,
       tutorAllMoves: solution.allMoves,
       tutorCurrentIndex: 0,
     });
@@ -485,13 +495,33 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     get().enqueueAlgorithm(remaining.join(' '));
   },
 
+  tutorPlayChunk: (chunkId: string) => {
+    const { isTutorActive, isAnimating, moveQueue, tutorChunks, tutorAllMoves, tutorCurrentIndex } = get();
+    if (!isTutorActive || isAnimating || moveQueue.length > 0) return;
+    if (tutorCurrentIndex >= tutorAllMoves.length) return;
+
+    const chunk = tutorChunks.find((c) => c.id === chunkId);
+    if (!chunk) return;
+
+    const start = Math.max(tutorCurrentIndex, chunk.startIndex);
+    if (start >= chunk.endIndex) return;
+
+    const remaining = tutorAllMoves.slice(start, chunk.endIndex);
+    if (remaining.length === 0) return;
+
+    set({ tutorCurrentIndex: chunk.endIndex });
+    get().enqueueAlgorithm(remaining.join(' '));
+  },
+
   exitTutorMode: () => {
     set({
       isTutorActive: false,
       tutorPhases: [],
+      tutorChunks: [],
       tutorAllMoves: [],
       tutorCurrentIndex: 0,
     });
   },
+
 }));
 

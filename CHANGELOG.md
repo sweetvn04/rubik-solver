@@ -6,6 +6,22 @@
 
 ## 📅 2026-10-11
 
+### 🧩 [Commit pending] — Cẩm nang 2-Look CMLL & LSE Toàn Diện, Lộ Trình Giải Theo Cụm (Chunk Breakdown) & Tư Duy Block-Building
+
+* **Mục đích:**
+  - Giải quyết bài toán người học bấm theo từng move rời rạc ("R", "U", "R'") trong Tutor Mode nhưng không hiểu bản chất tư duy khối để tự làm lại một mình: Phân rã lộ trình giải thành các **cụm mục tiêu (Chunks)** cụ thể (FB: mỏ neo DL, cặp 1x2x2, hoàn tất 1x2x3; SB: mỏ neo DR, cặp thứ nhất, hoàn tất 1x2x3; CMLL: giải 4 góc; LSE: 4a EO, 4b UL/UR, 4c L4E) kèm giải thích chi tiết mục đích khối (Block-building intent) và dấu hiệu nhận biết (Recognition tips).
+  - Tích hợp modal tương tác **"Toàn bộ Lộ trình giải theo cụm" (Roux Roadmap)** cho phép xem checklist các cụm đã hoàn thành / đang giải / chưa tới, và hỗ trợ nút xoay dứt điểm từng cụm (`tutorPlayChunk`).
+  - Xây dựng cẩm nang công thức chuẩn 100% theo giáo trình Google Site `rouxmethodvn`:
+    * **2-Look CMLL**: 7 công thức OLL góc (Sune, Antisune, H, Pi, T, U, L) + 2 công thức PLL góc (T-Perm góc kề, Y-Perm góc chéo) kèm sơ đồ mặt U trực quan.
+    * **LSE toàn diện**: Quy tắc nhận biết Bad Edge, 11 thế EO chuẩn (`3/1 F/B`, `1/1 F/B`, `0/2`, `2o/0`, `2a/0`, `4/0`, `2a/2`, `2o/2`, `4/2`), cẩm nang đưa 2 cạnh UL/UR về cánh L/R, và các thế L4E (D-Dots, Cột M Ub/Ua, H-Perm, Z-Perm).
+    * Hỗ trợ đầy đủ các nút **"Tập thế cờ này"** (Setup state lên Rubik 3D) và **"Chạy giải"** (Run algorithm trực quan).
+* **Files tác động:**
+  - `src/data/rouxReferenceData.ts` *(Mới)*: Khai báo dữ liệu có cấu trúc cho 2-Look CMLL, LSE EO rules & 11 cases, UL/UR guide, và 5 thế L4E.
+  - `src/engine/tutorHelper.ts`: Mở rộng interface `TutorChunk` và triển khai hàm `createTutorChunks(solution, initialCubeState)` dựa trên các validator mốc hình học (`isDLSolved`, `isDRSolved`, `isBackSquareSolved`, v.v.).
+  - `src/store/useRubikStore.ts`: Bổ sung `tutorChunks: TutorChunk[]`, hỗ trợ action `tutorPlayChunk(chunkId)` tự động xoay hết các moves của một cụm mục tiêu.
+  - `src/components/ui/TutorCard.tsx`: Tích hợp thẻ hiển thị cụm mục tiêu hiện tại (`currentChunk`) với mục đích và nhận biết; bổ sung modal popup **Toàn bộ Lộ trình giải theo Cụm (Roux Roadmap)**.
+  - `src/components/ui/LessonDrawer.tsx`: Nâng cấp giao diện thành 4 tabs lớn (`4 Bước Roux`, `2-Look CMLL`, `Cẩm nang LSE`, `45 CMLL`), hỗ trợ lọc nhóm EO, preview ma trận 3x3 mặt U, và các nút luyện tập / chạy giải 3D.
+
 ### 🔴🟠 [Commit `a1a2573`] — Chuẩn hóa hệ màu vật lý: Mặt L (Đỏ) và Mặt R (Cam) khi U (Vàng) & F (Xanh lá)
 
 * **Mục đích:** Sửa triệt để hiện tượng lệch hệ màu vật lý: Trên khối Rubik phương Tây tiêu chuẩn ngoài đời thật, khi xoay khối để mặt Vàng (U) ở trên và mặt Xanh lá (F) ở trước (xoay 180° quanh trục F so với chuẩn U=Trắng), mặt bên Trái (L) theo quy luật hình học không gian sẽ là màu **Đỏ** và mặt bên Phải (R) sẽ là màu **Cam**. Code trước đó vô tình gán L=Cam và R=Đỏ làm khối bị nghịch đối xứng gương.

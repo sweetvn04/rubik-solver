@@ -284,3 +284,14 @@
 | 260 | 2026-10-11 22:28 | `git add -A && git commit -m "feat: real-life rubik cube state input modal with real-time validation and auto tutor"` | Commit tính năng nhập trạng thái Rubik thật, kiểm tra hợp lệ vật lý và tự kích hoạt Tutor Mode | Commit `d02f535` |
 | 261 | 2026-10-11 22:40 | `npm run build` | Build kiểm tra TypeScript & Vite sau khi chuẩn hóa hệ màu L=Đỏ và R=Cam | Exit 0 — Thành công 100% |
 | 262 | 2026-10-11 22:40 | `git add -A && git commit -m "fix(colors): standardize physical color scheme with L=Red and R=Orange when U=Yellow and F=Green"` | Commit cập nhật chuẩn hóa toàn bộ hệ màu L (Đỏ) và R (Cam) trên toàn app | Commit `a1a2573` |
+| 263 | 2026-10-11 22:58 | `git status` | Kiểm tra trạng thái git working tree khi bắt đầu phiên làm việc mới | Working tree clean |
+| 264 | 2026-10-11 22:59 | `find src -maxdepth 3` | Khảo sát danh mục cấu trúc các file trong thư mục src | Liệt kê đầy đủ các module solver, components, store |
+| 265 | 2026-10-11 23:08 | `npm run build` | Build kiểm tra TypeScript & Vite sau khi thêm Roux reference data, TutorCard roadmap và LessonDrawer tabs | Báo lỗi 10 lỗi type/props không khớp |
+| 266 | 2026-10-11 23:10 | `npm run build` | Rebuild kiểm tra sau khi sửa unused variables và props | Báo lỗi scope biến st trong tutorHelper.ts |
+| 267 | 2026-10-11 23:11 | `npm run build` | Rebuild kiểm tra sau khi đưa st lên outer scope trong tutorHelper.ts | Exit 0 — Build thành công trong 724ms |
+| 268 | 2026-10-11 23:11 | `git status` | Kiểm tra trạng thái git working tree | Nhận diện 5 files modified, 1 untracked |
+| 269 | 2026-10-11 23:11 | `npx tsx scratch/test_tutor_chunks.ts` | Chạy test xác thực toàn bộ công thức 2-Look, LSE và logic phân rã chunk | Thất bại ở test 2 do scramble chưa gán lại cube |
+| 270 | 2026-10-11 23:12 | `npx tsx scratch/test_tutor_chunks.ts` | Chạy lại test sau khi sửa gán cube và applyMove trả về state | Exit 0 — PASS 100% cả 2 bài test |
+| 271 | 2026-10-11 23:13 | `rm -f scratch/test_tutor_chunks.ts` | Dọn dẹp script test benchmark tạm thời | Hoàn tất |
+| 272 | 2026-10-11 23:13 | `npm run build` | Build kiểm tra lần cuối trước khi commit | Exit 0 — Build thành công trong 713ms |
+| 273 | 2026-10-11 23:13 | `git status` | Kiểm tra trạng thái git working tree trước khi commit tài liệu | Working tree sẵn sàng |
