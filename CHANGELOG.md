@@ -6,6 +6,16 @@
 
 ## 📅 2026-10-11
 
+### 🔴🟠 [Commit `a1a2573`] — Chuẩn hóa hệ màu vật lý: Mặt L (Đỏ) và Mặt R (Cam) khi U (Vàng) & F (Xanh lá)
+
+* **Mục đích:** Sửa triệt để hiện tượng lệch hệ màu vật lý: Trên khối Rubik phương Tây tiêu chuẩn ngoài đời thật, khi xoay khối để mặt Vàng (U) ở trên và mặt Xanh lá (F) ở trước (xoay 180° quanh trục F so với chuẩn U=Trắng), mặt bên Trái (L) theo quy luật hình học không gian sẽ là màu **Đỏ** và mặt bên Phải (R) sẽ là màu **Cam**. Code trước đó vô tình gán L=Cam và R=Đỏ làm khối bị nghịch đối xứng gương.
+* **Files tác động:**
+  - `src/types/index.ts`: Cập nhật `CUBE_PALETTE.L` thành `#9d2825` (Đỏ) và `CUBE_PALETTE.R` thành `#d86629` (Cam).
+  - `src/engine/solver/cubeState.ts`: Cập nhật `COLOR_NAMES` (`COLOR_L` là Đỏ, `COLOR_R` là Cam), cập nhật hàm `hexToColor` nhận diện chính xác mã màu hex của từng mặt.
+  - `src/components/ui/OrientationLegend.tsx`: Cập nhật chú thích mặt L là Trái (Đỏ) và mặt R là Phải (Cam).
+  - `src/components/ui/CubeInputModal.tsx`: Đồng bộ 6 ô tâm và bảng màu sáp trong modal nhập Rubik (tâm L cố định là Đỏ, tâm R cố định là Cam).
+  - `src/data/lessonsData.ts`: Cập nhật mô tả giáo trình và sơ đồ hình vẽ SVG 2D: First Block bên trái dựng bằng cặp Đỏ - Trắng, Second Block bên phải dựng bằng cặp Cam - Trắng.
+
 ### 🎨 [Commit `d02f535`] — Tính năng Nhập Khối Rubik Ngoài Đời Thật (Physical Cube State Input & Auto-Tutor)
 
 * **Mục đích:** Người dùng khi giải khối Rubik thực tế ngoài đời và bị bí nước đi có thể nhập màu 6 mặt vào ứng dụng; hệ thống tự động kiểm tra tính hợp lệ về mặt vật lý của khối, nhận diện giai đoạn Roux hiện tại và tự động kích hoạt chế độ Tutor Mode để hướng dẫn người dùng giải tiếp từ đúng vị trí đó.

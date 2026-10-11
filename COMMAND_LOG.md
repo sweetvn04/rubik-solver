@@ -282,3 +282,5 @@
 | 258 | 2026-10-11 22:28 | `npm run build` | Rebuild kiểm tra sau khi fix import trong CubeInputModal.tsx | Exit 0 — Thành công 100% |
 | 259 | 2026-10-11 22:28 | `git status` | Kiểm tra working tree trước khi commit tính năng | Nhận diện 4 files |
 | 260 | 2026-10-11 22:28 | `git add -A && git commit -m "feat: real-life rubik cube state input modal with real-time validation and auto tutor"` | Commit tính năng nhập trạng thái Rubik thật, kiểm tra hợp lệ vật lý và tự kích hoạt Tutor Mode | Commit `d02f535` |
+| 261 | 2026-10-11 22:40 | `npm run build` | Build kiểm tra TypeScript & Vite sau khi chuẩn hóa hệ màu L=Đỏ và R=Cam | Exit 0 — Thành công 100% |
+| 262 | 2026-10-11 22:40 | `git add -A && git commit -m "fix(colors): standardize physical color scheme with L=Red and R=Orange when U=Yellow and F=Green"` | Commit cập nhật chuẩn hóa toàn bộ hệ màu L (Đỏ) và R (Cam) trên toàn app | Commit `a1a2573` |
