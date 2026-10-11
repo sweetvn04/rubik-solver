@@ -319,6 +319,22 @@
 | 295 | 2026-10-11 23:50 | `git commit -am "docs: finalize COMMAND_LOG.md"` | Lưu commit nhật ký lệnh vào COMMAND_LOG.md | Commit `a9418b0` |
 | 296 | 2026-10-11 23:50 | `git status` | Kiểm tra trạng thái git working tree sau chuỗi commit docs | Clean 100% |
 | 297 | 2026-10-11 23:50 | `git commit -am "docs: sync COMMAND_LOG.md" && git status` | Lưu commit nhật ký lệnh vào COMMAND_LOG.md và kiểm tra git status | Commit `5965d67` — Clean 100% |
+| 298 | 2026-10-12 00:26 | `git log -S "google" -p -n 3` | Tìm kiếm URL và tham chiếu đến Google Site rouxmethodvn trong lịch sử git | Tìm thấy URL https://sites.google.com/view/rouxmethodvn/tongquan |
+| 299 | 2026-10-12 00:27 | `python3 .../scratch/extract_links.py` | Trích xuất các liên kết sitemap từ trang tổng quan của rouxmethodvn | Tìm thấy 33 trang con bao gồm fb, sb, cmll, lse, nâng cao |
+| 300 | 2026-10-12 00:28 | `python3 .../scratch/crawl_roux_pages.py` | Thu thập nội dung text và công thức từ 21 trang chuyên đề trên rouxmethodvn | Hoàn tất tải 21 trang lưu vào scratch/crawled_roux |
+| 301 | 2026-10-12 00:29 | `python3 .../scratch/analyze_crawled.py` | Phân tích nội dung và bóc tách các công thức, kỹ thuật từ 21 file đã crawl | Đã quét toàn bộ 21 files, phát hiện nhiều chuyên đề nâng cao |
+| 302 | 2026-10-12 00:29 | `python3 .../scratch/inspect_sections.py` | Trích xuất chi tiết nội dung FB, EO nhận biết nhanh, EOLR, EZ-L4E, Dots Skipping | Trích xuất thành công nội dung nâng cao |
+| 303 | 2026-10-12 00:29 | `python3 .../scratch/dump_details.py` | Trích xuất chi tiết công thức FB, SB, EO nhận biết nhanh, OH CMLL, Influencing | Trích xuất thành công CMLL OH và Influencing CMLL |
+| 304 | 2026-10-12 00:30 | `python3 .../scratch/dump_fb_eo.py` | Trích xuất chuyên sâu nội dung FB và nhận biết nhanh EO | Trích xuất thành công 100% chi tiết các bảng tra cứu |
+| 305 | 2026-10-12 00:30 | `git status` | Kiểm tra trạng thái git working tree sau chuỗi rà soát Google Site | Modified COMMAND_LOG.md |
+
+
+
+
+
+
+
+
 
 
 
