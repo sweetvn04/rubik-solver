@@ -12,6 +12,15 @@ import {
   type TwoLookCornerCase,
   type EOCase,
 } from '../../data/rouxReferenceData';
+import {
+  FAST_EO_GUIDE,
+  DOTS_SKIPPING_GUIDE,
+  EOLR_GUIDE,
+  PRO_TECHNIQUES,
+  OH_CMLL_ALGORITHMS,
+  SUB_X_ROADMAP,
+  MEYER_4X4_GUIDE,
+} from '../../data/rouxAdvancedData';
 import { parseAlgorithm } from '../../engine/moveParser';
 import { invertMove } from '../../engine/tutorHelper';
 import { CubeDiagram2D } from './CubeDiagram2D';
@@ -32,6 +41,11 @@ import {
   Info,
   GraduationCap,
   Compass,
+  Flame,
+  Trophy,
+  Zap,
+  Hand,
+  Box,
 } from 'lucide-react';
 
 interface LessonDrawerProps {
@@ -42,7 +56,7 @@ interface LessonDrawerProps {
 const CMLL_GROUPS = ['ALL', 'O', 'H', 'Pi', 'T', 'U', 'L', 'S', 'As'] as const;
 
 export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState<'lessons' | 'two_look' | 'lse_guide' | 'cmll'>('lessons');
+  const [activeTab, setActiveTab] = useState<'lessons' | 'two_look' | 'lse_guide' | 'cmll' | 'pro_tips'>('lessons');
   const [selectedLesson, setSelectedLesson] = useState<Lesson>(ROUX_LESSONS[0]);
   const [selectedGroup, setSelectedGroup] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,9 +69,16 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
   // Sub-tabs cho 2-Look CMLL
   const [twoLookSubTab, setTwoLookSubTab] = useState<'oll' | 'pll'>('oll');
 
+  // Chế độ 2 Tay (2H) vs 1 Tay (OH) cho tab CMLL
+  const [cmllMode, setCmllMode] = useState<'2h' | 'oh'>('2h');
+
   // Sub-tabs & filter cho Cẩm nang LSE
-  const [lseSubTab, setLseSubTab] = useState<'eo' | 'ulur' | 'l4e'>('eo');
+  const [lseSubTab, setLseSubTab] = useState<'eo' | 'fast_eo' | 'ulur' | 'dots_skip' | 'l4e' | 'eolr'>('eo');
   const [eoFilter, setEoFilter] = useState<'all' | 'base' | '2bad' | '4bad' | '6bad'>('all');
+
+  // Sub-tabs cho Tab Nâng cao & Pro
+  const [proSubTab, setProSubTab] = useState<'techniques' | 'sub_x' | 'meyer'>('techniques');
+
 
   const enqueueAlgorithm = useRubikStore((s) => s.enqueueAlgorithm);
   const reset = useRubikStore((s) => s.reset);
@@ -76,9 +97,19 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
     setShowNote(false);
   };
 
-  // Lọc danh sách 45 CMLL
+  // Lọc danh sách 45 CMLL (Hỗ trợ chuyển đổi giữa 2 Tay 2H và 1 Tay OH)
   const filteredCMLL = useMemo(() => {
-    return CMLL_ALGORITHMS.filter((c) => {
+    const sourceList = cmllMode === 'oh'
+      ? OH_CMLL_ALGORITHMS.map((oh) => ({
+          group: oh.group as CMLLCase['group'],
+          name: oh.name,
+          alg: oh.alg,
+          description: oh.notes,
+          standard2HAlg: oh.standard2HAlg,
+        }))
+      : CMLL_ALGORITHMS;
+
+    return sourceList.filter((c) => {
       const matchGroup = selectedGroup === 'ALL' || c.group === selectedGroup;
       const matchQuery =
         searchQuery.trim() === '' ||
@@ -87,7 +118,7 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
         (c.description && c.description.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchGroup && matchQuery;
     });
-  }, [selectedGroup, searchQuery]);
+  }, [cmllMode, selectedGroup, searchQuery]);
 
   // Lọc danh sách EO cases
   const filteredEOCases = useMemo(() => {
@@ -243,6 +274,19 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
           >
             <Sparkles className="w-3 h-3 text-[#3d5a80]" />
             <span>45 CMLL</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('pro_tips')}
+            className={`flex-1 min-w-[95px] py-2 text-[11px] font-bold rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer ${
+              activeTab === 'pro_tips'
+                ? 'bg-white text-[#2c221e] shadow-xs border border-[#e2d8c7]'
+                : 'text-[#7a6f64] hover:text-[#2c221e]'
+            }`}
+          >
+            <Flame className="w-3.5 h-3.5 text-[#e63946]" />
+            <span>Nâng Cao & Pro</span>
           </button>
         </div>
 
@@ -536,23 +580,34 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
            ───────────────────────────────────────────────────────────── */}
         {activeTab === 'lse_guide' && (
           <div className="flex-1 overflow-y-auto p-3 sm:p-4 flex flex-col gap-3">
-            {/* Sub-tabs LSE */}
-            <div className="flex bg-[#faf6ee] p-1 rounded-xl border border-[#e4d9c7] gap-1">
+            {/* Sub-tabs LSE mở rộng */}
+            <div className="flex bg-[#faf6ee] p-1 rounded-xl border border-[#e4d9c7] gap-1 overflow-x-auto text-[11px]">
               <button
                 type="button"
                 onClick={() => setLseSubTab('eo')}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
                   lseSubTab === 'eo'
                     ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
                     : 'text-[#7a6f64] hover:text-[#2c221e]'
                 }`}
               >
-                4a: Định hướng EO
+                4a: 11 Thế EO
+              </button>
+              <button
+                type="button"
+                onClick={() => setLseSubTab('fast_eo')}
+                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                  lseSubTab === 'fast_eo'
+                    ? 'bg-white text-[#2b72a6] shadow-2xs border border-[#e2d8c7]'
+                    : 'text-[#7a6f64] hover:text-[#2c221e]'
+                }`}
+              >
+                Nhìn FD &lt;1s
               </button>
               <button
                 type="button"
                 onClick={() => setLseSubTab('ulur')}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
                   lseSubTab === 'ulur'
                     ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
                     : 'text-[#7a6f64] hover:text-[#2c221e]'
@@ -562,14 +617,36 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
               </button>
               <button
                 type="button"
+                onClick={() => setLseSubTab('dots_skip')}
+                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                  lseSubTab === 'dots_skip'
+                    ? 'bg-white text-[#e07a5f] shadow-2xs border border-[#e2d8c7]'
+                    : 'text-[#7a6f64] hover:text-[#2c221e]'
+                }`}
+              >
+                Né D-Dots & Ez
+              </button>
+              <button
+                type="button"
                 onClick={() => setLseSubTab('l4e')}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
                   lseSubTab === 'l4e'
                     ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
                     : 'text-[#7a6f64] hover:text-[#2c221e]'
                 }`}
               >
-                4c: Cột M (L4E)
+                4c: L4E Cột M
+              </button>
+              <button
+                type="button"
+                onClick={() => setLseSubTab('eolr')}
+                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                  lseSubTab === 'eolr'
+                    ? 'bg-white text-[#9d0208] shadow-2xs border border-[#e2d8c7]'
+                    : 'text-[#7a6f64] hover:text-[#2c221e]'
+                }`}
+              >
+                EOLR Master
               </button>
             </div>
 
@@ -787,14 +864,217 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                 ))}
               </div>
             )}
+
+            {/* ── NỘI DUNG FAST EO: NHẬN BIẾT NHANH EO QUA FD ── */}
+            {lseSubTab === 'fast_eo' && (
+              <div className="space-y-3">
+                <div className="p-3 bg-[#f0f7f9] rounded-2xl border border-[#c4e0e8]">
+                  <h4 className="text-xs font-bold text-[#1b4965] flex items-center gap-1.5 mb-1">
+                    <Zap className="w-3.5 h-3.5 text-[#2b72a6]" />
+                    <span>{FAST_EO_GUIDE.title}</span>
+                  </h4>
+                  <p className="text-[11px] text-[#2c5364] leading-snug">
+                    {FAST_EO_GUIDE.principle}
+                  </p>
+                  <div className="mt-2 p-2 bg-white/80 rounded-xl font-mono text-[11px] font-bold text-[#1b4965] border border-[#d2e7ee]">
+                    👉 {FAST_EO_GUIDE.formula}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {FAST_EO_GUIDE.steps.map((st, i) => (
+                    <div key={i} className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs">
+                      <h5 className="text-xs font-bold text-[#2c221e] mb-1">{st.title}</h5>
+                      <p className="text-[11px] text-[#5c4f43] whitespace-pre-line leading-relaxed">
+                        {st.content}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-white rounded-2xl border border-[#e8dfcf] overflow-hidden shadow-2xs">
+                  <div className="p-2.5 bg-[#faf6ee] border-b border-[#ebdcca] text-xs font-bold text-[#2c221e]">
+                    Bảng tra cứu nhanh [U Bad] + [Sticker FD]
+                  </div>
+                  <div className="divide-y divide-[#f2e9dc]">
+                    {FAST_EO_GUIDE.lookupTable.map((row, i) => (
+                      <div key={i} className="p-2.5 flex items-center justify-between gap-2 text-[11px]">
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className="px-1.5 py-0.5 rounded-md bg-[#faf6ee] border border-[#e2d8c7] font-mono font-bold text-[#a06030]">
+                            {row.uBadCount} Bad ở U
+                          </span>
+                          <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+                            row.fdStatus === 'bad'
+                              ? 'bg-[#ffe8e8] text-[#c92a2a] border border-[#fcc2c2]'
+                              : 'bg-[#e6fcf5] text-[#0ca678] border border-[#b2f2bb]'
+                          }`}>
+                            FD: {row.fdStatus.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="text-right flex-1 min-w-0">
+                          <span className="font-bold text-[#2c221e] block truncate">{row.inferredCase}</span>
+                          <span className="text-[10px] text-[#706459] block truncate">{row.explanation}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── NỘI DUNG DOTS SKIPPING & EZ L4E ── */}
+            {lseSubTab === 'dots_skip' && (
+              <div className="space-y-3">
+                <div className="p-3 bg-[#fdf8f5] rounded-2xl border border-[#f2d6c9]">
+                  <h4 className="text-xs font-bold text-[#b23a1a] flex items-center gap-1.5 mb-1">
+                    <Flame className="w-3.5 h-3.5 text-[#e07a5f]" />
+                    <span>{DOTS_SKIPPING_GUIDE.title}</span>
+                  </h4>
+                  <p className="text-[11px] text-[#7a4e3f] leading-snug">
+                    {DOTS_SKIPPING_GUIDE.overview}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  {DOTS_SKIPPING_GUIDE.patterns.map((pt) => (
+                    <div key={pt.id} className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs flex flex-col gap-1.5">
+                      <h5 className="text-xs font-bold text-[#2c221e]">{pt.name}</h5>
+                      <p className="text-[11px] text-[#5c4f43]">{pt.condition}</p>
+                      <div className="p-2 bg-[#fff5f5] rounded-xl border border-[#ffc9c9] text-[10px] text-[#c92a2a]">
+                        ⚠️ {pt.standardRule}
+                      </div>
+                      <div className="p-2 bg-[#f0fbf7] rounded-xl border border-[#b2f2bb] text-[10px] text-[#0ca678]">
+                        ✨ <strong>Né Dots:</strong> {pt.skipTrick}
+                      </div>
+                      <div className="p-1.5 bg-[#faf6ee] rounded-xl border border-[#ebdcca] font-mono font-bold text-xs text-[#a06030] text-center">
+                        {pt.formula}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-white rounded-2xl border border-[#e8dfcf] p-3 shadow-2xs space-y-2">
+                  <h5 className="text-xs font-bold text-[#2c221e]">Các thế Ez L4E siêu tốc</h5>
+                  {DOTS_SKIPPING_GUIDE.ezL4ECases.map((ez) => (
+                    <div key={ez.id} className="p-2 bg-[#faf6ee] rounded-xl border border-[#ebdcca] text-[11px]">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-[#2c221e]">{ez.name}</span>
+                        <span className="font-mono font-bold text-[#e07a5f]">{ez.moves}</span>
+                      </div>
+                      <p className="text-[10px] text-[#706459]">{ez.explanation}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── NỘI DUNG EOLR MASTER ── */}
+            {lseSubTab === 'eolr' && (
+              <div className="space-y-3">
+                <div className="p-3 bg-[#fdf2f2] rounded-2xl border border-[#f8c9c9]">
+                  <h4 className="text-xs font-bold text-[#a61e1e] flex items-center gap-1.5 mb-1">
+                    <Trophy className="w-3.5 h-3.5 text-[#e63946]" />
+                    <span>{EOLR_GUIDE.title}</span>
+                  </h4>
+                  <p className="text-[11px] text-[#822a2a] leading-snug">
+                    {EOLR_GUIDE.overview}
+                  </p>
+                  <span className="inline-block mt-2 px-2 py-0.5 bg-[#fa5252] text-white text-[10px] font-bold rounded-full">
+                    ⚡ {EOLR_GUIDE.efficiency}
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  <div className="text-xs font-bold text-[#2c221e]">Các thế EOLR thực chiến tiêu biểu</div>
+                  {EOLR_GUIDE.samples.map((sample) => (
+                    <div key={sample.id} className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs flex flex-col gap-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="px-2 py-0.5 text-[9px] font-bold uppercase rounded-md bg-[#eef5f3] text-[#247c72] border border-[#cbe3dd]">
+                            Nhóm {sample.eoGroup}
+                          </span>
+                          <h5 className="text-xs font-bold text-[#2c221e] mt-1">{sample.name}</h5>
+                        </div>
+                        <span className="text-[10px] font-bold text-[#2b72a6] shrink-0 font-mono">
+                          {sample.savedMoves}
+                        </span>
+                      </div>
+
+                      <div className="p-2 bg-[#faf6ee] rounded-xl border border-[#ebdcca] font-mono font-bold text-xs text-[#a06030] flex items-center justify-between">
+                        <span>Solution: {sample.solution}</span>
+                      </div>
+
+                      <p className="text-[10px] text-[#706459] italic">
+                        💡 {sample.tip}
+                      </p>
+
+                      <div className="flex items-center gap-2 pt-1 border-t border-[#f4ebe1]">
+                        <button
+                          type="button"
+                          onClick={() => handleSetupCase(sample.setupAlg, sample.name, true)}
+                          className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all hover:scale-102 active:scale-98 cursor-pointer"
+                        >
+                          <RotateCcw className="w-3 h-3 text-[#3d5a80]" />
+                          <span>Tập thế này</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRunAlg(sample.solution, sample.name)}
+                          className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-xs transition-all hover:scale-102 active:scale-98 cursor-pointer"
+                        >
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>Chạy EOLR</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
         {/* ─────────────────────────────────────────────────────────────
-            6. TAB 4: TRA CỨU & LUYỆN TẬP 45 CMLL NÂNG CAO
+            6. TAB 4: TRA CỨU & LUYỆN TẬP 45 CMLL NÂNG CAO (2H & OH)
            ───────────────────────────────────────────────────────────── */}
         {activeTab === 'cmll' && (
           <div className="flex-1 overflow-y-auto p-3 sm:p-4 flex flex-col gap-3">
+            {/* Chuyển đổi chế độ 2 Tay (2H) vs 1 Tay (OH) */}
+            <div className="flex bg-[#faf6ee] p-1 rounded-xl border border-[#e4d9c7] gap-1">
+              <button
+                type="button"
+                onClick={() => setCmllMode('2h')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  cmllMode === '2h'
+                    ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
+                    : 'text-[#7a6f64] hover:text-[#2c221e]'
+                }`}
+              >
+                <span>Hai Tay (2H Chuẩn)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setCmllMode('oh')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  cmllMode === 'oh'
+                    ? 'bg-[#3d5a80] text-white shadow-2xs'
+                    : 'text-[#7a6f64] hover:text-[#2c221e]'
+                }`}
+              >
+                <Hand className="w-3.5 h-3.5 text-[#e07a5f]" />
+                <span>Một Tay (OH Tối Ưu)</span>
+              </button>
+            </div>
+
+            {cmllMode === 'oh' && (
+              <div className="p-2.5 bg-[#f0f4f8] rounded-xl border border-[#cbd5e1] text-[11px] text-[#334155] flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#3d5a80] shrink-0" />
+                <span>
+                  <strong>Chế độ OH (One-Handed):</strong> Tối ưu hóa finger-trick 1 tay, né các move F và M phức tạp, ưu tiên tối đa các move &lt;R, U, D, r&gt;.
+                </span>
+              </div>
+            )}
+
             {/* Thanh tìm kiếm & Lọc nhóm */}
             <div className="flex flex-col gap-2 bg-white p-3 rounded-2xl border border-[#e8dfcf] shadow-2xs">
               <div className="flex items-center gap-2 bg-[#faf6ee] px-2.5 py-1.5 rounded-xl border border-[#e4d9c7]">
@@ -832,21 +1112,21 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                           : 'bg-[#faf6ee] text-[#5c4f43] hover:bg-[#f0e7d8] border border-[#e2d8c7]'
                       }`}
                     >
-                      {grp === 'ALL' ? 'Tất cả (45)' : `Nhóm ${grp}`}
+                      {grp === 'ALL' ? (cmllMode === 'oh' ? 'Tất cả OH (42)' : 'Tất cả (45)') : `Nhóm ${grp}`}
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Danh sách 45 thế cờ CMLL */}
+            {/* Danh sách các thế cờ CMLL */}
             <div className="flex flex-col gap-2.5">
               {filteredCMLL.length === 0 ? (
                 <div className="text-center py-10 text-xs text-[#8c7b6c]">
                   Không tìm thấy thế cờ CMLL nào khớp với từ khóa tìm kiếm.
                 </div>
               ) : (
-                filteredCMLL.map((caseItem: CMLLCase) => (
+                filteredCMLL.map((caseItem: any) => (
                   <div
                     key={caseItem.name}
                     className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs hover:border-[#d4c5af] transition-all flex flex-col gap-2"
@@ -857,6 +1137,11 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                           <span className="px-2 py-0.5 text-[9px] font-bold uppercase rounded-md bg-[#eef5f3] text-[#247c72] border border-[#cbe3dd]">
                             Nhóm {caseItem.group}
                           </span>
+                          {cmllMode === 'oh' && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+                              OH 1-Hand
+                            </span>
+                          )}
                           <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">
                             {caseItem.name}
                           </h4>
@@ -864,6 +1149,11 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                         {caseItem.description && (
                           <p className="text-[11px] text-[#706459] mt-1 leading-snug">
                             {caseItem.description}
+                          </p>
+                        )}
+                        {cmllMode === 'oh' && caseItem.standard2HAlg && (
+                          <p className="text-[10px] text-[#8c7b6c] mt-0.5 font-mono">
+                            2H gốc: <span className="text-[#a06030]">{caseItem.standard2HAlg}</span>
                           </p>
                         )}
                       </div>
@@ -906,6 +1196,217 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                 ))
               )}
             </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            7. TAB 5: NÂNG CAO & PRO TIPS (NMC, SUB-X, MEYER 4X4)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'pro_tips' && (
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 flex flex-col gap-3">
+            {/* Sub-tabs Pro Tips */}
+            <div className="flex bg-[#faf6ee] p-1 rounded-xl border border-[#e4d9c7] gap-1">
+              <button
+                type="button"
+                onClick={() => setProSubTab('techniques')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  proSubTab === 'techniques'
+                    ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
+                    : 'text-[#7a6f64] hover:text-[#2c221e]'
+                }`}
+              >
+                Kỹ Thuật Pro
+              </button>
+              <button
+                type="button"
+                onClick={() => setProSubTab('sub_x')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  proSubTab === 'sub_x'
+                    ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
+                    : 'text-[#7a6f64] hover:text-[#2c221e]'
+                }`}
+              >
+                Lộ Trình Sub-X
+              </button>
+              <button
+                type="button"
+                onClick={() => setProSubTab('meyer')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  proSubTab === 'meyer'
+                    ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
+                    : 'text-[#7a6f64] hover:text-[#2c221e]'
+                }`}
+              >
+                Roux 4x4 (Meyer)
+              </button>
+            </div>
+
+            {/* ── NỘI DUNG 1: CÁC KỸ THUẬT PRO ── */}
+            {proSubTab === 'techniques' && (
+              <div className="space-y-3">
+                <div className="p-3 bg-[#fdfaf4] rounded-2xl border border-[#ebdcca] text-xs text-[#706459]">
+                  Tổng hợp 4 kỹ thuật đỉnh cao được các speedcuber hàng đầu phát triển để tối ưu hóa triệt để số lượt xoay (Movecount) và mở rộng không gian giải Roux.
+                </div>
+
+                {PRO_TECHNIQUES.map((tech) => (
+                  <div key={tech.id} className="p-3.5 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="px-2 py-0.5 text-[9px] font-bold rounded-md bg-[#eef5f3] text-[#247c72] border border-[#cbe3dd]">
+                          Kỹ thuật Pro
+                        </span>
+                        <h4 className="text-xs sm:text-sm font-bold text-[#2c221e] mt-1">{tech.title}</h4>
+                        <p className="text-[11px] font-semibold text-[#a06030]">{tech.vietnameseTitle}</p>
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] text-[#5c4f43] leading-relaxed">
+                      {tech.summary}
+                    </p>
+
+                    <div className="p-2.5 bg-[#faf6ee] rounded-xl border border-[#ebdcca] text-[11px] text-[#2c221e] whitespace-pre-line leading-relaxed font-mono">
+                      {tech.howItWorks}
+                    </div>
+
+                    {tech.scramble && (
+                      <div className="p-2 bg-[#fcf9f2] rounded-xl border border-[#ebdcca] text-[10px] space-y-1">
+                        <div className="font-semibold text-[#8c7b6c]">Ví dụ thực chiến:</div>
+                        <div className="font-mono text-[#5c4f43] break-all">Scramble: {tech.scramble}</div>
+                        <div className="font-mono font-bold text-[#e07a5f] break-all">{tech.solution}</div>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[10px]">
+                      <div className="p-2 bg-[#f0fbf7] rounded-xl border border-[#b2f2bb] text-[#0ca678]">
+                        <strong className="block mb-0.5">Ưu điểm:</strong>
+                        <ul className="list-disc list-inside space-y-0.5">
+                          {tech.pros.map((p, i) => <li key={i}>{p}</li>)}
+                        </ul>
+                      </div>
+                      <div className="p-2 bg-[#fff5f5] rounded-xl border border-[#ffc9c9] text-[#c92a2a]">
+                        <strong className="block mb-0.5">Nhược điểm:</strong>
+                        <ul className="list-disc list-inside space-y-0.5">
+                          {tech.cons.map((c, i) => <li key={i}>{c}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* ── NỘI DUNG 2: LỘ TRÌNH SUB-X ── */}
+            {proSubTab === 'sub_x' && (
+              <div className="space-y-3">
+                <div className="p-3 bg-[#f0f7f9] rounded-2xl border border-[#c4e0e8]">
+                  <h4 className="text-xs font-bold text-[#1b4965] flex items-center gap-1.5 mb-1">
+                    <Trophy className="w-3.5 h-3.5 text-[#2b72a6]" />
+                    <span>Lộ trình tiến bộ Sub-X theo chuẩn RouxMethodVN</span>
+                  </h4>
+                  <p className="text-[11px] text-[#2c5364] leading-snug">
+                    Phân bổ mục tiêu số lượt xoay (Movecount) và thời gian cho từng phase từ lúc mới chơi đến mốc Sub-10 đẳng cấp thế giới.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {SUB_X_ROADMAP.map((stage, idx) => (
+                    <div key={idx} className="p-3.5 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs space-y-2.5">
+                      <div className="flex items-center justify-between gap-2 border-b border-[#f2e9dc] pb-2">
+                        <div>
+                          <span className="text-[10px] font-bold text-[#e07a5f] uppercase tracking-wider">
+                            Cấp độ {idx + 1}
+                          </span>
+                          <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">{stage.level}</h4>
+                        </div>
+                        <span className="px-2.5 py-1 bg-[#2a9d8f]/10 text-[#2a9d8f] text-xs font-bold rounded-xl border border-[#2a9d8f]/20 font-mono">
+                          {stage.timeRange}
+                        </span>
+                      </div>
+
+                      {/* Bảng mục tiêu Movecount */}
+                      <div className="grid grid-cols-4 gap-1.5 text-center text-[10px]">
+                        <div className="p-1.5 bg-[#faf6ee] rounded-xl border border-[#ebdcca]">
+                          <span className="text-[#8c7b6c] block text-[9px]">FB Target</span>
+                          <strong className="text-[#a06030] font-mono">{stage.fbMoveTarget}</strong>
+                        </div>
+                        <div className="p-1.5 bg-[#faf6ee] rounded-xl border border-[#ebdcca]">
+                          <span className="text-[#8c7b6c] block text-[9px]">SB Target</span>
+                          <strong className="text-[#a06030] font-mono">{stage.sbMoveTarget}</strong>
+                        </div>
+                        <div className="p-1.5 bg-[#faf6ee] rounded-xl border border-[#ebdcca]">
+                          <span className="text-[#8c7b6c] block text-[9px]">CMLL</span>
+                          <strong className="text-[#2b72a6] font-mono text-[9px] truncate block">{stage.cmllTarget}</strong>
+                        </div>
+                        <div className="p-1.5 bg-[#faf6ee] rounded-xl border border-[#ebdcca]">
+                          <span className="text-[#8c7b6c] block text-[9px]">LSE</span>
+                          <strong className="text-[#0ca678] font-mono text-[9px] truncate block">{stage.lseTarget}</strong>
+                        </div>
+                      </div>
+
+                      <div className="text-[11px] text-[#706459] bg-[#fcf9f2] p-2 rounded-xl border border-[#ebdcca]">
+                        ⏱️ <strong>Phân bổ thời gian (FB-SB-CMLL-LSE):</strong> <span className="font-mono font-bold text-[#2c221e]">{stage.timeSplit}</span>
+                      </div>
+
+                      <div className="space-y-1">
+                        <span className="text-[11px] font-bold text-[#2c221e] block">Trọng tâm kỹ năng:</span>
+                        <ul className="space-y-0.5 text-[11px] text-[#5c4f43]">
+                          {stage.coreFocus.map((f, i) => (
+                            <li key={i} className="flex items-start gap-1.5">
+                              <span className="w-1 h-1 rounded-full bg-[#e07a5f] shrink-0 mt-1.5" />
+                              <span className="leading-snug">{f}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="p-2 bg-[#fdf8f5] rounded-xl border border-[#f2d6c9] text-[10px] text-[#a06030]">
+                        💡 <strong>Lời khuyên:</strong> {stage.advice}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── NỘI DUNG 3: MEYER METHOD 4X4X4 ── */}
+            {proSubTab === 'meyer' && (
+              <div className="space-y-3">
+                <div className="p-3 bg-[#fdf2f2] rounded-2xl border border-[#f8c9c9]">
+                  <h4 className="text-xs font-bold text-[#a61e1e] flex items-center gap-1.5 mb-1">
+                    <Box className="w-3.5 h-3.5 text-[#e63946]" />
+                    <span>Phương Pháp Meyer (Roux trên Rubik 4×4×4)</span>
+                  </h4>
+                  <p className="text-[11px] text-[#822a2a] leading-snug">
+                    Sáng tạo bởi Richard Meyer (Mỹ) nhằm đưa trọn vẹn tư duy Block-building và xoay tầng M của Roux lên khối lớn 4×4×4.
+                  </p>
+                </div>
+
+                <div className="space-y-2.5">
+                  {MEYER_4X4_GUIDE.map((step) => (
+                    <div key={step.stepNumber} className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-[#fde8e8] text-[#c92a2a] text-xs font-bold flex items-center justify-center shrink-0">
+                          {step.stepNumber}
+                        </span>
+                        <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">{step.title}</h4>
+                      </div>
+
+                      <p className="text-[11px] text-[#5c4f43] pl-8">
+                        <strong>Mục tiêu:</strong> {step.objective}
+                      </p>
+
+                      <div className="p-2 bg-[#faf6ee] rounded-xl border border-[#ebdcca] text-[11px] text-[#2c221e] ml-8">
+                        ⚠️ <strong>Nguyên tắc:</strong> {step.keyRule}
+                      </div>
+
+                      <p className="text-[10px] italic text-[#706459] pl-8">
+                        💡 {step.tips}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </aside>
