@@ -6,6 +6,18 @@
 
 ## 📅 2026-10-11
 
+### 🖼️ [Commit pending] — Hình Minh Hoạ Trực Quan (SVG Visual Diagrams) Toàn Diện Cho 45 CMLL & Cẩm Nang LSE (EO & L4E)
+
+* **Mục đích:**
+  - Bổ sung hệ thống hình vẽ minh hoạ trực quan cho toàn bộ 45 thế CMLL và toàn bộ các thế cờ trong Cẩm nang LSE theo yêu cầu của người dùng, giúp người học dễ dàng đối chiếu hình ảnh thực tế trên tay mà không cần phải tự suy đoán.
+  - Xây dựng component `ReferenceDiagrams.tsx` với các sơ đồ chuyên biệt:
+    * **`CMLLDiagram`:** Tự động tính toán hướng xoay và màu sắc thực tế của 4 góc từ thuật toán giải (bằng cách đảo chuỗi move áp dụng lên solved cube), vẽ sơ đồ mặt U (tâm vàng, 4 góc màu thật, 4 cạnh xám) và **4 dải viền xung quanh (B, F, L, R)** thể hiện góc nhìn đèn pha (Headlights), cặp đối xứng (Opposite) hay dạng cột (Columns/Rows) theo đúng chuẩn SpeedcubeDB và RouxMethodVN cho **toàn bộ 45 thế CMLL** và **2-Look CMLL**.
+    * **`EODiagram`:** Sơ đồ 2 tầng (Tầng trên U 4 cạnh và Tầng đáy D 2 cạnh DF/DB) phân biệt rõ ràng cạnh đúng (Good Edge - màu vàng trên U, màu trắng trên D) và cạnh sai (Bad Edge - màu cam đỏ có gạch chéo cảnh báo nổi bật) cho **toàn bộ 11 thế EO** (`3/1 F/B`, `1/1 F/B`, `0/2`, `2o/0`, `2a/0`, `4/0`, `2a/2`, `2o/2`, `4/2`).
+    * **`L4EDiagram`:** Sơ đồ minh hoạ chuyển động cột M cho các thế `D-Dots` (chấm vàng giữa nền trắng đáy D), `Ub`/`Ua` (chu trình 3 cạnh kèm mũi tên định hướng), `H-Perm` (đổi đối diện) và `Z-Perm` (đổi chéo kề).
+* **Files tác động:**
+  - `src/components/ui/ReferenceDiagrams.tsx` *(Mới)*: Khởi tạo các linh kiện SVG `CMLLDiagram`, `EODiagram`, `L4EDiagram` với bộ đệm tính toán màu tự động.
+  - `src/components/ui/LessonDrawer.tsx`: Tích hợp các hình minh hoạ vào danh sách 45 thế CMLL, danh sách 11 thế EO, các thế L4E và 2-Look CMLL.
+
 ### 🧩 [Commit `ecdd617`] — Cẩm nang 2-Look CMLL & LSE Toàn Diện, Lộ Trình Giải Theo Cụm (Chunk Breakdown) & Tư Duy Block-Building
 
 * **Mục đích:**

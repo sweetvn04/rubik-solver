@@ -299,3 +299,7 @@
 | 275 | 2026-10-11 23:14 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit ecdd617"` | Đồng bộ commit hash ecdd617 vào CHANGELOG và COMMAND_LOG | Commit `c8cbe09` |
 | 276 | 2026-10-11 23:14 | `git commit -am "docs: finalize COMMAND_LOG.md with command 275"` | Lưu commit nhật ký lệnh 275 vào COMMAND_LOG.md | Commit `d153ed1` |
 | 277 | 2026-10-11 23:14 | `git status` | Kiểm tra trạng thái git working tree sau chuỗi commit docs | Clean 100% |
+| 278 | 2026-10-11 23:18 | `npx tsx scratch/test_cmll_visual.ts` | Chạy test xác thực trích xuất màu sắc 4 góc và 4 viền xung quanh của CMLL | Exit 0 — Trích xuất thành công |
+| 279 | 2026-10-11 23:18 | `rm -f scratch/test_cmll_visual.ts` | Dọn dẹp script test trích xuất màu CMLL | Hoàn tất |
+| 280 | 2026-10-11 23:20 | `npm run build` | Build kiểm tra TypeScript & Vite sau khi tạo ReferenceDiagrams và tích hợp vào LessonDrawer | Exit 0 — Build thành công trong 620ms |
+| 281 | 2026-10-11 23:21 | `git status` | Kiểm tra trạng thái git working tree trước khi commit tính năng hình minh hoạ | Nhận diện LessonDrawer.tsx và ReferenceDiagrams.tsx |

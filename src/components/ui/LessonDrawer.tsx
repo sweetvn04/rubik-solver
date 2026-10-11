@@ -15,6 +15,7 @@ import {
 import { parseAlgorithm } from '../../engine/moveParser';
 import { invertMove } from '../../engine/tutorHelper';
 import { CubeDiagram2D } from './CubeDiagram2D';
+import { CMLLDiagram, EODiagram, L4EDiagram } from './ReferenceDiagrams';
 import {
   X,
   BookOpen,
@@ -484,18 +485,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                       </p>
                     </div>
 
-                    {/* Mini 3x3 Grid Preview mặt U */}
-                    <div className="w-10 h-10 p-0.5 bg-[#1a1715] rounded-md grid grid-cols-3 gap-0.5 shrink-0 shadow-2xs">
-                      {caseItem.topFaceMatrix.flatMap((row, rIdx) =>
-                        row.map((cell, cIdx) => (
-                          <div
-                            key={`${rIdx}-${cIdx}`}
-                            className={`w-full h-full rounded-[1px] ${
-                              cell === 'Y' ? 'bg-[#e5a922]' : 'bg-[#7a7267]'
-                            }`}
-                          />
-                        ))
-                      )}
+                    {/* Sơ đồ CMLL mặt U & 4 viền chuẩn Speedcubing */}
+                    <div className="flex flex-col items-center shrink-0">
+                      <CMLLDiagram alg={caseItem.alg} size={52} />
+                      <span className="text-[9px] text-[#8c7b6c] mt-0.5 font-medium">Mặt U & viền</span>
                     </div>
                   </div>
 
@@ -631,9 +624,9 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                       className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs hover:border-[#d4c5af] transition-all flex flex-col gap-2"
                     >
                       {/* Header thế EO */}
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <div className="flex items-center gap-1.5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="px-2 py-0.5 text-xs font-mono font-black rounded-md bg-[#eaf4f2] text-[#247c72] border border-[#cde5e0]">
                               {caseItem.code}
                             </span>
@@ -644,12 +637,16 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                           <div className="text-[10px] text-[#706459] font-medium mt-0.5">
                             Số cạnh sai: {caseItem.badCount} ({caseItem.badU} ở U, {caseItem.badD} ở D)
                           </div>
+                          <div className="mt-1.5 flex items-center gap-1">
+                            <span className="text-[10px] font-bold text-[#8c7b6c]">Trigger:</span>
+                            <span className="px-2 py-0.5 font-mono font-bold text-[11px] bg-[#faf6ee] text-[#e07a5f] rounded-lg border border-[#ebdcca]">
+                              {caseItem.triggerAlg}
+                            </span>
+                          </div>
                         </div>
 
-                        {/* Badge trigger ngắn */}
-                        <span className="px-2 py-1 font-mono font-bold text-xs bg-[#faf6ee] text-[#e07a5f] rounded-lg border border-[#ebdcca] shrink-0">
-                          {caseItem.triggerAlg}
-                        </span>
+                        {/* Hình minh hoạ Bad Edge tầng U & tầng D */}
+                        <EODiagram diagramU={caseItem.diagramU} diagramD={caseItem.diagramD} />
                       </div>
 
                       {/* Hướng dẫn nhận biết & cách đặt khối */}
@@ -743,13 +740,18 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                     key={caseItem.id}
                     className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs flex flex-col gap-2"
                   >
-                    <div>
-                      <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">
-                        {caseItem.name}
-                      </h4>
-                      <p className="text-[11px] text-[#5c4f43] mt-1 leading-snug">
-                        {caseItem.recognition}
-                      </p>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">
+                          {caseItem.name}
+                        </h4>
+                        <p className="text-[11px] text-[#5c4f43] mt-1 leading-snug">
+                          {caseItem.recognition}
+                        </p>
+                      </div>
+
+                      {/* Sơ đồ hoán vị cột M */}
+                      <L4EDiagram caseId={caseItem.id} />
                     </div>
 
                     {/* Công thức */}
@@ -849,9 +851,9 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                     key={caseItem.name}
                     className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs hover:border-[#d4c5af] transition-all flex flex-col gap-2"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <div className="flex items-center gap-1.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="px-2 py-0.5 text-[9px] font-bold uppercase rounded-md bg-[#eef5f3] text-[#247c72] border border-[#cbe3dd]">
                             Nhóm {caseItem.group}
                           </span>
@@ -860,10 +862,16 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                           </h4>
                         </div>
                         {caseItem.description && (
-                          <p className="text-[11px] text-[#706459] mt-0.5">
+                          <p className="text-[11px] text-[#706459] mt-1 leading-snug">
                             {caseItem.description}
                           </p>
                         )}
+                      </div>
+
+                      {/* Sơ đồ 4 góc mặt U & 4 viền chuẩn Speedcubing */}
+                      <div className="flex flex-col items-center shrink-0">
+                        <CMLLDiagram alg={caseItem.alg} size={54} />
+                        <span className="text-[9px] text-[#8c7b6c] mt-0.5 font-medium">Mặt U & viền</span>
                       </div>
                     </div>
 
