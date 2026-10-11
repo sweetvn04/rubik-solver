@@ -276,3 +276,5 @@
 | 252 | 2026-10-10 00:26 | `git commit -am "docs: finalize COMMAND_LOG.md with command 251"` | Lưu commit nhật ký lệnh 251 vào COMMAND_LOG.md | Commit `6e148f4` |
 | 253 | 2026-10-10 00:26 | `git commit -am "docs: log command 252 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 252 vào COMMAND_LOG.md | Commit `7492c4c` |
 | 254 | 2026-10-10 00:26 | `git status` | Kiểm tra trạng thái git working tree sau chuỗi commit docs | Sạch sẽ 100% |
+| 255 | 2026-10-11 19:30 | `npm run build` | Build kiểm tra TypeScript + Vite sau khi thêm Phase 1 & 2 features | Exit 0 — Build thành công |
+| 256 | 2026-10-11 19:30 | `git add -A && git commit -m "feat: interactive lesson steps, face orientation legend & camera reset"` | Commit toàn bộ Phase 1 (OrientationLegend, camera reset) + Phase 2 (CubeDiagram2D, sub-steps, LessonDrawer rewrite) | Commit `0990756` |

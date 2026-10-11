@@ -4,6 +4,27 @@
 
 ---
 
+## 📅 2026-10-11
+
+### 🧭 [Commit `0990756`] — Hệ thống hướng dẫn giải tương tác (Phase 1 + Phase 2)
+
+#### Phase 1 — Orientation UX: Quy ước mặt & Reset góc nhìn
+
+* **Mục đích:** Người dùng xoay chuột loạn thì mất phương hướng, không biết mặt nào là F/B/R/L. Cần legend cố định và nút snap camera về chuẩn Roux.
+* **Files tác động:**
+  - `src/components/ui/OrientationLegend.tsx` *(Mới)*: Panel thu gọn/mở rộng ở góc dưới-trái màn hình. Hiển thị 6 ô màu sáp → tên mặt (U/D/F/B/R/L) theo `CUBE_PALETTE`. Ẩn khi Tutor Mode bật.
+  - `src/components/cube/RubikCanvas.tsx`: Thêm `ref` cho `OrbitControls` (type `OrbitControlsImpl` từ `three-stdlib`). Expose hàm `handleResetCamera` qua prop `onResetCamera?: (fn) => void` — khi gọi sẽ snap camera về `[8.1, 6.55, 9.35]` và target về `[0, 0, 0]`.
+  - `src/App.tsx`: Thêm nút **"Góc nhìn"** (icon `LocateFixed`) ở header-right gọi `resetCameraRef.current()`. Mount `<OrientationLegend />` trong `<section>` canvas khi không ở Tutor Mode.
+
+#### Phase 2 — Interactive Sub-step Lessons: Diagram + Demo trên Rubik 3D
+
+* **Mục đích:** Phần giáo trình 4 bước trước đây chỉ là bullet list chung chung. Nay chia thành sub-steps cụ thể có hình minh hoạ SVG và liên kết trực tiếp với khối Rubik 3D.
+* **Files tác động:**
+  - `src/types/index.ts`: Thêm interface `LessonStep` với các trường `title`, `description`, `diagram` (CubeDiagramConfig), `demoAlg`, `setupAlg`, `highlightPhase`, `note`.
+  - `src/components/ui/CubeDiagram2D.tsx` *(Mới)*: SVG component vẽ unfolded net (cross layout 4×3) của Rubik. Hỗ trợ: màu 9 ô mỗi mặt (`FaceColors`), `highlightCells` tô viền vàng, `focusFaces` làm mờ các mặt không liên quan. Face labels nhỏ ở góc trên-trái mỗi mặt.
+  - `src/data/lessonsData.ts`: Viết lại hoàn toàn. Thêm field `steps: LessonStep[]` vào mỗi `Lesson`. Mỗi bước Roux có 3-4 sub-steps với diagram configs đầy đủ: **FB** (4 sub-steps: định hướng → DL → FL → BL), **SB** (3 sub-steps: DR → FR → BR), **CMLL** (3 sub-steps: nhận diện 8 nhóm → đọc hoán vị → áp công thức), **LSE** (4 sub-steps: nhận diện Bad Edges → EO → UL/UR → L4E).
+  - `src/components/ui/LessonDrawer.tsx`: Viết lại Tab "Giáo trình 4 Bước". Thêm: sub-step navigator (dot indicators + prev/next arrows), diagram + description side-by-side, toggle note, nút **"Xem Demo trên Rubik 3D"** (chains `setupAlg → demoAlg` trên live 3D cube). Section mục tiêu/kỹ thuật/tips thu gọn vào `<details>` element.
+
 ## 📅 2026-10-10
 
 ### 📖 [Commit `0a6d078`] — Hoàn thiện Toàn diện README Portfolio, Đánh dấu Kế hoạch plan.md & Cấu hình Relative Base Vite
