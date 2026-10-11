@@ -6,7 +6,28 @@
 
 ## 📅 2026-10-11
 
-### 🖼️ [Commit `528f06f`] — Hình Minh Hoạ Trực Quan (SVG Visual Diagrams) Toàn Diện Cho 45 CMLL & Cẩm Nang LSE (EO & L4E)
+### 🧱 [Commit `749cb6a`] — Nâng Cấp Toàn Diện Hướng Dẫn First Block (FB) & Second Block (SB) Với 12 Sub-steps Chuyên Sâu, Tư Duy Block-Building & Demo 3D
+
+* **Mục đích:**
+  - Giải quyết trăn trở lớn nhất của người mới học Roux: "làm theo từng bước thì không nhớ và không hiểu bản chất để tự giải một mình". Phương pháp Roux dựa trên tư duy xây khối tự do (Block-building) thay vì học vẹt công thức CFOP, do đó cần một hệ thống lý thuyết trực quan, chia nhỏ từng giai đoạn Line $\rightarrow$ Square $\rightarrow$ Block, giải thích rõ cơ chế ghép cặp, unslotting và tận dụng tầng M/wide move r.
+  - Mở rộng chi tiết **First Block (FB)** thành 6 sub-steps bài bản:
+    * `1a. Triết lý Block-building (Line → Square → Block)`: Khái niệm cốt lõi dựng khối tự do, tự do xoay các lớp R, M, U mà không bị gò bó.
+    * `1b. Mỏ neo DL (Trắng - Đỏ) — Nền móng đầu tiên`: Đặt viên cạnh DL làm chuẩn đáy để định hình vị trí cho toàn bộ khối 1×2×3 bên trái.
+    * `1c. Dựng Back Square 1×2×2 (Cặp sau BL)`: Hướng dẫn ghép cặp cạnh BL (Xanh lam - Đỏ) với góc DBL (Trắng - Xanh lam - Đỏ) rồi hạ khóa vào DL để tạo khối vuông 1×2×2 phía sau (ưu tiên làm phía sau trước để mở rộng tầm nhìn phía trước).
+    * `1d. Dựng Front Square 1×2×2 (Cặp trước FL) → Hoàn tất 1×2×3`: Ghép cặp cạnh FL (Xanh lá - Đỏ) và góc DFL (Trắng - Xanh lá - Đỏ) mở rộng thành khối hoàn chỉnh 1×2×3 bên trái.
+    * `1e. 3 Thế ghép cặp góc-cạnh cơ bản`: Đi sâu vào 3 trường hợp ghép cặp kinh điển trên tầng U: Cùng màu trên đỉnh (`R U R'`), Khác màu trên đỉnh (`U' R U R'`), và Trắng/Đáy hướng lên đỉnh (`R U2 R'`).
+    * `1f. Tận dụng tầng M và R tự do`: Mẹo xoay ít bước đỉnh cao của Roux nhờ việc các lớp R và M chưa bị khóa, dùng M slice giấu cạnh hoặc đưa góc vào vị trí thuận lợi.
+  - Mở rộng chi tiết **Second Block (SB)** thành 6 sub-steps bài bản:
+    * `2a. Ràng buộc bất biến <R, r, M, U> (Bảo vệ khối FB)`: Nguyên tắc vàng bảo vệ First Block ở lớp L, chỉ xoay tập nước đi $\langle R, r, M, U \rangle$, tuyệt đối không dùng L, F, B.
+    * `2b. Mỏ neo DR (Trắng - Cam) — Mở đầu khối đối xứng`: Đưa cạnh DR về vị trí bằng `M2` hoặc `r U' r'`, đặt móng cho khối phải.
+    * `2c. Kỹ thuật Unslotting (Giải cứu góc/cạnh kẹt)`: Hướng dẫn kỹ thuật nhấc viên góc/cạnh bị kẹt ở khe sai hoặc ngược hướng lên tầng U an toàn mà không phá vỡ các phần đã hoàn thành.
+    * `2d. Dựng Back Square 1×2×2 bên phải (Cặp sau BR)`: Ghép cặp BR (Xanh lam - Cam) và góc DBR (Trắng - Xanh lam - Cam) hạ vào khe sau bên phải.
+    * `2e. Dựng Front Square 1×2×2 bên phải (Cặp trước FR) → Hoàn tất F2B`: Ghép cặp FR (Xanh lá - Cam) và góc DFR (Trắng - Xanh lá - Cam) hoàn tất hai khối 1×2×3 (First Two Blocks - F2B).
+    * `2f. Tuyệt chiêu Wide Move r & Tầng M trong Second Block`: Tận dụng wide move `r` (`Rw`) và tầng giữa `M` để nhấc cạnh từ tầng D lên U mượt mà và tiết kiệm moves.
+  - Trang bị cho toàn bộ 12 sub-steps sơ đồ SVG visual `diagram`, chuỗi `setupAlg` và `demoAlg` hỗ trợ xem Demo 3D tương tác trực tiếp trên khối Rubik.
+* **Files tác động:**
+  - `src/data/lessonsData.ts`: Thay thế cấu trúc cũ của Step 1 và Step 2 bằng 12 sub-steps chi tiết, tối ưu hoá `keyTechniques`, `objectives`, `proTips`.
+
 
 * **Mục đích:**
   - Bổ sung hệ thống hình vẽ minh hoạ trực quan cho toàn bộ 45 thế CMLL và toàn bộ các thế cờ trong Cẩm nang LSE theo yêu cầu của người dùng, giúp người học dễ dàng đối chiếu hình ảnh thực tế trên tay mà không cần phải tự suy đoán.

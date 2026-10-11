@@ -307,3 +307,9 @@
 | 283 | 2026-10-11 23:21 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 528f06f"` | Đồng bộ commit hash 528f06f vào CHANGELOG và COMMAND_LOG | Commit `5497db0` |
 | 284 | 2026-10-11 23:22 | `git commit -am "docs: finalize COMMAND_LOG.md with command 283"` | Lưu commit nhật ký lệnh 283 vào COMMAND_LOG.md | Commit `1b2592d` |
 | 285 | 2026-10-11 23:22 | `git status` | Kiểm tra trạng thái git working tree sau chuỗi commit docs | Clean 100% |
+| 286 | 2026-10-11 23:48 | `npm run build` | Kiểm tra TypeScript compilation và Vite production build sau khi mở rộng FB và SB | Exit 0 — Build thành công trong 683ms |
+| 287 | 2026-10-11 23:49 | `git status` | Kiểm tra trạng thái git working tree | Modified: src/data/lessonsData.ts |
+| 288 | 2026-10-11 23:49 | `git diff --stat` | Thống kê số lượng dòng thay đổi trong lessonsData.ts | +174 -79 dòng |
+| 289 | 2026-10-11 23:49 | `git add src/data/lessonsData.ts && git commit -m "feat: expand First Block and Second Block with 12 comprehensive block-building lessons, diagrams, and 3D demos"` | Commit tính năng mở rộng 12 sub-steps cho First Block và Second Block | Commit `749cb6a` |
+
+
