@@ -24,8 +24,8 @@ export const COLOR_NAMES: Record<ColorId, string> = {
   [COLOR_D]: 'D (Trắng)',
   [COLOR_F]: 'F (Xanh lá)',
   [COLOR_B]: 'B (Xanh lam)',
-  [COLOR_L]: 'L (Cam)',
-  [COLOR_R]: 'R (Đỏ)',
+  [COLOR_L]: 'L (Đỏ)',
+  [COLOR_R]: 'R (Cam)',
 };
 
 export const COLOR_CHARS = ['U', 'D', 'F', 'B', 'L', 'R'] as const;
@@ -294,8 +294,8 @@ export function cubiesToSolverState(cubies: CubieState[]): SolverCubeState {
     if (hex.includes('dfdcce')) return COLOR_D;
     if (hex.includes('38934c')) return COLOR_F;
     if (hex.includes('2f7ebb')) return COLOR_B;
-    if (hex.includes('d86629')) return COLOR_L;
-    if (hex.includes('9d2825')) return COLOR_R;
+    if (hex.includes('9d2825')) return COLOR_L;
+    if (hex.includes('d86629')) return COLOR_R;
     return null;
   };
 

@@ -76,7 +76,7 @@ const FACES: FaceMeta[] = [
   {
     key: 'R',
     name: 'Mặt R (Phải)',
-    sub: 'Màu Đỏ ở bên tay phải',
+    sub: 'Màu Cam ở bên tay phải',
     centerColor: COLOR_R,
     centerIndex: FACELETS.R_C,
     indices: [
@@ -100,7 +100,7 @@ const FACES: FaceMeta[] = [
   {
     key: 'L',
     name: 'Mặt L (Trái)',
-    sub: 'Màu Cam ở bên tay trái',
+    sub: 'Màu Đỏ ở bên tay trái',
     centerColor: COLOR_L,
     centerIndex: FACELETS.L_C,
     indices: [
@@ -128,8 +128,8 @@ const COLOR_OPTIONS: Array<{ id: ColorId; name: string; keyHint: string }> = [
   { id: COLOR_D, name: 'Trắng', keyHint: '2' },
   { id: COLOR_F, name: 'Xanh lá', keyHint: '3' },
   { id: COLOR_B, name: 'Xanh lam', keyHint: '4' },
-  { id: COLOR_L, name: 'Cam', keyHint: '5' },
-  { id: COLOR_R, name: 'Đỏ', keyHint: '6' },
+  { id: COLOR_L, name: 'Đỏ', keyHint: '5' },
+  { id: COLOR_R, name: 'Cam', keyHint: '6' },
 ];
 
 export const CubeInputModal: React.FC<CubeInputModalProps> = ({ isOpen, onClose }) => {

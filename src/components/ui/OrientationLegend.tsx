@@ -18,8 +18,8 @@ const FACE_ENTRIES: FaceEntry[] = [
   { face: 'D', label: 'D — Dưới', color: CUBE_PALETTE.D, hint: 'Down (Trắng)' },
   { face: 'F', label: 'F — Trước', color: CUBE_PALETTE.F, hint: 'Front (Xanh lá)' },
   { face: 'B', label: 'B — Sau',  color: CUBE_PALETTE.B, hint: 'Back (Xanh lam)' },
-  { face: 'R', label: 'R — Phải', color: CUBE_PALETTE.R, hint: 'Right (Đỏ)' },
-  { face: 'L', label: 'L — Trái', color: CUBE_PALETTE.L, hint: 'Left (Cam)' },
+  { face: 'L', label: 'L — Trái', color: CUBE_PALETTE.L, hint: 'Left (Đỏ)' },
+  { face: 'R', label: 'R — Phải', color: CUBE_PALETTE.R, hint: 'Right (Cam)' },
 ];
 
 export const OrientationLegend: React.FC = () => {

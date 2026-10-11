@@ -3,17 +3,17 @@ import { CUBE_PALETTE } from '../types';
 import type { FaceColors } from '../components/ui/CubeDiagram2D';
 
 // Helpers màu tắt gọn
-const Y = CUBE_PALETTE.U;   // Vàng
-const W = CUBE_PALETTE.D;   // Trắng
+const Y = CUBE_PALETTE.U;   // Vàng (Up)
+const W = CUBE_PALETTE.D;   // Trắng (Down)
 const G = CUBE_PALETTE.F;   // Xanh lá (Front)
 const B = CUBE_PALETTE.B;   // Xanh lam (Back)
-const R = CUBE_PALETTE.R;   // Đỏ (Right)
-const O = CUBE_PALETTE.L;   // Cam (Left)
+const RED = CUBE_PALETTE.L; // Đỏ (Left - L khi U=Vàng, F=Xanh lá)
+const ORA = CUBE_PALETTE.R; // Cam (Right - R khi U=Vàng, F=Xanh lá)
 const X = '#c8c2b8';        // Xám (không quan tâm / ẩn)
 
 const _9 = (c: string): FaceColors => [c,c,c, c,c,c, c,c,c];
 const solved = (face: string): FaceColors => {
-  const m: Record<string,string> = { U:Y, D:W, F:G, B:B, R:R, L:O };
+  const m: Record<string,string> = { U:Y, D:W, F:G, B:B, R:ORA, L:RED };
   const c = m[face] ?? X;
   return _9(c);
 };
@@ -45,14 +45,14 @@ export const ROUX_LESSONS: Lesson[] = [
     subtitle: 'Xây dựng khối 1×2×3 ở bên trái',
     avgMoves: '7 - 10 moves',
     description:
-      'First Block là bước nền tảng mở đầu của phương pháp Roux. Mục tiêu là ghép một khối 1×2×3 hoàn chỉnh ở bên trái (mặc định mặt L màu Cam, mặt D màu Trắng). Điểm đặc biệt của Roux là bạn không cần làm dấu thập (Cross) như CFOP, mà tự do ghép các cặp viên theo trực giác.',
+      'First Block là bước nền tảng mở đầu của phương pháp Roux. Mục tiêu là ghép một khối 1×2×3 hoàn chỉnh ở bên trái (mặt L màu Đỏ, mặt D màu Trắng). Điểm đặc biệt của Roux là bạn không cần làm dấu thập (Cross) như CFOP, mà tự do ghép các cặp viên theo trực giác.',
     objectives: [
-      'Đưa tâm mặt Trái (L - Cam) và cạnh Đáy Trái (DL - Trắng/Cam) về đúng vị trí.',
-      'Ghép cặp F2L góc-cạnh phía trước: cạnh FL (Cam/Xanh lá) + góc DFL (Trắng/Cam/Xanh lá).',
-      'Ghép cặp F2L góc-cạnh phía sau: cạnh BL (Cam/Xanh lam) + góc DBL (Trắng/Cam/Xanh lam).',
+      'Đưa tâm mặt Trái (L - Đỏ) và cạnh Đáy Trái (DL - Trắng/Đỏ) về đúng vị trí.',
+      'Ghép cặp F2L góc-cạnh phía trước: cạnh FL (Đỏ/Xanh lá) + góc DFL (Trắng/Đỏ/Xanh lá).',
+      'Ghép cặp F2L góc-cạnh phía sau: cạnh BL (Đỏ/Xanh lam) + góc DBL (Trắng/Đỏ/Xanh lam).',
     ],
     keyTechniques: [
-      'Xây cạnh DL trước: Đưa viên cạnh Trắng/Cam về tầng D mặt L làm "mỏ neo".',
+      'Xây cạnh DL trước: Đưa viên cạnh Trắng/Đỏ về tầng D mặt L làm "mỏ neo".',
       'Ghép cặp ở tầng trên (U) rồi hạ xuống tầng đáy bằng các move l, L, U, F.',
       'Tận dụng tầng giữa M và mặt R tự do vì chưa bị khóa bởi bất kỳ khối nào.',
     ],
@@ -64,7 +64,7 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '1a. Định hướng chuẩn',
         description:
-          'Giữ khối Rubik sao cho mặt Xanh lá (F) hướng về phía bạn và mặt Trắng (D) ở đáy. Đây là quy ước chuẩn Roux — bạn sẽ xây First Block ở cột bên Trái (mặt Cam - L).',
+          'Giữ khối Rubik sao cho mặt Xanh lá (F) hướng về phía bạn và mặt Trắng (D) ở đáy, mặt Vàng (U) ở trên. Đây là quy ước chuẩn Roux — bạn sẽ xây First Block ở cột bên Trái (mặt Đỏ - L).',
         diagram: {
           U: _9(X),
           D: solved('D'),
@@ -75,19 +75,19 @@ export const ROUX_LESSONS: Lesson[] = [
           focusFaces: ['F', 'D', 'L'],
         },
         highlightPhase: 'all',
-        note: 'Bước này không xoay gì cả, chỉ cầm đúng hướng.',
+        note: 'Bước này không xoay gì cả, chỉ cầm đúng hướng: Xanh lá trước, Vàng trên, Đỏ bên trái.',
       },
       {
         title: '1b. Đưa cạnh DL về đúng vị trí',
         description:
-          'Tìm viên cạnh Trắng/Cam (DL) — cạnh có màu Trắng và Cam. Đưa nó về vị trí đáy-trái (DL): màu Trắng nhìn xuống dưới, màu Cam nhìn sang trái.',
+          'Tìm viên cạnh Trắng/Đỏ (DL) — cạnh có màu Trắng và Đỏ. Đưa nó về vị trí đáy-trái (DL): màu Trắng nhìn xuống dưới, màu Đỏ nhìn sang trái.',
         diagram: {
           U: _9(X),
-          D: [X,X,X, O,W,X, X,X,X],
-          F: [X,X,X, X,X,X, O,X,X],
+          D: [X,X,X, RED,W,X, X,X,X],
+          F: [X,X,X, X,X,X, RED,X,X],
           B: _9(X),
           R: _9(X),
-          L: [X,X,X, X,O,X, X,W,X],
+          L: [X,X,X, X,RED,X, X,W,X],
           highlightCells: ['D-1-0', 'L-2-1'],
           focusFaces: ['D', 'L', 'F'],
         },
@@ -99,14 +99,14 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '1c. Ghép cặp FL — góc-cạnh phía trước',
         description:
-          'Tìm cặp: viên góc DFL (Trắng/Cam/Xanh lá) + viên cạnh FL (Cam/Xanh lá). Ghép chúng thành đôi trên tầng U, rồi dùng move L để thả xuống vào vị trí.',
+          'Tìm cặp: viên góc DFL (Trắng/Đỏ/Xanh lá) + viên cạnh FL (Đỏ/Xanh lá). Ghép chúng thành đôi trên tầng U, rồi dùng move L để thả xuống vào vị trí.',
         diagram: {
           U: _9(X),
-          D: [O,X,X, X,W,X, X,X,X],
-          F: [X,X,X, X,X,X, O,G,X],
+          D: [RED,X,X, X,W,X, X,X,X],
+          F: [X,X,X, X,X,X, RED,G,X],
           B: _9(X),
           R: _9(X),
-          L: [X,X,X, X,O,X, G,W,X],
+          L: [X,X,X, X,RED,X, G,W,X],
           highlightCells: ['D-0-0','F-2-0','F-2-1','L-2-0','L-2-1'],
           focusFaces: ['D', 'F', 'L'],
         },
@@ -118,21 +118,21 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '1d. Ghép cặp BL — góc-cạnh phía sau',
         description:
-          'Tìm cặp: viên góc DBL (Trắng/Cam/Xanh lam) + viên cạnh BL (Cam/Xanh lam). Ghép đôi ở tầng U, rồi dùng l\' (wide) hoặc L\' B để đặt vào vị trí BL.',
+          'Tìm cặp: viên góc DBL (Trắng/Đỏ/Xanh lam) + viên cạnh BL (Đỏ/Xanh lam). Ghép đôi ở tầng U, rồi dùng l\' (wide) hoặc L\' B để đặt vào vị trí BL.',
         diagram: {
           U: _9(X),
-          D: [O,X,X, X,W,X, O,X,X],
-          F: [X,X,X, X,X,X, O,G,X],
-          B: [X,X,X, X,X,X, X,B,O],
+          D: [RED,X,X, X,W,X, RED,X,X],
+          F: [X,X,X, X,X,X, RED,G,X],
+          B: [X,X,X, X,X,X, X,B,RED],
           R: _9(X),
-          L: [X,X,X, X,O,X, G,W,B],
+          L: [X,X,X, X,RED,X, G,W,B],
           highlightCells: ['D-2-0','B-2-2','B-2-1','L-2-2','L-2-1'],
           focusFaces: ['D', 'B', 'L'],
         },
         demoAlg: "U' L U L'",
         setupAlg: "L U' L' U",
         highlightPhase: 'fb',
-        note: 'Sau khi hoàn thành bước này, cột FB Cam-Trắng bên trái đã hoàn chỉnh!',
+        note: 'Sau khi hoàn thành bước này, cột FB Đỏ-Trắng bên trái đã hoàn chỉnh!',
       },
     ],
   },
@@ -148,9 +148,9 @@ export const ROUX_LESSONS: Lesson[] = [
     subtitle: 'Xây dựng khối 1×2×3 đối xứng ở bên phải',
     avgMoves: '10 - 15 moves',
     description:
-      'Sau khi đã hoàn thành First Block bên trái, bạn sẽ tiếp tục dựng một khối 1×2×3 đối xứng ở bên phải (mặt R màu Đỏ, mặt D màu Trắng). Điểm quan trọng nhất: bạn chỉ được sử dụng các bước xoay trong tập <R, r, M, U> để tuyệt đối không phá vỡ khối First Block bên trái.',
+      'Sau khi đã hoàn thành First Block bên trái, bạn sẽ tiếp tục dựng một khối 1×2×3 đối xứng ở bên phải (mặt R màu Cam, mặt D màu Trắng). Điểm quan trọng nhất: bạn chỉ được sử dụng các bước xoay trong tập <R, r, M, U> để tuyệt đối không phá vỡ khối First Block bên trái.',
     objectives: [
-      'Đưa cạnh Đáy Phải (DR - Trắng/Đỏ) vào đúng vị trí.',
+      'Đưa cạnh Đáy Phải (DR - Trắng/Cam) vào đúng vị trí.',
       'Ghép cặp góc-cạnh phía sau bên phải: cạnh BR + góc DBR.',
       'Ghép cặp góc-cạnh phía trước bên phải: cạnh FR + góc DFR.',
     ],
@@ -167,13 +167,13 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '2a. Đưa cạnh DR về vị trí',
         description:
-          'Tìm viên cạnh Trắng/Đỏ (DR). Đưa nó về đúng vị trí đáy-phải (DR) mà không phá khối FB bên trái. Dùng move R2, U R2 hoặc M2.',
+          'Tìm viên cạnh Trắng/Cam (DR). Đưa nó về đúng vị trí đáy-phải (DR) mà không phá khối FB bên trái. Dùng move R2, U R2 hoặc M2.',
         diagram: {
           U: _9(X),
-          D: [X,X,X, X,W,R, X,X,X],
-          F: [X,X,X, X,X,R, X,X,X],
+          D: [X,X,X, X,W,ORA, X,X,X],
+          F: [X,X,X, X,X,ORA, X,X,X],
           B: _9(X),
-          R: [X,X,X, X,R,X, X,W,X],
+          R: [X,X,X, X,ORA,X, X,W,X],
           L: solved('L'),
           highlightCells: ['D-1-2','R-2-1'],
           focusFaces: ['D', 'R', 'L'],
@@ -186,12 +186,12 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '2b. Ghép cặp FR — góc-cạnh phía trước',
         description:
-          'Tìm cặp: góc DFR (Trắng/Đỏ/Xanh lá) + cạnh FR (Đỏ/Xanh lá). Ghép chúng ở tầng U bằng wide move r, rồi insert vào.',
+          'Tìm cặp: góc DFR (Trắng/Cam/Xanh lá) + cạnh FR (Cam/Xanh lá). Ghép chúng ở tầng U bằng wide move r, rồi insert vào.',
         diagram: {
           U: _9(X),
-          D: [X,X,X, X,W,R, X,X,R],
-          F: [X,X,X, X,X,R, X,G,R],
-          R: [X,X,X, X,R,X, G,W,X],
+          D: [X,X,X, X,W,ORA, X,X,ORA],
+          F: [X,X,X, X,X,ORA, X,G,ORA],
+          R: [X,X,X, X,ORA,X, G,W,X],
           L: solved('L'),
           B: _9(X),
           highlightCells: ['D-2-2','F-2-2','F-2-1','R-2-0','R-2-1'],
@@ -205,13 +205,13 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '2c. Ghép cặp BR — góc-cạnh phía sau',
         description:
-          'Tìm cặp: góc DBR (Trắng/Đỏ/Xanh lam) + cạnh BR (Đỏ/Xanh lam). Ghép đôi ở tầng U, sau đó insert vào góc BR bằng R\' U R hoặc r U r\'.',
+          'Tìm cặp: góc DBR (Trắng/Cam/Xanh lam) + cạnh BR (Cam/Xanh lam). Ghép đôi ở tầng U, sau đó insert vào góc BR bằng R\' U R hoặc r U r\'.',
         diagram: {
           U: _9(X),
-          D: [X,X,X, X,W,R, X,X,R],
-          F: [X,X,X, X,X,R, X,G,R],
-          B: [X,X,X, X,X,X, B,B,R],
-          R: [X,X,X, X,R,X, G,W,B],
+          D: [X,X,X, X,W,ORA, X,X,ORA],
+          F: [X,X,X, X,X,ORA, X,G,ORA],
+          B: [X,X,X, X,X,X, B,B,ORA],
+          R: [X,X,X, X,ORA,X, G,W,B],
           L: solved('L'),
           highlightCells: ['D-2-2','B-2-0','B-2-1','R-2-2','R-2-1'],
           focusFaces: ['D', 'B', 'R'],
@@ -219,7 +219,7 @@ export const ROUX_LESSONS: Lesson[] = [
         demoAlg: "U R U' R'",
         setupAlg: "R U R' U'",
         highlightPhase: 'sb',
-        note: 'F2B hoàn thành! Hai khối 1×2×3 đã xây xong — đây là nền tảng cho CMLL.',
+        note: 'F2B hoàn thành! Hai khối 1×2×3 Đỏ-Trắng và Cam-Trắng đã xây xong — đây là nền tảng cho CMLL.',
       },
     ],
   },
@@ -256,7 +256,6 @@ export const ROUX_LESSONS: Lesson[] = [
         description:
           'Nhìn vào mặt U (Vàng). Đếm và xác định vị trí của các ô Vàng để phân loại vào 1 trong 8 nhóm: O (4 góc), H (2 cạnh), Pi, T, U, L, S (Sune), As (Antisune). Diagram dưới là ví dụ nhóm T.',
         diagram: {
-          // Nhóm T: 2 góc Vàng liền kề hàng trên, 2 góc còn lại không Vàng
           U: [Y,Y,Y, X,Y,X, X,X,X] as FaceColors,
           F: [X,X,X, X,G,X, X,X,X],
           B: _9(X),
@@ -275,9 +274,9 @@ export const ROUX_LESSONS: Lesson[] = [
           'Nhìn vào màu 2 viên góc kề nhau ở cạnh F-front: nếu 2 góc cùng màu = "Headlights". Nếu không có cặp nào = "Diagonal". Thông tin này xác định công thức CMLL cụ thể trong nhóm.',
         diagram: {
           U: _9(Y),
-          F: [G,X,R, X,G,X, X,X,X] as FaceColors,
-          R: [X,X,X, X,R,X, X,X,X],
-          L: [X,X,X, X,O,X, X,X,X],
+          F: [G,X,ORA, X,G,X, X,X,X] as FaceColors,
+          R: [X,X,X, X,ORA,X, X,X,X],
+          L: [X,X,X, X,RED,X, X,X,X],
           B: [X,X,X, X,B,X, X,X,X],
           D: _9(X),
           highlightCells: ['F-0-0','F-0-2'],
@@ -306,7 +305,7 @@ export const ROUX_LESSONS: Lesson[] = [
   },
 
   // ─────────────────────────────────────────────────────────
-  // BƯỚC 4: LSE
+  // BƯỚC 4: LAST SIX EDGES (LSE)
   // ─────────────────────────────────────────────────────────
   {
     id: 'lse',
@@ -319,7 +318,7 @@ export const ROUX_LESSONS: Lesson[] = [
       'LSE là chặng về đích độc đáo và thần tốc nhất của Roux. Toàn bộ 6 cạnh còn lại (UL, UR, UF, UB, DF, DB) chỉ cần giải quyết bằng hai mặt duy nhất là tầng giữa M và tầng trên U <M, U>. Tốc độ xoay ngón tay (TPS) ở bước này cực kỳ cao và đã tay!',
     objectives: [
       '4a. Edge Orientation (EO): Lật đúng hướng tất cả 6 cạnh (đưa số bad edges về 0).',
-      '4b. UL và UR: Đưa 2 cạnh bên UL (Cam/Vàng) và UR (Đỏ/Vàng) vào đúng vị trí.',
+      '4b. UL và UR: Đưa 2 cạnh bên UL (Đỏ/Vàng) và UR (Cam/Vàng) vào đúng vị trí.',
       '4c. L4E (Last 4 Edges): Hoán vị 4 cạnh còn lại trên tầng giữa (UB, UF, DF, DB) để hoàn thành khối Rubik 100%!',
     ],
     keyTechniques: [
@@ -335,14 +334,13 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '4a. Nhận diện Bad Edges',
         description:
-          'Nhìn 6 cạnh M-slice (UF, UB, DF, DB) và 2 cạnh bên (UL, UR). Một cạnh là "Bad" nếu: ở tầng U/D mà màu Vàng/Trắng hướng sang Trái/Phải; ở M-slice mà màu Xanh/Đỏ/Cam hướng lên/xuống.',
+          'Nhìn 6 cạnh M-slice (UF, UB, DF, DB) và 2 cạnh bên (UL, UR). Một cạnh là "Bad" nếu: ở tầng U/D mà màu Vàng/Trắng hướng sang Trái/Phải; ở M-slice mà màu Xanh/Cam/Đỏ hướng lên/xuống.',
         diagram: {
-          // Minh hoạ: 2 bad edges ở UF và UB (màu sai hướng)
           U: [X,G,X, X,Y,X, X,B,X] as FaceColors,
           F: [X,Y,X, X,G,X, X,X,X] as FaceColors,
           B: [X,Y,X, X,B,X, X,X,X] as FaceColors,
-          L: [X,X,X, X,O,X, X,X,X],
-          R: [X,X,X, X,R,X, X,X,X],
+          L: [X,X,X, X,RED,X, X,X,X],
+          R: [X,X,X, X,ORA,X, X,X,X],
           D: [X,X,X, X,W,X, X,X,X],
           highlightCells: ['U-0-1','U-2-1','F-0-1','B-0-1'],
           focusFaces: ['U', 'F', 'B'],
@@ -359,8 +357,8 @@ export const ROUX_LESSONS: Lesson[] = [
           U: [X,Y,X, X,Y,X, X,Y,X] as FaceColors,
           F: [X,G,X, X,G,X, X,X,X] as FaceColors,
           B: [X,B,X, X,B,X, X,X,X] as FaceColors,
-          L: [X,X,X, X,O,X, X,X,X],
-          R: [X,X,X, X,R,X, X,X,X],
+          L: [X,X,X, X,RED,X, X,X,X],
+          R: [X,X,X, X,ORA,X, X,X,X],
           D: [X,W,X, X,W,X, X,X,X],
           highlightCells: ['U-0-1','U-1-1','U-2-1','F-0-1','B-0-1'],
           focusFaces: ['U', 'F', 'B', 'D'],
@@ -372,11 +370,11 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '4b. Đặt UL và UR',
         description:
-          'Dùng U2 và M2 để đưa viên UL (Cam/Vàng) và UR (Đỏ/Vàng) về đúng bên. Đây là bước "chọn lane" — xoay U cho đến khi thấy cả 2 viên đúng màu ở bên của chúng.',
+          'Dùng U2 và M2 để đưa viên UL (Đỏ/Vàng) và UR (Cam/Vàng) về đúng bên. Đây là bước "chọn lane" — xoay U cho đến khi thấy cả 2 viên đúng màu ở bên của chúng.',
         diagram: {
-          U: [O,Y,R, X,Y,X, X,X,X] as FaceColors,
-          L: [X,O,X, X,O,X, X,X,X],
-          R: [X,R,X, X,R,X, X,X,X],
+          U: [RED,Y,ORA, X,Y,X, X,X,X] as FaceColors,
+          L: [X,RED,X, X,RED,X, X,X,X],
+          R: [X,ORA,X, X,ORA,X, X,X,X],
           F: _9(X),
           B: _9(X),
           D: _9(X),

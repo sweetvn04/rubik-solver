@@ -65,8 +65,8 @@ export const CUBE_PALETTE = {
   D: '#dfdcce', // Trắng giấy mỹ thuật
   F: '#38934c', // Xanh lá sáp / meadow
   B: '#2f7ebb', // Xanh lam cerulean
-  R: '#9d2825', // Đỏ đô sáp / crimson
-  L: '#d86629', // Cam đất / burnt orange
+  L: '#9d2825', // Đỏ đô sáp / crimson (Mặt L bên trái khi U=Vàng, F=Xanh lá)
+  R: '#d86629', // Cam đất / burnt orange (Mặt R bên phải khi U=Vàng, F=Xanh lá)
   CORE: '#1a1715', // Thân nhựa than đen thô mộc
   DIMMED: '#4a443e', // Xám chì mờ khi không thuộc nhóm highlight
 } as const;
