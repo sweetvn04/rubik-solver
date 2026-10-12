@@ -392,6 +392,11 @@
 | 372 | 2026-10-12 15:51 | `grep -rn "LessonDrawer" src/` | Kiểm tra các component sử dụng LessonDrawer | Xác nhận App.tsx tương thích 100% |
 | 373 | 2026-10-12 15:51 | `git add src/components/ui/LessonDrawer.tsx && git commit -m "feat(ui): redesign LessonDrawer with step-by-step accordion dropdown and unified tabs"` | Commit toàn bộ giao diện mới LessonDrawer | Commit `a9540d8` |
 | 374 | 2026-10-12 15:52 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit a9540d8"` | Đồng bộ commit hash a9540d8 vào CHANGELOG và COMMAND_LOG | Commit `1332bdd` |
+| 375 | 2026-10-12 17:17 | `git status && git log -n 3 --oneline` | Kiểm tra trạng thái git working tree và commit trước đó | Exit 0 — 1 file modified, untracked scratch |
+| 376 | 2026-10-12 17:17 | `rm -rf scratch/ && npm run build` | Dọn dẹp scratch và kiểm tra biên dịch build | Exit 2 — 2 lỗi unused imports TS6133 (Lesson, Layers) |
+| 377 | 2026-10-12 17:17 | `npm run build` | Kiểm tra biên dịch sau khi loại bỏ unused imports | Exit 0 — Build thành công trong 534ms |
+| 378 | 2026-10-12 17:17 | `git status` | Kiểm tra trạng thái git sau build | Exit 0 — 1 file modified (LessonDrawer.tsx) |
+| 379 | 2026-10-12 17:17 | `git add src/components/ui/LessonDrawer.tsx && git commit -m "fix(ui): replace accordion with dropdown step selector to fix badge clipping and layout issues"` | Commit giao diện mới Dropdown Step Selector khắc phục lỗi cắt badge | Commit `982554c` |
 
 
 

@@ -6,6 +6,28 @@
 
 ## 📅 2026-10-12
 
+### 🐛 [Commit `982554c`] — Khắc Phục Lỗi Cắt Badge & Chuyển Sang Menu Dropdown Chọn Bước Độc Lập Cho Hành Trình Roux
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng gửi ảnh phản ánh giao diện bị lỗi hiển thị nghiêm trọng (`nó đang bị như này rồi`): Thẻ Bước 1 mở bung quá dài khiến các thẻ accordion Bước 2, 3, 4 ở dưới bị nén co lại, badge số tròn (2, 3, 4) bị cắt cụt một nửa ở cạnh đáy, subtitle bị che khuất và 4 accordion xếp chồng lên nhau gây quá tải thị giác, khó thao tác khi vừa nhìn vừa xoay Rubik.
+  - Người dùng yêu cầu menu dạng drop down hướng dẫn từng bước rõ ràng, độc lập cho người mới bắt đầu.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Loại bỏ Hoàn Toàn 4 Accordion Xếp Chồng:**
+     - Xóa bỏ cơ chế accordion collapsible danh sách dọc gây co nén chiều cao phần tử và lỗi cắt xén `overflow-hidden`.
+  2. **Bộ Điều Hướng Dropdown Step Selector (Độc Lập & Tập Trung):**
+     - Đặt thanh chọn bước nổi bật ở đầu trang:
+       * Nút lùi bước `‹ Trước`, hiển thị tiến độ `Bước X / 4`, nút tiến bước `Sau ›`.
+       * Nút menu Dropdown popover tương tác: Nhấp để mở danh sách 4 bước Roux có icon, màu nhận diện đặc trưng (Xanh lá, Xanh lam, Tím, Vàng), tên bước và tóm tắt.
+     - Khi chọn bước nào, **chỉ hiển thị duy nhất nội dung của bước đó** (Single-step view), giao diện gọn gàng, vừa vặn khung drawer, không bị rối mắt.
+  3. **Tối Ưu Hóa Giao Diện Từng Bước:**
+     - Các nút chọn bài tập con (sub-steps: 1a, 1b... hoặc 4a, 4b...) dạng pill tabs mượt mà.
+     - Sơ đồ 2D (`CubeDiagram2D`), mô tả hành động, nút `Xem Demo 3D`, mẹo thực chiến và nút CTA chuyển sang bước kế tiếp ở chân trang.
+     - Bước 4 LSE tách riêng 3 tab con trực quan: `4a. EO` (kèm mẹo chéo 1/1 và bảng 11 thế cờ), `4b. UL/UR` (3 thế cờ & sơ đồ), `4c. L4E` (3 giai đoạn tự nghiệm & 4 bài tập thực hành 3D).
+* **Files tác động:**
+  - `src/components/ui/LessonDrawer.tsx`: Thay thế accordion bằng Dropdown Step Selector, xóa unused imports (`Lesson`, `Layers`), tối ưu hiển thị.
+
+---
+
 ### 🚀 [Commit `a9540d8`] — Tái Cấu Trúc Toàn Diện Giao Diện Hướng Dẫn: Accordion Dropdown Step-by-Step Theo 4 Bước Roux & Hợp Nhất Thư Viện Tra Cứu
 
 * **Bối cảnh & Yêu cầu:**
