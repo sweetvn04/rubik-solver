@@ -516,3 +516,62 @@ export const ULURDiagram: React.FC<ULURDiagramProps> = ({ caseType = '1_u_1_d' }
   );
 };
 
+interface L4EIntuitiveDiagramProps {
+  stage: 'white_to_bottom' | 'fix_center_dots' | 'permute_top';
+}
+
+export const L4EIntuitiveDiagram: React.FC<L4EIntuitiveDiagramProps> = ({ stage }) => {
+  return (
+    <div className="shrink-0 flex flex-col items-center gap-1 p-1 bg-[#201c18] rounded-xl border border-[#3d362e] shadow-inner select-none">
+      <svg width="60" height="60" viewBox="0 0 60 60">
+        <rect width="60" height="60" rx="6" fill="#14110f" />
+
+        {/* Khung mặt cắt cột M: Phần U (trên) và phần D (dưới) */}
+        {/* TẦNG U (Mặt Vàng ở trên) */}
+        <text x="5" y="14" fill="#a8a29e" fontSize="7" fontWeight="bold">U</text>
+        <rect x="15" y="6" width="12" height="14" rx="2" fill={stage === 'white_to_bottom' ? '#ffffff' : (stage === 'fix_center_dots' ? '#ffffff' : '#10b981')} stroke={stage === 'white_to_bottom' ? '#38bdf8' : 'none'} strokeWidth="1" />
+        <rect x="29" y="6" width="14" height="14" rx="2" fill={stage === 'fix_center_dots' ? '#ffffff' : CUBE_PALETTE.U} />
+        <rect x="45" y="6" width="12" height="14" rx="2" fill={stage === 'white_to_bottom' ? '#ffffff' : (stage === 'fix_center_dots' ? CUBE_PALETTE.U : '#3b82f6')} stroke={stage === 'white_to_bottom' ? '#38bdf8' : 'none'} strokeWidth="1" />
+
+        {/* Vạch ngăn cách giữa U và D */}
+        <line x1="8" y1="29" x2="54" y2="29" stroke="#3d362e" strokeWidth="1" strokeDasharray="2 2" />
+
+        {/* TẦNG D (Mặt Trắng ở dưới) */}
+        <text x="5" y="47" fill="#a8a29e" fontSize="7" fontWeight="bold">D</text>
+        <rect x="15" y="37" width="12" height="14" rx="2" fill="#ffffff" />
+        <rect x="29" y="37" width="14" height="14" rx="2" fill={stage === 'fix_center_dots' ? CUBE_PALETTE.U : '#ffffff'} stroke={stage === 'fix_center_dots' ? '#ef4444' : 'none'} strokeWidth="1.5" />
+        <rect x="45" y="37" width="12" height="14" rx="2" fill="#ffffff" />
+
+        {/* Mũi tên và chỉ dẫn hành động theo từng giai đoạn */}
+        {stage === 'white_to_bottom' && (
+          <>
+            {/* Mũi tên đẩy 2 viên trắng từ U xuống D */}
+            <path d="M 21 21 L 21 35 M 19 32 L 21 35 L 23 32" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M 51 21 L 51 35 M 49 32 L 51 35 L 53 32" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </>
+        )}
+
+        {stage === 'fix_center_dots' && (
+          <>
+            {/* Mũi tên cong hoán vị tâm U và D (M2) */}
+            <path d="M 36 21 C 41 26, 41 33, 36 36 M 34 33 L 36 36 L 39 34" fill="none" stroke="#e07a5f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <text x="36" y="28" fill="#e07a5f" fontSize="7" fontWeight="bold" textAnchor="middle">M2</text>
+          </>
+        )}
+
+        {stage === 'permute_top' && (
+          <>
+            {/* Mũi tên 2 chiều tráo 2 cạnh UF và UB */}
+            <path d="M 26 13 L 44 13 M 28 11 L 26 13 L 28 15 M 42 11 L 44 13 L 42 15" stroke="#e07a5f" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <text x="35" y="24" fill="#e07a5f" fontSize="6" fontWeight="bold" textAnchor="middle">M2 U2 M2</text>
+          </>
+        )}
+      </svg>
+      <span className="text-[8px] font-mono font-bold text-[#b8a99a] text-center leading-tight">
+        {stage === 'white_to_bottom' ? 'GĐ 1: Về Đáy D' : stage === 'fix_center_dots' ? 'GĐ 2: Sửa Dots' : 'GĐ 3: Tráo Đỉnh'}
+      </span>
+    </div>
+  );
+};
+
+

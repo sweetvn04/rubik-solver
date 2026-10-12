@@ -476,23 +476,131 @@ export const LSE_UL_UR_GUIDE = {
   ] as ULURSampleCase[],
 };
 
+export interface L4EExercise {
+  id: string;
+  name: string;
+  stage: 'white_to_bottom' | 'fix_center_dots' | 'permute_top';
+  scenario: string;
+  setupAlg: string;
+  solution: string;
+  explanation: string;
+  tip: string;
+}
+
 export const LSE_L4E_INTUITIVE_GUIDE = {
   title: 'Phương pháp Tự nghiệm (Intuitive) 3 bước giải L4E',
-  subtitle: 'Chỉ cần sử dụng duy nhất tập nước đi <M, U2> để hoàn thành 4 cạnh cuối mà không cần học vẹt công thức!',
-  steps: [
+  subtitle: 'Hoàn thành 4 cạnh cuối chỉ bằng tập nước đi <M, U2> theo tư duy tự nhiên mà không cần học vẹt công thức!',
+  concept: [
+    'Sau khi giải xong UL và UR ở bước 4b, khối Rubik chỉ còn đúng 4 cạnh trên cột giữa M (UF, UB, DF, DB) và 2 tâm U, D.',
+    'Toàn bộ 2 cánh (UL, UR) và 2 khối FB, SB hai bên đã hoàn thiện 100%. Ta chỉ xoay M (di chuyển cột giữa) và U2 (đổi 2 cạnh đỉnh mà không ảnh hưởng 2 cánh UL/UR).',
+    'Quy ước chuẩn: Luôn để mặt F là Xanh lá (Lục) trước mặt, mặt U là Vàng ở trên, mặt D là Trắng ở đáy.',
+  ],
+  stages: [
     {
-      title: 'Giai đoạn 1: Đưa 2 cạnh màu Trắng (DF & DB) xuống đáy',
-      content: 'Quan sát tìm 2 cạnh có màu trắng ở cột M. Nếu cả 2 viên đang ở tầng U: xoay U2 đưa 1 viên vào vị trí đối diện rồi dùng M2 đưa xuống D. Nếu 1 viên ở U và 1 viên ở D: dùng M\' U2 M hoặc M U2 M\' để gom cả 2 viên về đáy D.',
+      id: 'white_to_bottom',
+      stage: 'white_to_bottom' as const,
+      stepNumber: 1,
+      title: 'Giai đoạn 1: Đưa 2 cạnh màu Trắng (DF & DB) xuống tầng đáy D',
+      goal: 'Gom cả 2 cạnh có màu trắng về nằm trọn ở 2 vị trí đáy DF và DB.',
+      cases: [
+        {
+          name: 'TH 1a: Cả 2 cạnh Trắng đang ở tầng U (UF và UB)',
+          action: 'Chỉ cần gạt M2 (hoặc U2 M2)',
+          detail: 'Hai viên trắng ở U lập tức chui thẳng xuống 2 vị trí đáy DF và DB!',
+        },
+        {
+          name: 'TH 1b: 1 cạnh Trắng ở U, 1 cạnh Trắng ở D',
+          action: 'Xoay U2 đưa viên ở U vào đối diện viên ở D, rồi xoay M\' U2 M (hoặc M U2 M\')',
+          detail: 'Gạt viên ở U úp xuống D, xoay U2 ghép cặp, gạt ngược lại đưa cả 2 viên trắng về đáy!',
+        },
+        {
+          name: 'TH 1c: Cả 2 cạnh Trắng đã ở sẵn đáy D',
+          action: 'Đã hoàn tất Giai đoạn 1!',
+          detail: 'Không cần làm gì, chuyển thẳng sang Giai đoạn 2 để kiểm tra tâm.',
+        },
+      ],
     },
     {
-      title: 'Giai đoạn 2: Khớp tâm tầng D (Xử lý D-Dots)',
-      content: 'Kiểm tra tâm đáy D: Nếu 2 cạnh đáy đã là màu trắng nhưng tâm D lại đang là màu vàng (thế D-Dots): chỉ cần duy nhất 1 nước gạt M2 để hoán vị tâm U và D về đúng mặt!',
+      id: 'fix_center_dots',
+      stage: 'fix_center_dots' as const,
+      stepNumber: 2,
+      title: 'Giai đoạn 2: Khớp tâm tầng D (Xử lý thế D-Dots)',
+      goal: 'Đảm bảo mặt đáy D trở thành một màu Trắng đồng nhất (cả 2 cạnh và tâm đều Trắng).',
+      cases: [
+        {
+          name: 'Đáy D đã là tâm Trắng',
+          action: 'Tuyệt vời! Mặt đáy D đã hoàn tất 100%.',
+          detail: 'Chuyển thẳng sang Giai đoạn 3.',
+        },
+        {
+          name: 'Đáy D có tâm Vàng (Thế D-Dots kinh điển)',
+          action: 'Chỉ cần duy nhất 1 nước gạt: M2',
+          detail: 'Nước gạt M2 sẽ tráo đổi tâm U (Trắng) và tâm D (Vàng) cho nhau, biến đáy D thành toàn màu Trắng ngay tức khắc!',
+        },
+      ],
     },
     {
-      title: 'Giai đoạn 3: Hoán vị các cạnh tầng U & Hoàn tất (AUF)',
-      content: 'Hai cạnh còn lại trên tầng U (UF và UB): nếu bị ngược vị trí thì xoay U2 (hoặc chuỗi M2 U2 M2 nếu lệch cặp cột M). Sau đó xoay nấc U / U\' / U2 cuối cùng để khớp toàn bộ 6 mặt của khối Rubik!',
+      id: 'permute_top',
+      stage: 'permute_top' as const,
+      stepNumber: 3,
+      title: 'Giai đoạn 3: Hoán vị 2 cạnh tầng U & Hoàn tất (AUF)',
+      goal: 'Giải quyết 2 cạnh còn lại trên tầng U (UF và UB) để hoàn thành trọn vẹn 6 mặt Rubik.',
+      cases: [
+        {
+          name: 'Hai cạnh UF và UB đã đúng màu với F và B',
+          action: 'Chỉ cần xoay U / U\' / U2',
+          detail: 'Khối Rubik được giải hoàn tất (Solved 100%)!',
+        },
+        {
+          name: 'Hai cạnh UF và UB bị hoán đổi cho nhau',
+          action: 'Xoay chuỗi kinh điển: M2 U2 M2',
+          detail: 'Nước đi này tráo đổi 2 cạnh đỉnh UF và UB mà hoàn toàn bảo vệ tầng đáy D. Sau đó xoay U / U\' / U2 là hoàn tất!',
+        },
+      ],
     },
   ],
+  exercises: [
+    {
+      id: 'ex_white_to_bottom',
+      name: 'Bài tập 1: Đưa 2 cạnh Trắng từ U xuống D',
+      stage: 'white_to_bottom' as const,
+      scenario: 'Hai cạnh màu Trắng đang nằm ở UF và UB trên đỉnh U. Cần đưa cả 2 xuống đáy D.',
+      setupAlg: 'M2',
+      solution: 'M2',
+      explanation: 'Xoay M2 để đưa cả 2 cạnh Trắng từ đỉnh U xuống đáy DF và DB.',
+      tip: 'Chỉ cần duy nhất 1 lần gạt M2 bằng 2 ngón tay giữa và áp út!',
+    },
+    {
+      id: 'ex_1u_1d_white',
+      name: 'Bài tập 2: 1 cạnh Trắng ở U, 1 cạnh Trắng ở D',
+      stage: 'white_to_bottom' as const,
+      scenario: 'Cạnh Trắng thứ nhất ở UF (tầng U), cạnh Trắng thứ hai ở DB (tầng D).',
+      setupAlg: "M' U2 M",
+      solution: "M' U2 M",
+      explanation: "Gạt M' úp viên UF xuống đáy, xoay U2 đưa vị trí đối diện, rồi gạt M để hoàn tất cả 2 viên Trắng ở đáy.",
+      tip: "Tập xoay finger-trick M' bằng ngón giữa tay trái/phải.",
+    },
+    {
+      id: 'ex_fix_dots',
+      name: 'Bài tập 3: Khớp tâm D-Dots khi 2 cạnh đáy đã Trắng',
+      stage: 'fix_center_dots' as const,
+      scenario: 'Hai cạnh đáy DF và DB đã là Trắng, nhưng tâm đáy D đang là màu Vàng (thế D-Dots).',
+      setupAlg: 'M2',
+      solution: 'M2',
+      explanation: 'Gạt M2 để hoán vị tâm Vàng (đáy) và tâm Trắng (đỉnh) về đúng vị trí.',
+      tip: 'M2 giải quyết triệt để D-Dots trong 0.2 giây!',
+    },
+    {
+      id: 'ex_permute_top',
+      name: 'Bài tập 4: Hoán đổi 2 cạnh đỉnh UF và UB',
+      stage: 'permute_top' as const,
+      scenario: 'Đáy D đã full Trắng. Tầng U còn đúng 2 cạnh UF và UB bị ngược chỗ.',
+      setupAlg: 'M2 U2 M2',
+      solution: 'M2 U2 M2',
+      explanation: 'Chuỗi M2 U2 M2 tráo đổi 2 cạnh đỉnh UF và UB mà không làm xáo trộn đáy.',
+      tip: 'M2 U2 M2 là combo quen thuộc nhất của người chơi Roux!',
+    },
+  ] as L4EExercise[],
 };
 
 export const LSE_L4E_CASES: L4ECase[] = [
