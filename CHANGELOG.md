@@ -6,6 +6,50 @@
 
 ## 📅 2026-10-12
 
+### 🚀 [Commit `a5e0e51`] — Nâng Cấp Toàn Diện Hướng Dẫn Tự Nghiệm L4E: Bổ Sung Sơ Đồ Cột M, Phân Tích Cặn Kẽ 3 Giai Đoạn & 4 Bài Tập Thực Hành 3D
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng phản ánh phần tự nghiệm L4E khó hiểu, thắc mắc công thức có đúng không và có hình minh họa trực quan không.
+  - Phân tích nguyên nhân:
+    1. Bản giải thích tự nghiệm trước đó quá vắn tắt dạng gạch đầu dòng ngắn, người mới không hình dung được bản chất 4 cạnh cuối (chỉ còn 4 cạnh cột giữa M và 2 tâm U, D).
+    2. Thiếu sơ đồ hình vẽ trực quan cho các giai đoạn tự nghiệm (chỉ có sơ đồ ở 23 công thức bên dưới nhưng phần tự nghiệm thì không có).
+    3. Người dùng chưa nắm được quy tắc bắt buộc: luôn giữ mặt F là Xanh lá (Lục) trước mặt khi xoay công thức nên có thể bị lệch màu nếu xoay sai hướng cầm.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Bản chất & Nguyên lý Tự nghiệm L4E bình dân dễ hiểu (`concept`):**
+     - Sau khi xong FB, SB và 2 cánh UL/UR, Rubik chỉ còn đúng 4 cạnh trên cột giữa M (`UF, UB, DF, DB`) và 2 tâm U, D.
+     - Toàn bộ bước chỉ xoay $\langle M, U2 \rangle$ vì $M$ di chuyển 4 cạnh cột giữa, $U2$ hoán đổi 2 cạnh đỉnh mà không ảnh hưởng 2 cánh UL/UR.
+     - Quy ước bắt biến: Luôn để mặt F là Xanh lá (Lục) trước mặt, mặt U là Vàng ở trên, mặt D là Trắng ở đáy.
+  2. **SVG Component `L4EIntuitiveDiagram` ([`ReferenceDiagrams.tsx`](./src/components/ui/ReferenceDiagrams.tsx)):**
+     - Thiết kế sơ đồ trực quan mặt cắt cột giữa M cho cả 3 giai đoạn:
+       * *Giai đoạn 1 (`white_to_bottom`):* Vẽ 2 cạnh Trắng ở U với mũi tên đẩy xuống đáy D.
+       * *Giai đoạn 2 (`fix_center_dots`):* 2 cạnh đáy Trắng, tâm D Vàng với mũi tên cong $M2$ hoán vị tâm.
+       * *Giai đoạn 3 (`permute_top`):* Đáy D full Trắng, tầng U có mũi tên 2 chiều giữa UF và UB chỉ chuỗi $M2 U2 M2$.
+  3. **Lộ trình 3 Giai đoạn Tự nghiệm phân tích chi tiết (`stages`):**
+     - **Giai đoạn 1 (Đưa 2 cạnh Trắng về đáy D):**
+       * TH 1a: Cả 2 cạnh Trắng ở U $\rightarrow$ Chỉ cần gạt $M2$ (hoặc $U2 M2$).
+       * TH 1b: 1 cạnh Trắng ở U, 1 cạnh ở D $\rightarrow$ Xoay $U2$ đưa vào đối diện, xoay $M' U2 M$ gom về đáy.
+       * TH 1c: Cả 2 cạnh Trắng đã ở đáy D $\rightarrow$ Hoàn tất, sang Giai đoạn 2.
+     - **Giai đoạn 2 (Khớp tâm đáy D — Xử lý D-Dots):**
+       * Nếu tâm D đã là Trắng: Xong!
+       * Nếu tâm D là Vàng (thế D-Dots): Chỉ cần duy nhất 1 nước gạt $M2$ để tráo tâm U-D thành toàn Trắng!
+     - **Giai đoạn 3 (Hoán vị 2 cạnh tầng U & Hoàn tất AUF):**
+       * Nếu 2 cạnh UF và UB đã đúng màu với F và B: Xoay $U / U' / U2$ là Solved!
+       * Nếu 2 cạnh bị ngược chỗ: Xoay chuỗi kinh điển $M2 U2 M2$ rồi AUF là hoàn thành 100%!
+  4. **Bộ 4 Bài tập Tự nghiệm Thực hành 3D (`exercises`):**
+     - Bài 1: Đưa 2 cạnh Trắng từ U xuống D ($M2$)
+     - Bài 2: 1 cạnh Trắng ở U, 1 cạnh ở D ($M' U2 M$)
+     - Bài 3: Sửa tâm D-Dots ($M2$)
+     - Bài 4: Hoán đổi 2 cạnh đỉnh UF và UB ($M2 U2 M2$)
+     - Mỗi bài tập có nút "Tập thế này" và "Chạy giải" tương tác 3D trực quan.
+  5. **Cam kết tính chính xác của công thức:**
+     - Toàn bộ 23 công thức chuẩn RouxMethodVN đã kiểm chứng toán học 100% Solved trên simulator 54-facelet.
+* **Files tác động:**
+  - `src/data/rouxReferenceData.ts`: Cập nhật cấu trúc `LSE_L4E_INTUITIVE_GUIDE` (concept, stages, 4 exercises).
+  - `src/components/ui/ReferenceDiagrams.tsx`: Bổ sung component SVG `L4EIntuitiveDiagram`.
+  - `src/components/ui/LessonDrawer.tsx`: Nâng cấp giao diện khối Tự nghiệm L4E có sơ đồ từng giai đoạn và 4 bài tập thực hành 3D.
+
+---
+
 ### 🚀 [Commit `9c6f578`] — Bổ Sung Cẩm Nang Hướng Dẫn Bước 4b (UL/UR) Toàn Diện Cho Người Mới & Tái Cấu Trúc Điều Hướng LSE Rõ Ràng Trực Quan
 
 * **Bối cảnh & Yêu cầu:**
