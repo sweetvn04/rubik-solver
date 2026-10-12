@@ -402,6 +402,10 @@
 | 382 | 2026-10-12 17:49 | `git remote -v; ls -la` | Kiểm tra remote repository và cấu trúc thư mục phục vụ tư vấn phương án deploy | Exit 0 — chưa có remote, thư mục sẵn sàng |
 | 383 | 2026-10-12 17:50 | `git status` | Kiểm tra trạng thái git working tree | Exit 0 — working tree clean trên branch master |
 | 384 | 2026-10-12 17:50 | `git add COMMAND_LOG.md && git commit -m "docs: log commands 382 and 383 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 382 và 383 | Commit `177e5ff` |
+| 385 | 2026-10-12 17:50 | `git commit -am "docs: finalize COMMAND_LOG.md with command 384" && git status` | Lưu commit tài liệu COMMAND_LOG và kiểm tra working tree | Commit `01e3fda` — working tree clean |
+| 386 | 2026-10-12 20:31 | `git remote -v` | Kiểm tra remote URL đã cấu hình sau khi người dùng gặp lỗi push | origin trỏ git@github.com:sweetvn/Rubik-Solver.git |
+| 387 | 2026-10-12 20:31 | `which gh 2>/dev/null \|\| true` | Kiểm tra sự tồn tại của GitHub CLI trên hệ thống | /usr/bin/gh |
+| 388 | 2026-10-12 20:31 | `gh auth status 2>&1 \|\| true` | Kiểm tra trạng thái đăng nhập của GitHub CLI | Chưa đăng nhập gh |
 
 
 
