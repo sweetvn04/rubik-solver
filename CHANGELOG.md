@@ -6,7 +6,33 @@
 
 ## 📅 2026-10-12
 
-### 🚀 [Commit `a5e0e51`] — Nâng Cấp Toàn Diện Hướng Dẫn Tự Nghiệm L4E: Bổ Sung Sơ Đồ Cột M, Phân Tích Cặn Kẽ 3 Giai Đoạn & 4 Bài Tập Thực Hành 3D
+### 🚀 [Commit `4571590`] — Làm Rõ Quy Tắc Căn Chỉnh Tầng U (AUF) & Vị Trí Chéo Nhau Cho Thế 1/1 EO: Khắc Phục Lỗi Lặp Thế Khi Cầm Rubik Thật
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng phản ánh khi làm EO thế 1/1 (1 cạnh sai ở U, 1 cạnh sai ở D) trên khối Rubik thực tế thì không ra kết quả (xoay theo công thức mà không giải được EO).
+  - Khảo sát mô phỏng toán học thực tế trên 54-facelet engine:
+    1. Khi người mới nhìn thấy 1 Bad ở U và 1 Bad ở D, họ thường nhìn thấy 2 cạnh cùng ở mặt trước (`UF` và `DF`).
+    2. Nếu để nguyên `UF` Bad và `DF` Bad mà xoay công thức 1/1(F) (`M' U' M U' M' U' M'`), kết quả sẽ biến thành 2 cạnh sai ở U (`UB` và `UL`), tức biến thành thế 2a/0 chứ không hết sai!
+    3. Quy tắc cốt lõi của Roux: Hai cạnh sai trong thế 1/1 **BẮT BUỘC PHẢI NẰM CHÉO NHAU QUA TÂM (1 TRƯỚC - 1 SAU)**:
+       * Thế 1/1 (F): Đáy ở `DF` (trước) $\rightarrow$ Đỉnh bắt buộc phải ở `UB` (sau). Nếu đỉnh đang ở `UF`, **phải xoay $U2$ trước**!
+       * Thế 1/1 (B): Đáy ở `DB` (sau) $\rightarrow$ Đỉnh bắt buộc phải ở `UF` (trước). Nếu đỉnh đang ở `UB`, **phải xoay $U2$ trước**!
+    4. Cách phân biệt đáy ở `DF` hay `DB` mà không cần ngửa Rubik: Nhìn sticker `FD` (mặt F của cạnh dưới):
+       * Có Vàng/Trắng $\rightarrow$ Cạnh sai là `DF` $\rightarrow$ Áp dụng 1/1 (F) (đưa cạnh U ra `UB`).
+       * Không có Vàng/Trắng $\rightarrow$ Cạnh sai là `DB` $\rightarrow$ Áp dụng 1/1 (B) (đưa cạnh U về `UF`).
+    5. Nhầm lẫn Finger-trick: $M'$ là đẩy từ dưới lên (theo chiều R), nếu gạt ngược từ trên xuống ($M$) sẽ làm hỏng công thức.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Cập nhật Dữ liệu Tham chiếu (`src/data/rouxReferenceData.ts`):**
+     - Bổ sung 2 nguyên tắc sống còn trong `LSE_BAD_EDGE_RULES.principles`: Tự do xoay tầng U (AUF) để đưa cạnh sai vào đúng sơ đồ, và Quy tắc Chéo Vàng cho thế 1/1.
+     - Cập nhật `recognitionTip` cho cả `1_1_F` và `1_1_B`: Nhấn mạnh rõ cảnh báo lỗi kinh điển nếu 2 cạnh cùng ở trước mặt thì phải xoay $U2$ trước.
+  2. **Thêm Hộp Cảnh báo & Hướng dẫn Thực chiến trong UI (`src/components/ui/LessonDrawer.tsx`):**
+     - Thiết kế khối Card "Mẹo sống còn thế 1/1: Quy tắc 2 cạnh chéo nhau qua tâm" ngay trên danh sách 11 thế EO.
+     - Chia 2 cột trực quan: Thế 1/1 (F) vs Thế 1/1 (B), phân tích chi tiết sticker `FD`, cách căn chỉnh AUF và cảnh báo lỗi kinh điển.
+     - Thêm lưu ý finger-trick chuẩn cho $M'$ (gạt từ dưới lên).
+* **Files tác động:**
+  - `src/data/rouxReferenceData.ts`: Cập nhật nguyên tắc EO và mẹo nhận diện 1/1.
+  - `src/components/ui/LessonDrawer.tsx`: Bổ sung hộp cảnh báo AUF & quy tắc chéo 1/1.
+
+---
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng phản ánh phần tự nghiệm L4E khó hiểu, thắc mắc công thức có đúng không và có hình minh họa trực quan không.

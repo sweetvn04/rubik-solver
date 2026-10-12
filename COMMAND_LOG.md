@@ -372,7 +372,18 @@
 | 351 | 2026-10-12 11:57 | `npm run build` | Kiểm tra biên dịch TypeScript sau khi nâng cấp L4E Tự nghiệm (sơ đồ & bài tập) | Exit 0 — Build thành công trong 617ms |
 | 352 | 2026-10-12 11:57 | `git status` | Kiểm tra trạng thái git working tree | 3 files code modified (Exit code 0) |
 | 353 | 2026-10-12 11:57 | `git add src/ && git commit -m "feat(lse): add visual diagrams, detailed breakdown and 3D exercises for intuitive L4E"` | Commit toàn bộ tính năng sơ đồ và bài tập 3D cho L4E tự nghiệm | Commit `a5e0e51` |
-| 354 | 2026-10-12 11:58 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit a5e0e51"` | Đồng bộ commit hash a5e0e51 vào CHANGELOG và COMMAND_LOG | Commit `4926351` |
+| 355 | 2026-10-12 15:15 | `git log -n 5` | Kiểm tra lịch sử commit và hash gần nhất | Commit 546264d (clean working tree) |
+| 356 | 2026-10-12 15:16 | `cat << 'EOF' > scratch/test_11_user_scenario.ts ...` | Tạo script test trường hợp 1/1 | Exit 0 |
+| 357 | 2026-10-12 15:16 | `grep -rn "Bad" src/` | Tìm kiếm các vị trí xử lý và định nghĩa Bad Edge trong codebase | Định vị cấu trúc dữ liệu và logic nhận diện |
+| 358 | 2026-10-12 15:16 | `cat << 'EOF' > scratch/simulate_11.ts ...` | Mô phỏng các tình huống thực tế của thế 1/1 với 54-facelet engine | Exit 1 (lỗi import CubeState) |
+| 359 | 2026-10-12 15:16 | `cat << 'EOF' > scratch/simulate_11.ts ... && npx tsx scratch/simulate_11.ts` | Mô phỏng chi tiết 6 kịch bản xoay thế 1/1 | Tái hiện 100% bug người dùng: UF Bad + DF Bad xoay biến thành 2 Bad ở U |
+| 360 | 2026-10-12 15:19 | `rm -f scratch/simulate_11.ts scratch/test_11_user_scenario.ts && npm run build` | Dọn dẹp file test và kiểm tra biên dịch build production | Exit 0 — Build thành công trong 620ms |
+| 361 | 2026-10-12 15:19 | `git status` | Kiểm tra trạng thái git working tree | 2 files modified, scratch untracked |
+| 362 | 2026-10-12 15:19 | `ls -la scratch/` | Kiểm tra các file trong scratch | 5 files tạm |
+| 363 | 2026-10-12 15:19 | `rm -rf scratch/*` | Dọn dẹp toàn bộ file trong scratch | Hoàn tất dọn dẹp |
+| 364 | 2026-10-12 15:19 | `git status` | Kiểm tra trạng thái sau dọn dẹp scratch | 2 files modified |
+| 365 | 2026-10-12 15:19 | `git add src/ && git commit -m "fix(lse): clarify 1/1 EO AUF alignment rules and diagonal placement"` | Commit thay đổi code AUF và quy tắc chéo 1/1 | Commit `4571590` |
+
 
 
 
