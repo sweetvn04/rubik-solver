@@ -431,6 +431,10 @@
 | 411 | 2026-10-13 00:06 | `git status` | Kiểm tra các file thay đổi để chuẩn bị commit | Nhận diện TopNavbar.tsx và App.tsx |
 | 412 | 2026-10-13 00:07 | `git add src/components/ui/TopNavbar.tsx src/App.tsx && git commit -m "style(ui): redesign top navbar as floating island and eliminate mobile text wrapping"` | Commit thiết kế lại TopNavbar dạng Floating Island và khắc phục rớt dòng mobile | Commit `55dff57` |
 | 413 | 2026-10-13 00:07 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 55dff57"` | Đồng bộ commit hash 55dff57 vào CHANGELOG và COMMAND_LOG | Commit `6a2b6f6` |
+| 414 | 2026-10-13 00:07 | `git commit -am "docs: finalize COMMAND_LOG.md with command 413" && git status` | Lưu commit hoàn thiện COMMAND_LOG và kiểm tra working tree | Commit `5a84da8` — clean |
+| 415 | 2026-10-13 00:11 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi tái cấu trúc PlayerBar | Thành công (built in 689ms) |
+| 416 | 2026-10-13 00:11 | `git status` | Kiểm tra các file thay đổi để chuẩn bị commit | Nhận diện PlayerBar.tsx và App.tsx |
+| 417 | 2026-10-13 00:12 | `git add src/components/ui/PlayerBar.tsx src/App.tsx && git commit -m "refactor(ui): streamline player dock into 3 logical groups and unify face legend into status pill"` | Commit tái cấu trúc thanh PlayerBar và tích hợp quy ước mặt vào status pill | Commit `01225f6` |
 
 
 

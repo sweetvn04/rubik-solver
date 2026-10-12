@@ -6,6 +6,26 @@
 
 ## 📅 2026-10-13
 
+### 🚀 [Commit `01225f6`] — Tái Cấu Trúc Bottom Bar: Hợp Nhất Thẻ Trạng Thái & Tinh Gọn Dock 3 Nhóm Logic Chuẩn Mobile
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng gửi ảnh phản ánh thanh bar ở dưới bị rối và mất logic: Hai thẻ con lơ lửng (`🧭 Quy ước mặt` và `Hàng đợi: Sẵn sàng`) đè chồng lên nhau, thanh dock bên dưới bị nhồi nhét quá nhiều nút khiến các nút `Dạy giải` và `Giải 100%` bị ép bẻ thành 2 dòng, các nút phụ bên phải bị tràn mép màn hình và cắt cụt chữ.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Hợp Nhất Thẻ Trạng Thái Thành 1 Pill Duy Nhất:**
+     - Tích hợp tính năng xem quy ước 6 mặt Rubik thành nút icon nhỏ gọn `[🧭 Mặt]` ngay bên trong pill trạng thái, có popover xem nhanh mã màu 6 mặt chuẩn Roux khi cần.
+     - Nằm thẳng hàng với thông tin `Trạng thái: Sẵn sàng` hoặc `Vừa xoay: ...`, chấm dứt hoàn toàn hiện tượng 2 thẻ va chạm và đè lên nhau.
+  2. **Tái Cấu Trúc Thanh Dock Chính Theo 3 Nhóm Logic Chuẩn Mobile:**
+     - **Nhóm 1 (Khởi tạo khối):** `[🔀 Xáo]` (cam ấm) + `[🔄 Reset]` (icon nhỏ).
+     - **Nhóm 2 (Giải Roux cốt lõi):** `[🎓 Hướng dẫn]` (Tutor Mode) + `[🪄 Tự giải]` (Master Roux 100%).
+     - **Nhóm 3 (Thao tác & Công cụ):** `[▦ Moves]` (mở bảng phím xoay) + `[⚙️ Công cụ]` (nút popover chứa: Tốc độ xoay, Âm click ASMR, Nhập công thức tùy ý).
+  3. **Không Bị Tràn Màn Hình & Không Bị Gãy Dòng:**
+     - Tất cả các nút đều hiển thị trên 1 dòng duy nhất (`whitespace-nowrap`), kích thước vừa vặn 100% bề ngang điện thoại, không còn nút nào bị tràn mép hay cắt cụt.
+* **Files tác động:**
+  - `src/components/ui/PlayerBar.tsx`: Tích hợp pill trạng thái hợp nhất kèm popover quy ước mặt, tái cấu trúc dock 3 nhóm logic và thêm popover công cụ.
+  - `src/App.tsx`: Loại bỏ render `OrientationLegend` thừa để tránh xung đột giao diện.
+
+---
+
 ### 🎨 [Commit `55dff57`] — Thiết Kế Lại Top Navbar Dạng Floating Island Siêu Thanh Thoát, Triệt Tiêu Lỗi Rớt Dòng Chữ Trên Mobile
 
 * **Bối cảnh & Yêu cầu:**
