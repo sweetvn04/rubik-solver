@@ -414,6 +414,16 @@
 | 394 | 2026-10-12 22:46 | `git status` | Kiểm tra các file thay đổi để chuẩn bị commit | Nhận diện đủ các file src và docs |
 | 395 | 2026-10-12 22:47 | `git add . && git commit -m "feat(ui): redesign top navbar to 2026 web standard and decouple 3d workspace from theory curriculum"` | Commit toàn bộ tính năng Top Navbar chuẩn Web 2026, tách biệt Bàn xoay 3D và Giáo trình lý thuyết, tinh gọn thẻ hướng dẫn giải mobile | Commit `44d37dd` |
 | 396 | 2026-10-12 22:47 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 44d37dd"` | Đồng bộ commit hash 44d37dd vào CHANGELOG và COMMAND_LOG | Commit `5a586d7` |
+| 397 | 2026-10-12 22:47 | `git commit -am "docs: finalize COMMAND_LOG.md with command 396" && git status` | Lưu commit hoàn thiện COMMAND_LOG và kiểm tra working tree | Commit `1131256` — clean |
+| 398 | 2026-10-12 23:59 | `ip -br a && ss -tulpn \| grep 5173 \|\| true; pgrep -af "vite" \|\| true` | Kiểm tra IP máy, trạng thái socket cổng 5173 và tiến trình Vite đang chạy | IP 192.168.1.77, socket chỉ bind [::1]:5173 (localhost), chưa mở host |
+| 399 | 2026-10-12 23:59 | `which ufw iptables nft 2>/dev/null \|\| true; sudo -n ufw status 2>/dev/null \|\| true` | Kiểm tra sự hiện diện của các công cụ tường lửa trên hệ thống | Có ufw, iptables, nft |
+| 400 | 2026-10-12 23:59 | `systemctl is-active ufw 2>/dev/null \|\| true; systemctl is-active firewalld 2>/dev/null \|\| true` | Kiểm tra trạng thái hoạt động của service ufw và firewalld | ufw đang active |
+| 401 | 2026-10-13 00:00 | `npm run build` | Kiểm tra biên dịch dự án sau khi cấu hình server.host trong vite.config.ts và package.json | Thành công (built in 720ms) |
+| 402 | 2026-10-13 00:00 | `ps -f -p 300677 \|\| true` | Kiểm tra chi tiết tiến trình dev server đang chạy của sweetvn | PID 300677 trên pts/1 |
+| 403 | 2026-10-13 00:00 | `ss -tulpn \| grep 5173 \|\| true` | Kiểm tra lại socket cổng 5173 sau khi vite reload config | Lắng nghe thành công trên *:5173 (0.0.0.0) |
+| 404 | 2026-10-13 00:00 | `curl -I http://192.168.1.77:5173` | Kiểm tra gọi HTTP tới địa chỉ LAN 192.168.1.77:5173 | HTTP/1.1 200 OK |
+| 405 | 2026-10-13 00:00 | `grep 5173 /etc/ufw/user.rules 2>/dev/null \|\| true` | Kiểm tra quy tắc ufw cho cổng 5173 | Đã có sẵn rule ACCEPT cho cả tcp/udp |
+| 406 | 2026-10-13 00:01 | `git add vite.config.ts package.json && git commit -m "fix(dev): expose vite dev server to lan host 0.0.0.0 for mobile access"` | Commit cấu hình host và dev script cho Vite | Commit `5752cc9` |
 
 
 

@@ -4,6 +4,25 @@
 
 ---
 
+## 📅 2026-10-13
+
+### 🔧 [Commit `5752cc9`] — Cấu Hình Vite Dev Server Lắng Nghe Mạng LAN (0.0.0.0) Để Kết Nối Từ Điện Thoại
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng không thể kết nối tới máy tính từ điện thoại thông qua địa chỉ IP cục bộ `http://192.168.1.77:5173`.
+  - Khảo sát hệ thống:
+    1. Vite dev server đang chạy mặc định chỉ bind vào loopback interface `[::1]:5173` (localhost), từ chối mọi kết nối ngoài card mạng LAN.
+    2. Tường lửa UFW đã có sẵn quy tắc mở cổng 5173 (`-A ufw-user-input -p tcp --dport 5173 -j ACCEPT`).
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. Thêm `server: { host: true, port: 5173 }` vào [`vite.config.ts`](./vite.config.ts) để Vite tự động bind vào `0.0.0.0` (mọi interface mạng nội bộ).
+  2. Bổ sung cờ `--host` vào script dev trong [`package.json`](./package.json) (`"dev": "vite --host"`).
+  3. Vite tự động nạp lại cấu hình và chuyển socket sang `*:5173`. Kiểm tra bằng `curl -I http://192.168.1.77:5173` trả về HTTP 200 OK ngay lập tức.
+* **Files tác động:**
+  - `vite.config.ts`: Bật `server.host: true` và cố định `port: 5173`.
+  - `package.json`: Cập nhật lệnh `"dev": "vite --host"`.
+
+---
+
 ## 📅 2026-10-12
 
 ### 🚀 [Commit `44d37dd`] — Tái Thiết Kế Top Navbar Chuẩn Web 2026, Tách Biệt Bàn Xoay 3D & Giáo Trình Lý Thuyết, Tối Ưu Thẻ Hướng Dẫn Giải Mobile
