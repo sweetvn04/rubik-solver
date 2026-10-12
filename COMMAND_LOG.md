@@ -408,6 +408,10 @@
 | 388 | 2026-10-12 20:31 | `gh auth status 2>&1 \|\| true` | Kiểm tra trạng thái đăng nhập của GitHub CLI | Chưa đăng nhập gh |
 | 389 | 2026-10-12 20:57 | `git add COMMAND_LOG.md && git commit -m "docs: log commands 386-388 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 386 đến 388 | Commit `a9a9294` trên branch main |
 | 390 | 2026-10-12 20:58 | `git status && git branch -a` | Kiểm tra branch hiện tại và remote tracking branch | Branch main, tracking origin/main |
+| 391 | 2026-10-12 22:32 | `git status` | Kiểm tra trạng thái git working tree đầu phiên làm việc mới | Exit 0 — working tree clean trên branch main |
+| 392 | 2026-10-12 22:46 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi tạo TopNavbar và tối ưu TutorCard | Lỗi TS6133 (unused import Sparkles, Info) |
+| 393 | 2026-10-12 22:46 | `npm run build` | Kiểm tra biên dịch lại sau khi loại bỏ import thừa trong TopNavbar | Thành công (built in 781ms) |
+| 394 | 2026-10-12 22:46 | `git status` | Kiểm tra các file thay đổi để chuẩn bị commit | Nhận diện đủ các file src và docs |
 
 
 

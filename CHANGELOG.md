@@ -6,6 +6,35 @@
 
 ## 📅 2026-10-12
 
+### 🚀 [Commit `PENDING`] — Tái Thiết Kế Top Navbar Chuẩn Web 2026, Tách Biệt Bàn Xoay 3D & Giáo Trình Lý Thuyết, Tối Ưu Thẻ Hướng Dẫn Giải Mobile
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng gửi ảnh chụp màn hình điện thoại phản ánh sau khi xáo Rubik và bấm "Hướng dẫn" thì giao diện bị lộn xộn/lung tung: Top Bar phân mảnh thành 2 cụm nút trôi nổi chen chúc nhau ở mép trên, thẻ Hướng Dẫn Giải (`TutorCard`) bung quá to (chiếm 80% màn hình) đè lấp toàn bộ khối Rubik 3D.
+  - Người dùng yêu cầu thiết kế lại thanh Top Bar theo menu chuẩn Web 2026, và đồng thuận tách riêng Bàn Xoay 3D với Giáo Trình lý thuyết để khi cần minh hoạ mới hiện 3D.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Top Navbar Chuẩn Web 2026 Hợp Nhất (`src/components/ui/TopNavbar.tsx`):**
+     - Thay thế các khối nút nổi lơ lửng bằng thanh Navbar kính mờ hợp nhất (`bg-[#fcf9f2]/90 backdrop-blur-xl border-b border-[#e8dfcf]`).
+     - **Brand Logo:** Gradient ấm áp phong cách sáp màu `[R]` + `Roux Method VN` + badge `3D v2026`.
+     - **Segmented Tab Switcher Ở Giữa:** Chuyển đổi tức thì 1 chạm giữa `🎲 Bàn Xoay 3D` (thực hành & tự giải) và `📖 Giáo Trình` (học lý thuyết Roux).
+     - **Desktop Actions:** Nút Nhập Rubik thật, Đặt lại góc nhìn, Bật/tắt Lo-fi BGM.
+     - **Mobile Menu 2026:** Nút Lo-fi, Reset camera, và nút Menu (Hamburger) mở Mobile Navigation Sheet/Popover kính mờ trượt từ trên xuống với đầy đủ tùy chọn (Chuyển chế độ, Nhập Rubik thật, Góc nhìn Roux, Lo-fi, Phím tắt).
+  2. **Tách Biệt Bàn Xoay 3D & Chế Độ Giáo Trình Toàn Trang (`App.tsx` & `LessonDrawer.tsx`):**
+     - Khi ở tab **Giáo Trình**: Hiển thị chế độ xem tài liệu toàn trang (`isFullPage`), giao diện sạch sẽ, cuộn thoáng đãng, sơ đồ 2D sắc nét, không bị canvas WebGL chạy ngầm gây lag hay đè màn hình.
+     - Khi bấm bất kỳ nút **"Minh hoạ 3D"** / **"Xoay công thức"** / **"Thiết lập thế cờ"**: Tự động chuyển mượt mà sang `🎲 Bàn Xoay 3D`, diễn hoạt khối Rubik và hiển thị floating banner nổi `‹ Quay lại bài học: [Tên bước]` để quay lại trang đọc chỉ trong 1 chạm.
+  3. **Tối Ưu Giao Diện Thẻ Hướng Dẫn Giải Mobile (`TutorCard.tsx` & `RubikCanvas.tsx`):**
+     - Thay vì chiếm 85vh đè lấp Rubik, trên mobile thẻ được thu gọn thành **Bottom Dock (~35-40% màn hình đáy)**:
+       * Hiển thị Move to đùng (`L`, `R U R'`), mô tả tiếng Việt ngắn gọn, bộ nút bấm công thái học (`‹ Lùi`, `Xong cụm`, `Xoay bước này ›`).
+       * Nút toggle "Tư duy" để xem Mục đích & Nhận biết khi cần, mặc định ẩn để tránh phình to thẻ.
+     - Điều chỉnh camera `offsetY = 0.85` trong `RubikCanvas.tsx` khi bật Tutor Mode trên di động: Khối Rubik 3D nằm chính giữa 60-65% không gian thoáng đãng nửa trên màn hình, xoay mượt mà và không bao giờ bị che khuất.
+* **Files tác động:**
+  - `src/components/ui/TopNavbar.tsx`: Tạo mới component Navbar chuẩn Web 2026 với Mobile Sheet Drawer.
+  - `src/components/ui/TutorCard.tsx`: Tối ưu giao diện Mobile Bottom Dock, thêm toggle chi tiết tư duy.
+  - `src/components/ui/LessonDrawer.tsx`: Hỗ trợ chế độ Full-Page Theory Mode và callback chuyển sang 3D khi demo.
+  - `src/components/cube/RubikCanvas.tsx`: Tinh chỉnh `offsetY = 0.85` cho camera Rubik trên mobile.
+  - `src/App.tsx`: Tích hợp TopNavbar, quản lý state chuyển view và banner quay lại bài học.
+
+---
+
 ### 🐛 [Commit `982554c`] — Khắc Phục Lỗi Cắt Badge & Chuyển Sang Menu Dropdown Chọn Bước Độc Lập Cho Hành Trình Roux
 
 * **Bối cảnh & Yêu cầu:**

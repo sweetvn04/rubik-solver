@@ -54,6 +54,8 @@ import {
 interface LessonDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  isFullPage?: boolean;
+  onSwitchTo3D?: (stepTitle?: string) => void;
 }
 
 const CMLL_GROUPS = ['ALL', 'O', 'H', 'Pi', 'T', 'U', 'L', 'S', 'As'] as const;
@@ -102,7 +104,12 @@ const STEP_META = {
   },
 };
 
-export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) => {
+export const LessonDrawer: React.FC<LessonDrawerProps> = ({
+  isOpen,
+  onClose,
+  isFullPage = false,
+  onSwitchTo3D,
+}) => {
   // ── Tabs chính: 3 tabs thống nhất ──
   const [mainTab, setMainTab] = useState<'journey' | 'reference' | 'pro_tips'>('journey');
 
@@ -196,6 +203,9 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
     if (isAnimating || moveQueue.length > 0) return;
     enqueueAlgorithm(alg);
     showToast(`Đang xoay: ${name}`);
+    if (onSwitchTo3D) {
+      setTimeout(() => onSwitchTo3D(name), 100);
+    }
   };
 
   // Hành động thiết lập thế cờ lên Rubik 3D
@@ -211,6 +221,9 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
       enqueueAlgorithm(setupMovesStr);
       showToast(`Đã thiết lập thế cờ: ${name}`);
     }, 150);
+    if (onSwitchTo3D) {
+      setTimeout(() => onSwitchTo3D(name), 100);
+    }
   };
 
   // Demo sub-step trên Rubik 3D
@@ -236,31 +249,48 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
       enqueueAlgorithm(step.demoAlg);
       showToast(`Minh hoạ: ${step.title}`);
     }
+    if (onSwitchTo3D) {
+      setTimeout(() => onSwitchTo3D(step.title), 100);
+    }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex justify-end pointer-events-none animate-in fade-in duration-200">
-      {/* Backdrop mờ nhẹ */}
-      <div
-        className="fixed inset-0 bg-black/25 backdrop-blur-2xs transition-opacity pointer-events-auto"
-        onClick={() => {
-          setIsStepDropdownOpen(false);
-          onClose();
-        }}
-      />
+    <div
+      className={
+        isFullPage
+          ? 'w-full h-full bg-[#faf6ee] flex flex-col pointer-events-auto overflow-hidden animate-in fade-in duration-200'
+          : 'fixed inset-0 z-40 flex justify-end pointer-events-none animate-in fade-in duration-200'
+      }
+    >
+      {/* Backdrop mờ nhẹ (chỉ khi ở chế độ drawer) */}
+      {!isFullPage && (
+        <div
+          className="fixed inset-0 bg-black/25 backdrop-blur-2xs transition-opacity pointer-events-auto"
+          onClick={() => {
+            setIsStepDropdownOpen(false);
+            onClose();
+          }}
+        />
+      )}
 
       {/* Toast thông báo */}
       {toastMessage && (
-        <div className="fixed top-4 right-4 sm:right-[430px] z-50 px-3.5 py-2 bg-[#2c221e] text-white text-xs font-semibold rounded-xl shadow-lg border border-[#e8dfcf]/20 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="fixed top-16 right-4 z-50 px-3.5 py-2 bg-[#2c221e] text-white text-xs font-semibold rounded-xl shadow-lg border border-[#e8dfcf]/20 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
           <CheckCircle className="w-3.5 h-3.5 text-[#2a9d8f]" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Main Drawer Panel */}
-      <aside className="relative z-50 w-full sm:w-[440px] md:w-[480px] h-full bg-[#faf6ee] shadow-2xl flex flex-col pointer-events-auto border-l border-[#ebdcca] overflow-hidden">
+      {/* Main Drawer/Full-page Panel */}
+      <aside
+        className={
+          isFullPage
+            ? 'w-full max-w-4xl mx-auto h-full bg-[#faf6ee] shadow-sm flex flex-col pointer-events-auto border-x border-[#ebdcca]/60 overflow-hidden'
+            : 'relative z-50 w-full sm:w-[440px] md:w-[480px] h-full bg-[#faf6ee] shadow-2xl flex flex-col pointer-events-auto border-l border-[#ebdcca] overflow-hidden'
+        }
+      >
         {/* ── 1. HEADER CHÍNH ── */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#ebdcca] bg-[#f5efe4] shrink-0">
           <div className="flex items-center gap-2">
@@ -272,14 +302,30 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
               <p className="text-[10px] text-[#706459]">Hệ thống kiến thức chuẩn rouxmethodvn</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 text-[#8c7b6c] hover:text-[#2c221e] hover:bg-[#efe8dc] rounded-xl transition-all cursor-pointer"
-            title="Đóng thư viện"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            {isFullPage && onSwitchTo3D && (
+              <button
+                type="button"
+                onClick={() => onSwitchTo3D()}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#e07a5f] hover:bg-[#d4684c] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer"
+                title="Chuyển sang Bàn Xoay 3D để thực hành"
+              >
+                <Box className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Sang Bàn Xoay 3D</span>
+                <span className="sm:hidden">3D</span>
+              </button>
+            )}
+            {!isFullPage && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-1.5 text-[#8c7b6c] hover:text-[#2c221e] hover:bg-[#efe8dc] rounded-xl transition-all cursor-pointer"
+                title="Đóng thư viện"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* ── 2. THANH 3 TABS LỚN ── */}

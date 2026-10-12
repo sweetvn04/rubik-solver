@@ -23,7 +23,7 @@ export function RubikCanvas({ onResetCamera }: RubikCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
   // Khi đang bật Tutor Mode trên màn hình điện thoại, nâng nhẹ khối Rubik lên nửa trên để không bị che bởi thanh hướng dẫn
-  const offsetY = isTutorActive && isMobile ? 0.65 : 0;
+  const offsetY = isTutorActive && isMobile ? 0.85 : 0;
 
   useEffect(() => {
     invalidate();

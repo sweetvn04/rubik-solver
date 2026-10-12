@@ -181,35 +181,37 @@ export const TutorCard: React.FC = () => {
   }
 
   // 2. Chế độ mở rộng đầy đủ (Expanded Card)
+  const [showDetails, setShowDetails] = useState(false);
+
   return (
     <>
       <div
-        className={`fixed z-30 bottom-3 inset-x-3 sm:inset-x-auto sm:bottom-6 ${sideClass} sm:w-[390px] max-h-[85vh] overflow-y-auto p-4 bg-white/95 backdrop-blur-md rounded-3xl border border-[#e8dfcf] shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-300 pointer-events-auto`}
+        className={`fixed z-30 bottom-2 sm:bottom-6 inset-x-2 sm:inset-x-auto ${sideClass} sm:w-[390px] max-h-[42dvh] sm:max-h-[82vh] overflow-y-auto p-3 sm:p-4 bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-[#e8dfcf] shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-300 pointer-events-auto`}
       >
         {/* Header: Tiêu đề Phase & Bộ nút điều hướng thẻ */}
-        <div className="flex items-start justify-between gap-2 pb-2 border-b border-[#f0e8db]">
-          <div>
+        <div className="flex items-center justify-between gap-1 pb-1.5 sm:pb-2 border-b border-[#f0e8db]">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#f4ebe1] text-[#935c34] border border-[#e5d4c3]">
+              <span className="px-2 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#f4ebe1] text-[#935c34] border border-[#e5d4c3] truncate">
                 {currentPhase?.title || 'Phương pháp Roux'}
               </span>
               {currentPhase?.caseName && (
-                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-[#e8f3ef] text-[#247c72] border border-[#c4e3dc]">
+                <span className="px-1.5 py-0.5 text-[9px] sm:text-[10px] font-semibold rounded-full bg-[#e8f3ef] text-[#247c72] border border-[#c4e3dc] truncate">
                   {currentPhase.caseName}
                 </span>
               )}
             </div>
-            <div className="text-[11px] text-[#706459] font-medium mt-0.5">
+            <div className="text-[10px] sm:text-[11px] text-[#706459] font-medium truncate mt-0.5 hidden sm:block">
               {currentPhase?.subtitle}
             </div>
           </div>
 
           {/* Nút Lộ trình, Tiêu điểm, Đổi bên, Thu nhỏ, Thoát */}
-          <div className="flex items-center gap-0.5 text-[#8c7b6c]">
+          <div className="flex items-center gap-0.5 text-[#8c7b6c] shrink-0">
             <button
               type="button"
               onClick={() => setIsRoadmapOpen(true)}
-              className="p-1 text-[#a06030] hover:bg-[#f5ece0] rounded-lg transition-all cursor-pointer flex items-center gap-1 text-[11px] font-bold px-1.5"
+              className="p-1 text-[#a06030] hover:bg-[#f5ece0] rounded-lg transition-all cursor-pointer flex items-center gap-1 text-[10px] sm:text-[11px] font-bold px-1.5"
               title="Xem toàn bộ lộ trình giải theo cụm"
             >
               <Map className="w-3.5 h-3.5" />
@@ -246,7 +248,7 @@ export const TutorCard: React.FC = () => {
               type="button"
               onClick={() => setIsCollapsed(true)}
               className="p-1 hover:text-[#2c221e] hover:bg-[#efe8dc] rounded-lg transition-all cursor-pointer"
-              title="Thu nhỏ để nhìn rõ Rubik"
+              title="Thu nhỏ thành Mini Bar"
             >
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -263,12 +265,12 @@ export const TutorCard: React.FC = () => {
         </div>
 
         {/* Thanh tiến trình (Overall Progress Bar) */}
-        <div className="my-2">
-          <div className="flex justify-between text-[10px] font-semibold text-[#8c7b6c] mb-1">
+        <div className="my-1.5 sm:my-2">
+          <div className="flex justify-between text-[9px] sm:text-[10px] font-semibold text-[#8c7b6c] mb-0.5">
             <span>Tiến độ toàn khối: {tutorCurrentIndex}/{totalMoves}</span>
             <span className="text-[#a06030] font-mono">{overallPercent}%</span>
           </div>
-          <div className="w-full h-1.5 bg-[#f0e8db] rounded-full overflow-hidden">
+          <div className="w-full h-1 sm:h-1.5 bg-[#f0e8db] rounded-full overflow-hidden">
             <div
               className="h-full bg-[#e07a5f] rounded-full transition-all duration-300 ease-out"
               style={{ width: `${overallPercent}%` }}
@@ -276,77 +278,88 @@ export const TutorCard: React.FC = () => {
           </div>
         </div>
 
-        {/* KHỐI NỔI BẬT: CỤM MỤC TIÊU HIỆN TẠI (CHUNK INTENT) */}
+        {/* CỤM MỤC TIÊU HIỆN TẠI (CHUNK INTENT) */}
         {currentChunk && !isFinished && (
-          <div className="my-2 p-2.5 bg-[#fcf9f2] rounded-2xl border border-[#ede2d2] shadow-xs">
-            <div className="flex items-center justify-between gap-1 mb-1">
-              <div className="flex items-center gap-1.5">
-                <Compass className="w-3.5 h-3.5 text-[#e07a5f]" />
-                <span className="text-xs font-bold text-[#2c221e]">
+          <div className="my-1.5 p-2 bg-[#fcf9f2] rounded-xl sm:rounded-2xl border border-[#ede2d2] shadow-xs">
+            <div className="flex items-center justify-between gap-1">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <Compass className="w-3.5 h-3.5 text-[#e07a5f] shrink-0" />
+                <span className="text-[11px] sm:text-xs font-bold text-[#2c221e] truncate">
                   {currentChunk.chunkTitle}
                 </span>
               </div>
-              <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 bg-white text-[#935c34] rounded-md border border-[#e8ded0]">
-                {chunkStep}/{chunkTotal}
-              </span>
-            </div>
-
-            <p className="text-[11px] text-[#706459] leading-snug">
-              {currentChunk.chunkSubtitle}
-            </p>
-
-            {/* Chi tiết tư duy: Mục đích & Cách nhận biết */}
-            <div className="mt-2 pt-2 border-t border-[#ede2d2] space-y-1 text-[11px]">
-              <div className="flex items-start gap-1.5">
-                <span className="text-[10px] font-bold text-[#e07a5f] shrink-0 uppercase mt-0.5">Mục đích:</span>
-                <span className="text-[#4a3f35] leading-tight">{currentChunk.intent}</span>
-              </div>
-
-              <div className="flex items-start gap-1.5">
-                <span className="text-[10px] font-bold text-[#2a9d8f] shrink-0 uppercase mt-0.5">Nhận biết:</span>
-                <span className="text-[#4a3f35] leading-tight">{currentChunk.recognition}</span>
+              <div className="flex items-center gap-1 shrink-0">
+                <span className="text-[9px] sm:text-[10px] font-mono font-semibold px-1.5 py-0.2 bg-white text-[#935c34] rounded-md border border-[#e8ded0]">
+                  {chunkStep}/{chunkTotal}
+                </span>
+                {/* Nút toggle chi tiết tư duy trên Mobile */}
+                <button
+                  type="button"
+                  onClick={() => setShowDetails(!showDetails)}
+                  className="px-1.5 py-0.2 text-[9px] font-bold text-[#8c7b6c] hover:text-[#2c221e] bg-white rounded-md border border-[#e8ded0] cursor-pointer"
+                >
+                  {showDetails ? 'Ẩn bớt' : 'Tư duy'}
+                </button>
               </div>
             </div>
+
+            {/* Chi tiết tư duy: Ẩn/Hiện linh hoạt trên Mobile */}
+            {(showDetails || typeof window !== 'undefined' && window.innerWidth >= 640) && (
+              <div className="mt-1.5 pt-1.5 border-t border-[#ede2d2] space-y-1 text-[10px] sm:text-[11px] animate-in fade-in duration-150">
+                <p className="text-[#706459] leading-snug">
+                  {currentChunk.chunkSubtitle}
+                </p>
+                <div className="flex items-start gap-1">
+                  <span className="font-bold text-[#e07a5f] shrink-0 uppercase">Mục đích:</span>
+                  <span className="text-[#4a3f35] leading-tight">{currentChunk.intent}</span>
+                </div>
+                <div className="flex items-start gap-1">
+                  <span className="font-bold text-[#2a9d8f] shrink-0 uppercase">Nhận biết:</span>
+                  <span className="text-[#4a3f35] leading-tight">{currentChunk.recognition}</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
         {/* Hero Step Display - Ký hiệu bước xoay hiện tại */}
         {isFinished ? (
-          <div className="flex flex-col items-center justify-center py-4 text-center">
-            <div className="w-12 h-12 rounded-full bg-[#2a9d8f]/15 flex items-center justify-center text-[#2a9d8f] mb-1.5 animate-bounce">
-              <Trophy className="w-7 h-7" />
+          <div className="flex flex-col items-center justify-center py-2 sm:py-4 text-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#2a9d8f]/15 flex items-center justify-center text-[#2a9d8f] mb-1 animate-bounce">
+              <Trophy className="w-5 h-5 sm:w-7 sm:h-7" />
             </div>
-            <h3 className="text-sm font-bold text-[#2c221e]">
+            <h3 className="text-xs sm:text-sm font-bold text-[#2c221e]">
               Tuyệt vời! Bạn đã hoàn thành!
             </h3>
-            <p className="text-[11px] text-[#706459] max-w-xs mt-0.5">
-              Toàn bộ các cụm Roux (FB, SB, CMLL, LSE) đã được giải hoàn tất 100%.
+            <p className="text-[10px] sm:text-[11px] text-[#706459] max-w-xs mt-0.5">
+              Toàn bộ các cụm Roux (FB, SB, CMLL, LSE) đã giải xong 100%.
             </p>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-2 px-2 bg-[#faf6ee] rounded-2xl border border-[#ede3d4] my-1.5">
-            <div className="text-[9px] font-bold text-[#8c7b6c] uppercase tracking-wider mb-0.5">
+          <div className="flex flex-col items-center justify-center py-1.5 sm:py-2 px-2 bg-[#faf6ee] rounded-xl sm:rounded-2xl border border-[#ede3d4] my-1 sm:my-1.5">
+            <div className="text-[8px] sm:text-[9px] font-bold text-[#8c7b6c] uppercase tracking-wider mb-0.5">
               Bước {phaseStep} / {phaseTotal} của {currentPhase?.title}
             </div>
 
             {/* Move to đùng nổi bật */}
-            <div className="text-3xl sm:text-4xl font-mono font-black text-[#2c221e] tracking-tight my-0.5 drop-shadow-xs">
+            <div className="text-2xl sm:text-4xl font-mono font-black text-[#2c221e] tracking-tight my-0.2 sm:my-0.5 drop-shadow-xs">
               {currentMove}
             </div>
 
             {/* Mô tả tiếng Việt thân thiện */}
-            <div className="text-xs font-semibold text-[#a06030] text-center px-1">
+            <div className="text-[11px] sm:text-xs font-semibold text-[#a06030] text-center px-1">
               {moveDescVi}
             </div>
 
             {/* Lời khuyên của Chunk / Phase */}
             {(currentChunk?.keyTip || currentPhase?.tip) && (
-              <div className="text-[10px] text-[#7d7165] text-center mt-1.5 px-2 italic bg-white/70 py-0.5 rounded-lg border border-[#ebe0d0] max-w-sm">
+              <div className="text-[9px] sm:text-[10px] text-[#7d7165] text-center mt-1 px-2 italic bg-white/70 py-0.5 rounded-lg border border-[#ebe0d0] max-w-sm">
                 💡 {currentChunk?.keyTip || currentPhase?.tip}
               </div>
             )}
           </div>
         )}
+
 
         {/* Bộ nút điều khiển bước (Controls) */}
         <div className="flex items-center justify-between gap-1.5 mt-2 pt-2 border-t border-[#f0e8db]">
