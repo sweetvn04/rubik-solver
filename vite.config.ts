@@ -6,4 +6,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   base: './',
   plugins: [tailwindcss(), react()],
+  server: {
+    host: true, // Lắng nghe trên mọi card mạng (0.0.0.0) để điện thoại kết nối được qua LAN
+    port: 5173,
+  },
 })
