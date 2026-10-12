@@ -4,7 +4,6 @@ import { PlayerBar } from './components/ui/PlayerBar';
 import { TutorCard } from './components/ui/TutorCard';
 import { LessonDrawer } from './components/ui/LessonDrawer';
 import { CubeInputModal } from './components/ui/CubeInputModal';
-import { OrientationLegend } from './components/ui/OrientationLegend';
 import { TopNavbar } from './components/ui/TopNavbar';
 import { useRubikStore } from './store/useRubikStore';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
@@ -83,8 +82,6 @@ export default function App() {
             }}
           />
 
-          {/* Legend quy ước màu mặt Rubik — góc dưới trái màn hình */}
-          {!isTutorActive && <OrientationLegend />}
         </div>
 
         {/* Tutor Mode Card hoặc Bottom Player Bar */}
