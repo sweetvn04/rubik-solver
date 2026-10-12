@@ -199,6 +199,8 @@ export const LSE_BAD_EDGE_RULES = {
     'Một cạnh được gọi là BAD EDGE khi màu Vàng hoặc Trắng của nó nằm ở các mặt bên (F, B, R, L) thay vì nằm trên mặt U hoặc mặt D.',
     'Đối với 2 cạnh UL và UR: Nếu sticker Vàng/Trắng hướng lên mặt U thì là GOOD EDGE; nếu hướng sang mặt L hoặc R thì là BAD EDGE.',
     'Số lượng Bad Edges trên khối Rubik luôn luôn là số chẵn: 0, 2, 4 hoặc 6 cạnh sai.',
+    'Tự do xoay tầng U (AUF): Trước khi xoay công thức EO, bạn được tự do xoay U, U\', U2 để đưa các cạnh sai ở U vào đúng vị trí của sơ đồ mà không sợ hỏng khối.',
+    'Quy tắc Chéo Vàng cho thế 1/1: Hai cạnh sai BẮT BUỘC phải nằm chéo nhau qua tâm (1 cạnh phía trước, 1 cạnh phía sau). Nếu cạnh sai ở D là DF (trước) thì cạnh sai ở U phải ở UB (sau).',
     'Mục tiêu của Bước 4a (EO): Đưa tất cả các cạnh sai về thế cơ bản 3/1 rồi giải dứt điểm chỉ bằng 3 moves.',
   ],
 };
@@ -245,7 +247,7 @@ export const LSE_EO_CASES: EOCase[] = [
     triggerAlg: "M' U' M U'",
     fullSolution: "M' U' M U' M' U' M'",
     setupAlg: "M U M U M' U M",
-    recognitionTip: 'Đặt 1 cạnh sai ở U tại vị trí UB (phía sau), 1 cạnh sai ở D tại vị trí DF (phía trước). Xoay trigger M\' U\' M U\' sẽ chuyển thành thế cơ bản 3/1 (F).',
+    recognitionTip: 'Quy tắc chéo: Cạnh sai ở D là DF (nhìn sticker FD có màu Vàng/Trắng) ➔ Cạnh sai ở U BẮT BUỘC phải đặt ở UB (phía sau lưng - chéo qua tâm)! ⚠️ LƯU Ý KINH ĐIỂN: Nếu cạnh sai ở U đang ở UF (trước mặt, cùng phía với DF), BẮT BUỘC xoay U2 trước để đưa ra UB rồi mới xoay công thức. Nếu để nguyên UF và DF xoay sẽ bị lặp thế 2/0!',
     diagramU: ['B', 'G', 'G', 'G'], // UB Bad
     diagramD: ['G', 'B'],          // DF Bad
   },
@@ -259,7 +261,7 @@ export const LSE_EO_CASES: EOCase[] = [
     triggerAlg: "M' U' M' U'",
     fullSolution: "M' U' M' U' M U' M'",
     setupAlg: "M U M' U M U M",
-    recognitionTip: 'Đặt 1 cạnh sai ở U tại vị trí UF (phía trước), 1 cạnh sai ở D tại vị trí DB (phía sau). Xoay trigger M\' U\' M\' U\' sẽ chuyển thành thế cơ bản 3/1 (B).',
+    recognitionTip: 'Quy tắc chéo: Cạnh sai ở D là DB (nhìn sticker FD KHÔNG CÓ màu Vàng/Trắng) ➔ Cạnh sai ở U BẮT BUỘC phải đặt ở UF (phía trước mặt - chéo qua tâm)! ⚠️ LƯU Ý KINH ĐIỂN: Nếu cạnh sai ở U đang ở UB (sau lưng), BẮT BUỘC xoay U2 trước để đưa về UF rồi mới xoay công thức!',
     diagramU: ['G', 'G', 'B', 'G'], // UF Bad
     diagramD: ['B', 'G'],          // DB Bad
   },

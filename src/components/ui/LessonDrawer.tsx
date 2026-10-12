@@ -783,6 +783,51 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                   </ul>
                 </div>
 
+                {/* Hộp Cảnh báo & Hướng dẫn Căn chỉnh (AUF) thế 1/1 */}
+                <div className="p-3 bg-[#fff9f2] rounded-2xl border border-[#f3d9b8] shadow-2xs space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Lightbulb className="w-4 h-4 text-[#d97706] mt-0.5 shrink-0" />
+                    <div>
+                      <h4 className="text-xs font-bold text-[#92400e]">
+                        Mẹo sống còn thế 1/1: Quy tắc 2 cạnh chéo nhau qua tâm
+                      </h4>
+                      <p className="text-[11px] text-[#78350f] mt-0.5 leading-snug">
+                        Gặp 1 cạnh sai ở U và 1 cạnh sai ở D? Hai cạnh này <strong>BẮT BUỘC phải nằm chéo nhau</strong> (1 phía trước, 1 phía sau):
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                    <div className="p-2 bg-white/90 rounded-xl border border-[#fae4cd] space-y-1">
+                      <div className="font-bold text-[#b45309] flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-[#e07a5f]" />
+                        <span>Thế 1/1 (F) — Cạnh đáy ở trước (DF)</span>
+                      </div>
+                      <p className="text-[10.5px] text-[#5c4f43] leading-relaxed">
+                        • Nhận biết: Sticker <strong>FD</strong> có màu Vàng/Trắng.<br />
+                        • Căn chỉnh tầng U: Xoay U để đưa cạnh sai ở U ra <strong>sau lưng (UB)</strong>!<br />
+                        • <span className="font-semibold text-[#b91c1c]">Lỗi kinh điển:</span> Nếu cạnh đỉnh đang ở <strong>UF</strong> (trước mặt), <strong>xoay U2 trước</strong> rồi mới làm <code className="font-mono bg-[#fdf0e6] px-1 py-0.5 rounded text-[#c2410c]">M' U' M U' M' U' M'</code>.
+                      </p>
+                    </div>
+
+                    <div className="p-2 bg-white/90 rounded-xl border border-[#fae4cd] space-y-1">
+                      <div className="font-bold text-[#2a9d8f] flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-[#2a9d8f]" />
+                        <span>Thế 1/1 (B) — Cạnh đáy ở sau (DB)</span>
+                      </div>
+                      <p className="text-[10.5px] text-[#5c4f43] leading-relaxed">
+                        • Nhận biết: Sticker <strong>FD</strong> KHÔNG CÓ màu Vàng/Trắng.<br />
+                        • Căn chỉnh tầng U: Xoay U để đưa cạnh sai ở U về <strong>trước mặt (UF)</strong>!<br />
+                        • <span className="font-semibold text-[#b91c1c]">Lưu ý:</span> Nếu cạnh đỉnh đang ở <strong>UB</strong> (sau lưng), <strong>xoay U2 trước</strong> rồi mới làm <code className="font-mono bg-[#eaf4f2] px-1 py-0.5 rounded text-[#247c72]">M' U' M' U' M U' M'</code>.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-[10px] text-[#8c6b4f] bg-white/60 p-2 rounded-xl border border-[#f3d9b8] leading-tight">
+                    ⚡ <strong>Lưu ý finger-trick:</strong> <code className="font-mono font-bold text-[#c2410c]">M'</code> là ngón giữa gạt từ đáy lên đỉnh (theo chiều xoay R). Đừng gạt ngược từ trên xuống (<code className="font-mono text-[#78350f]">M</code>) sẽ làm sai thuật toán!
+                  </div>
+                </div>
+
                 {/* Bộ lọc nhóm thế EO */}
                 <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
                   {[
