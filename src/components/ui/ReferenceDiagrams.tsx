@@ -437,3 +437,82 @@ export const L4EDiagram: React.FC<L4EDiagramProps> = ({ caseId }) => {
   );
 };
 
+interface ULURDiagramProps {
+  caseType?: '1_u_1_d' | '2_u' | '2_d' | 'solved_one' | string;
+}
+
+export const ULURDiagram: React.FC<ULURDiagramProps> = ({ caseType = '1_u_1_d' }) => {
+  return (
+    <div className="shrink-0 flex flex-col items-center gap-1 p-1 bg-[#201c18] rounded-xl border border-[#3d362e] shadow-inner select-none">
+      <svg width="46" height="46" viewBox="0 0 46 46">
+        <rect width="46" height="46" rx="6" fill="#14110f" />
+
+        {/* Khối FB bên trái (L Block - Màu Cam) */}
+        <rect x="3" y="3" width="10" height="40" rx="3" fill="#ea580c" opacity="0.8" />
+        <text x="8" y="24" fill="#ffffff" fontSize="7" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+          L
+        </text>
+
+        {/* Khối SB bên phải (R Block - Màu Đỏ) */}
+        <rect x="33" y="3" width="10" height="40" rx="3" fill="#dc2626" opacity="0.8" />
+        <text x="38" y="24" fill="#ffffff" fontSize="7" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+          R
+        </text>
+
+        {/* Tâm U (Vàng) */}
+        <rect x="17" y="17" width="12" height="12" rx="2" fill={CUBE_PALETTE.U} opacity="0.9" />
+
+        {/* Cột M (UB ở trên, UF ở dưới) */}
+        {caseType === '1_u_1_d' && (
+          <>
+            {/* 1 cạnh ở U (UF ở dưới) */}
+            <rect x="16" y="32" width="14" height="10" rx="2" fill={CUBE_PALETTE.U} stroke="#38bdf8" strokeWidth="1.5" />
+            {/* 1 cạnh ở D (DB ở trên) - vẽ chấm nét đứt */}
+            <rect x="16" y="4" width="14" height="10" rx="2" fill="#292524" stroke="#f59e0b" strokeWidth="1" strokeDasharray="2 2" />
+            <text x="23" y="9" fill="#f59e0b" fontSize="6" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+              D
+            </text>
+          </>
+        )}
+
+        {caseType === '2_u' && (
+          <>
+            {/* Cả 2 cạnh đều ở U (UB và UF sáng màu) */}
+            <rect x="16" y="4" width="14" height="10" rx="2" fill={CUBE_PALETTE.U} stroke="#38bdf8" strokeWidth="1.5" />
+            <rect x="16" y="32" width="14" height="10" rx="2" fill={CUBE_PALETTE.U} stroke="#38bdf8" strokeWidth="1.5" />
+          </>
+        )}
+
+        {caseType === '2_d' && (
+          <>
+            {/* Cả 2 cạnh đều ở đáy D (DF và DB nét đứt D) */}
+            <rect x="16" y="4" width="14" height="10" rx="2" fill="#292524" stroke="#10b981" strokeWidth="1.5" strokeDasharray="2 2" />
+            <text x="23" y="9" fill="#10b981" fontSize="6" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+              D
+            </text>
+            <rect x="16" y="32" width="14" height="10" rx="2" fill="#292524" stroke="#10b981" strokeWidth="1.5" strokeDasharray="2 2" />
+            <text x="23" y="37" fill="#10b981" fontSize="6" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+              D
+            </text>
+          </>
+        )}
+
+        {caseType === 'solved_one' && (
+          <>
+            {/* UL đã giải (nằm ở cánh L) */}
+            <rect x="10" y="17" width="5" height="12" rx="1" fill={CUBE_PALETTE.U} stroke="#10b981" strokeWidth="1" />
+            {/* UR đang ở đáy DF */}
+            <rect x="16" y="32" width="14" height="10" rx="2" fill="#292524" stroke="#f59e0b" strokeWidth="1" strokeDasharray="2 2" />
+            <text x="23" y="37" fill="#f59e0b" fontSize="6" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+              D
+            </text>
+          </>
+        )}
+      </svg>
+      <span className="text-[9px] font-mono font-bold text-[#b8a99a]">
+        {caseType === '1_u_1_d' ? '1U / 1D' : caseType === '2_u' ? '2 Ở U' : caseType === '2_d' ? '2 Ở D' : '1 Ở CÁNH'}
+      </span>
+    </div>
+  );
+};
+

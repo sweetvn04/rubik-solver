@@ -25,7 +25,7 @@ import {
 import { parseAlgorithm } from '../../engine/moveParser';
 import { invertMove } from '../../engine/tutorHelper';
 import { CubeDiagram2D } from './CubeDiagram2D';
-import { CMLLDiagram, EODiagram, L4EDiagram } from './ReferenceDiagrams';
+import { CMLLDiagram, EODiagram, L4EDiagram, ULURDiagram } from './ReferenceDiagrams';
 import {
   X,
   BookOpen,
@@ -261,14 +261,15 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
           <button
             type="button"
             onClick={() => setActiveTab('lse_guide')}
-            className={`flex-1 min-w-[95px] py-2 text-[11px] font-bold rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer ${
+            className={`flex-1 min-w-[125px] py-2 text-[11px] font-bold rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer ${
               activeTab === 'lse_guide'
                 ? 'bg-white text-[#2c221e] shadow-xs border border-[#e2d8c7]'
                 : 'text-[#7a6f64] hover:text-[#2c221e]'
             }`}
+            title="Cẩm nang hoàn chỉnh LSE: EO (Lật cạnh), UL/UR (2 cánh), L4E (4 cạnh cuối)"
           >
             <Compass className="w-3.5 h-3.5 text-[#2a9d8f]" />
-            <span>Cẩm nang LSE</span>
+            <span>LSE (EO • UL/UR • L4E)</span>
           </button>
 
           <button
@@ -366,7 +367,7 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                               ? 'bg-[#e07a5f] w-4'
                               : 'bg-[#e0d5c5] hover:bg-[#c4b5a0]'
                           }`}
-                          title={`Sub-step ${i + 1}`}
+                          title={`Phần ${i + 1}`}
                         />
                       ))}
                     </div>
@@ -382,6 +383,54 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                     className="p-1 rounded-lg hover:bg-[#efe8dc] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
                   >
                     <ChevronRight className="w-4 h-4 text-[#5c4f43]" />
+                  </button>
+                </div>
+              )}
+
+              {/* Thanh chọn nhanh từng phần con có nhãn rõ ràng */}
+              {totalSteps > 1 && (
+                <div className="flex items-center gap-1 overflow-x-auto px-3 py-2 bg-[#faf6ee]/70 border-b border-[#f0e8db] text-[10px]">
+                  {selectedLesson.steps.map((st, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => { setStepIndex(i); setShowNote(false); }}
+                      className={`px-2 py-1 rounded-lg shrink-0 font-bold transition-all cursor-pointer ${
+                        i === stepIndex
+                          ? 'bg-[#e07a5f] text-white shadow-xs'
+                          : 'bg-white text-[#5c4f43] border border-[#e2d8c7] hover:bg-[#f5efe4]'
+                      }`}
+                    >
+                      {st.title.split(':')[0].split('—')[0].trim()}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Lối tắt mở Cẩm nang chuyên sâu khi đang ở Bước 4 LSE */}
+              {selectedLesson.id === 'step4' && (
+                <div className="p-2.5 bg-[#fbf5ec] border-b border-[#ebdcca] flex items-center gap-1.5 flex-wrap text-[11px]">
+                  <span className="font-bold text-[#8c6d48] shrink-0 text-[10px]">Mở cẩm nang chuyên sâu:</span>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('lse_guide'); setLseSubTab('eo'); }}
+                    className="px-2 py-1 font-bold rounded-lg bg-white text-[#247c72] border border-[#cbe3dd] hover:bg-[#eef5f3] cursor-pointer shadow-2xs"
+                  >
+                    4a. 10 Thế EO
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('lse_guide'); setLseSubTab('ulur'); }}
+                    className="px-2 py-1 font-bold rounded-lg bg-white text-[#e07a5f] border border-[#f2d6c9] hover:bg-[#fdf8f5] cursor-pointer shadow-2xs"
+                  >
+                    4b. Đặt Cánh UL/UR
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('lse_guide'); setLseSubTab('l4e'); }}
+                    className="px-2 py-1 font-bold rounded-lg bg-white text-[#3d5a80] border border-[#cbd5e1] hover:bg-[#f0f4f8] cursor-pointer shadow-2xs"
+                  >
+                    4c. L4E (Tự nghiệm & 23 Thế)
                   </button>
                 </div>
               )}
@@ -448,6 +497,42 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
                         <p className="mt-1 text-[11px] text-[#706459] bg-[#faf6ee] p-2 rounded-lg border border-[#ebdcca] italic">
                           💡 {currentStep.note}
                         </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Nút liên kết trực tiếp sang Cẩm nang LSE khi ở Bước 4 */}
+                  {selectedLesson.id === 'step4' && (
+                    <div className="pt-2 border-t border-[#f4ebe1]">
+                      {stepIndex <= 1 && (
+                        <button
+                          type="button"
+                          onClick={() => { setActiveTab('lse_guide'); setLseSubTab('eo'); }}
+                          className="w-full flex items-center justify-between p-2.5 bg-[#eaf4f2] hover:bg-[#dbeee9] text-[#247c72] rounded-xl border border-[#cde5e0] transition-all cursor-pointer font-bold text-xs"
+                        >
+                          <span>👉 Mở Cẩm Nang 10 Thế EO (Chi tiết & Trực quan)</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      )}
+                      {stepIndex === 2 && (
+                        <button
+                          type="button"
+                          onClick={() => { setActiveTab('lse_guide'); setLseSubTab('ulur'); }}
+                          className="w-full flex items-center justify-between p-2.5 bg-[#fdf5f2] hover:bg-[#faeae5] text-[#e07a5f] rounded-xl border border-[#f5cfc4] transition-all cursor-pointer font-bold text-xs"
+                        >
+                          <span>👉 Mở Cẩm Nang Bước 4b (UL/UR với 5 thế cờ & Sơ đồ)</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      )}
+                      {stepIndex >= 3 && (
+                        <button
+                          type="button"
+                          onClick={() => { setActiveTab('lse_guide'); setLseSubTab('l4e'); }}
+                          className="w-full flex items-center justify-between p-2.5 bg-[#f0f4f8] hover:bg-[#e2eaf2] text-[#3d5a80] rounded-xl border border-[#cbd5e1] transition-all cursor-pointer font-bold text-xs"
+                        >
+                          <span>👉 Mở Cẩm Nang Bước 4c (L4E Tự Nghiệm 3 Bước & 23 Thế Cờ)</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
                       )}
                     </div>
                   )}
@@ -588,74 +673,95 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
            ───────────────────────────────────────────────────────────── */}
         {activeTab === 'lse_guide' && (
           <div className="flex-1 overflow-y-auto p-3 sm:p-4 flex flex-col gap-3">
-            {/* Sub-tabs LSE mở rộng */}
-            <div className="flex bg-[#faf6ee] p-1 rounded-xl border border-[#e4d9c7] gap-1 overflow-x-auto text-[11px]">
-              <button
-                type="button"
-                onClick={() => setLseSubTab('eo')}
-                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
-                  lseSubTab === 'eo'
-                    ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
-                    : 'text-[#7a6f64] hover:text-[#2c221e]'
-                }`}
-              >
-                4a: 11 Thế EO
-              </button>
-              <button
-                type="button"
-                onClick={() => setLseSubTab('fast_eo')}
-                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
-                  lseSubTab === 'fast_eo'
-                    ? 'bg-white text-[#2b72a6] shadow-2xs border border-[#e2d8c7]'
-                    : 'text-[#7a6f64] hover:text-[#2c221e]'
-                }`}
-              >
-                Nhìn FD &lt;1s
-              </button>
-              <button
-                type="button"
-                onClick={() => setLseSubTab('ulur')}
-                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
-                  lseSubTab === 'ulur'
-                    ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
-                    : 'text-[#7a6f64] hover:text-[#2c221e]'
-                }`}
-              >
-                4b: UL & UR
-              </button>
-              <button
-                type="button"
-                onClick={() => setLseSubTab('dots_skip')}
-                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
-                  lseSubTab === 'dots_skip'
-                    ? 'bg-white text-[#e07a5f] shadow-2xs border border-[#e2d8c7]'
-                    : 'text-[#7a6f64] hover:text-[#2c221e]'
-                }`}
-              >
-                Né D-Dots & Ez
-              </button>
-              <button
-                type="button"
-                onClick={() => setLseSubTab('l4e')}
-                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
-                  lseSubTab === 'l4e'
-                    ? 'bg-white text-[#2c221e] shadow-2xs border border-[#e2d8c7]'
-                    : 'text-[#7a6f64] hover:text-[#2c221e]'
-                }`}
-              >
-                4c: L4E Cột M
-              </button>
-              <button
-                type="button"
-                onClick={() => setLseSubTab('eolr')}
-                className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
-                  lseSubTab === 'eolr'
-                    ? 'bg-white text-[#9d0208] shadow-2xs border border-[#e2d8c7]'
-                    : 'text-[#7a6f64] hover:text-[#2c221e]'
-                }`}
-              >
-                EOLR Master
-              </button>
+            {/* Thanh điều hướng LSE 2 nhóm rõ ràng: Cốt lõi & Tốc độ */}
+            <div className="flex flex-col gap-2 bg-[#faf6ee] p-2 rounded-2xl border border-[#e4d9c7]">
+              {/* Nhóm 1: 3 Bước Cốt Lõi cho Người Mới (Bắt buộc) */}
+              <div>
+                <div className="text-[10px] font-bold text-[#8c7b6c] px-1 mb-1.5 uppercase tracking-wider flex items-center justify-between">
+                  <span>🌱 3 BƯỚC CỐT LÕI (DÀNH CHO NGƯỜI MỚI)</span>
+                  <span className="text-[9px] text-[#b09e8d] font-normal">Roux Standard</span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setLseSubTab('eo')}
+                    className={`py-2 px-1 text-center font-bold text-xs rounded-xl transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                      lseSubTab === 'eo'
+                        ? 'bg-[#247c72] text-white shadow-xs'
+                        : 'bg-white text-[#247c72] hover:bg-[#eef5f3] border border-[#cde5e0]'
+                    }`}
+                  >
+                    <span className="text-[9px] opacity-80 uppercase tracking-wide">Bước 4a</span>
+                    <span className="text-xs">10 Thế EO</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLseSubTab('ulur')}
+                    className={`py-2 px-1 text-center font-bold text-xs rounded-xl transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                      lseSubTab === 'ulur'
+                        ? 'bg-[#e07a5f] text-white shadow-xs'
+                        : 'bg-white text-[#e07a5f] hover:bg-[#fdf8f5] border border-[#f4dec7]'
+                    }`}
+                  >
+                    <span className="text-[9px] opacity-80 uppercase tracking-wide">Bước 4b</span>
+                    <span className="text-xs">Hai Cánh UL/UR</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLseSubTab('l4e')}
+                    className={`py-2 px-1 text-center font-bold text-xs rounded-xl transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                      lseSubTab === 'l4e'
+                        ? 'bg-[#3d5a80] text-white shadow-xs'
+                        : 'bg-white text-[#3d5a80] hover:bg-[#f0f4f8] border border-[#cbd5e1]'
+                    }`}
+                  >
+                    <span className="text-[9px] opacity-80 uppercase tracking-wide">Bước 4c</span>
+                    <span className="text-xs">L4E Cột M (23 Thế)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Nhóm 2: Kỹ Thuật Tốc Độ & Speedcubing */}
+              <div className="pt-1.5 border-t border-[#ebdcca]">
+                <div className="text-[10px] font-bold text-[#8c7b6c] px-1 mb-1 uppercase tracking-wider">
+                  ⚡ KỸ THUẬT TỐC ĐỘ (PRO & SPEEDCUBING)
+                </div>
+                <div className="grid grid-cols-3 gap-1 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setLseSubTab('fast_eo')}
+                    className={`py-1.5 px-1 font-bold rounded-lg transition-all cursor-pointer text-center truncate ${
+                      lseSubTab === 'fast_eo'
+                        ? 'bg-white text-[#2b72a6] shadow-2xs border border-[#b2d5e5]'
+                        : 'text-[#7a6f64] hover:text-[#2c221e] hover:bg-white/60'
+                    }`}
+                  >
+                    Nhìn FD &lt;1s
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLseSubTab('dots_skip')}
+                    className={`py-1.5 px-1 font-bold rounded-lg transition-all cursor-pointer text-center truncate ${
+                      lseSubTab === 'dots_skip'
+                        ? 'bg-white text-[#e07a5f] shadow-2xs border border-[#f2d6c9]'
+                        : 'text-[#7a6f64] hover:text-[#2c221e] hover:bg-white/60'
+                    }`}
+                  >
+                    Né D-Dots & Ez
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLseSubTab('eolr')}
+                    className={`py-1.5 px-1 font-bold rounded-lg transition-all cursor-pointer text-center truncate ${
+                      lseSubTab === 'eolr'
+                        ? 'bg-white text-[#9d0208] shadow-2xs border border-[#f8c9c9]'
+                        : 'text-[#7a6f64] hover:text-[#2c221e] hover:bg-white/60'
+                    }`}
+                  >
+                    EOLR Master
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* ── NỘI DUNG 4a: EO (EDGE ORIENTATION) ── */}
@@ -775,40 +881,157 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
               </div>
             )}
 
-            {/* ── NỘI DUNG 4b: UL & UR ── */}
+            {/* ── NỘI DUNG 4b: UL & UR (HAI CÁNH BÊN HÔNG) ── */}
             {lseSubTab === 'ulur' && (
               <div className="space-y-3">
-                <div className="p-3 bg-[#fdfaf4] rounded-2xl border border-[#ebdcca]">
-                  <h4 className="text-xs font-bold text-[#2c221e] flex items-center gap-1.5 mb-1">
-                    <Compass className="w-3.5 h-3.5 text-[#e07a5f]" />
-                    <span>{LSE_UL_UR_GUIDE.title}</span>
-                  </h4>
-                  <p className="text-[11px] text-[#706459] leading-snug">
-                    {LSE_UL_UR_GUIDE.objective}
-                  </p>
+                {/* 1. BANNER MỤC TIÊU & QUY TẮC BẤT BIẾN */}
+                <div className="p-3 bg-[#fdfaf5] rounded-2xl border border-[#ebdcca] shadow-2xs space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Compass className="w-4 h-4 text-[#e07a5f] mt-0.5 shrink-0" />
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">
+                        {LSE_UL_UR_GUIDE.title}
+                      </h4>
+                      <p className="text-[11px] text-[#706459] mt-0.5 leading-snug">
+                        {LSE_UL_UR_GUIDE.objective}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Quy tắc bất biến */}
+                  <div className="p-2.5 bg-[#faf6ee] rounded-xl border border-[#ede3d5] text-[11px] space-y-1">
+                    <div className="font-bold text-[#a06030] flex items-center gap-1">
+                      <span>💡 3 Quy tắc bất biến của Bước 4b:</span>
+                    </div>
+                    <ul className="space-y-1 text-[#5c4f43]">
+                      {LSE_UL_UR_GUIDE.rules.map((rule, idx) => (
+                        <li key={idx} className="flex items-start gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#e07a5f] shrink-0 mt-1.5" />
+                          <span className="leading-relaxed">{rule}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
 
+                {/* 2. NHẬN DIỆN 3 TRƯỜNG HỢP BAN ĐẦU */}
                 <div className="space-y-2">
-                  {LSE_UL_UR_GUIDE.steps.map((st, idx) => (
+                  <div className="text-xs font-bold text-[#2c221e] flex items-center gap-1.5">
+                    <span>🔍 3 Tình huống ban đầu khi bắt đầu Bước 4b:</span>
+                  </div>
+                  {LSE_UL_UR_GUIDE.initialCases.map((cs) => (
                     <div
-                      key={idx}
-                      className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs"
+                      key={cs.caseType}
+                      className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs flex items-center justify-between gap-3"
                     >
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="w-5 h-5 rounded-full bg-[#eef5f3] text-[#247c72] text-[10px] font-bold flex items-center justify-center">
-                          {idx + 1}
-                        </span>
-                        <h5 className="text-xs font-bold text-[#2c221e]">{st.title}</h5>
+                      <div className="flex-1 min-w-0">
+                        <h5 className="text-xs font-bold text-[#2c221e]">{cs.title}</h5>
+                        <p className="text-[11px] text-[#5c4f43] mt-1 leading-snug">
+                          {cs.description}
+                        </p>
+                        <div className="mt-1 text-[10px] font-bold text-[#247c72]">
+                          👉 {cs.nextAction}
+                        </div>
                       </div>
-                      <p className="text-[11px] text-[#5c4f43] pl-7 leading-relaxed">
-                        {st.content}
-                      </p>
+                      <ULURDiagram caseType={cs.caseType} />
                     </div>
                   ))}
                 </div>
 
-                <div className="p-3 bg-[#faf6ee] rounded-2xl border border-[#ebdcca] text-xs text-[#706459]">
-                  💡 <strong>Quy tắc bất biến:</strong> Suốt bước 4b chỉ được phép xoay <code>U</code>, <code>U'</code>, <code>U2</code> và <code>M</code>, <code>M2</code>. Tuyệt đối không xoay R, L, F, B để bảo vệ toàn bộ First Block, Second Block và CMLL.
+                {/* 3. PHƯƠNG PHÁP 3 GIAI ĐOẠN TỰ NGHIỆM */}
+                <div className="p-3 bg-[#f0f7f9] rounded-2xl border border-[#cbe3dd] space-y-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-[#247c72]" />
+                    <h5 className="text-xs font-bold text-[#1b4965]">
+                      Lộ trình 3 giai đoạn tự nghiệm hoàn tất 2 cánh:
+                    </h5>
+                  </div>
+                  <div className="space-y-2">
+                    {LSE_UL_UR_GUIDE.phases.map((ph) => (
+                      <div key={ph.step} className="p-2.5 bg-white rounded-xl border border-[#d2e7ee] text-[11px] space-y-1">
+                        <div className="flex items-center gap-1.5 font-bold text-[#1b4965]">
+                          <span className="w-4 h-4 rounded-full bg-[#e3f2fd] text-[#1976d2] text-[10px] flex items-center justify-center font-mono">
+                            {ph.step}
+                          </span>
+                          <span>{ph.title}</span>
+                        </div>
+                        <p className="text-[#334155] pl-5.5 leading-relaxed">
+                          {ph.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. CÁC THẾ CỜ THỰC CHIẾN TIÊU BIỂU */}
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-[#2c221e]">
+                    ⚡ Các thế cờ UL/UR thực chiến tiêu biểu (Có Demo 3D):
+                  </div>
+                  {LSE_UL_UR_GUIDE.samples.map((sample) => (
+                    <div
+                      key={sample.id}
+                      className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs hover:border-[#d4c5af] transition-all flex flex-col gap-2"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <h5 className="text-xs sm:text-sm font-bold text-[#2c221e]">
+                            {sample.name}
+                          </h5>
+                          <p className="text-[11px] text-[#5c4f43] mt-1 leading-snug">
+                            {sample.condition}
+                          </p>
+                        </div>
+                        <ULURDiagram caseType={sample.caseType} />
+                      </div>
+
+                      {/* Công thức */}
+                      <div className="p-2 bg-[#faf6ee] rounded-xl border border-[#ebdcca] font-mono font-bold text-xs text-[#a06030] select-all break-all flex items-center justify-between">
+                        <span>{sample.alg}</span>
+                      </div>
+
+                      <div className="text-[10px] text-[#706459] italic">
+                        💡 {sample.tip}
+                      </div>
+
+                      {/* Nút Tập & Chạy giải */}
+                      <div className="flex items-center gap-2 pt-1 border-t border-[#f4ebe1]">
+                        <button
+                          type="button"
+                          onClick={() => handleSetupCase(sample.setupAlg, sample.name, true)}
+                          className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all hover:scale-102 active:scale-98 cursor-pointer"
+                        >
+                          <RotateCcw className="w-3 h-3 text-[#3d5a80]" />
+                          <span>Tập thế này</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRunAlg(sample.alg, sample.name)}
+                          className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-xs transition-all hover:scale-102 active:scale-98 cursor-pointer"
+                        >
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>Chạy giải</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 5. NÚT CHUYỂN TIẾP TRỰC TIẾP SANG BƯỚC 4c (L4E) */}
+                <div className="p-3 bg-[#fdf5f2] rounded-2xl border border-[#f5cfc4] flex items-center justify-between gap-2">
+                  <div className="text-[11px] text-[#822a2a] leading-tight">
+                    <strong>Đã hoàn thành 2 cánh UL & UR?</strong>
+                    <div className="text-[10px] text-[#a06030] mt-0.5">Khối Rubik giờ chỉ còn đúng 4 cạnh trên cột giữa M!</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setLseSubTab('l4e')}
+                    className="px-3 py-2 text-xs font-bold bg-[#3d5a80] hover:bg-[#2b4360] text-white rounded-xl shadow-xs transition-all shrink-0 cursor-pointer flex items-center gap-1"
+                  >
+                    <span>Mở Bước 4c (L4E)</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
             )}

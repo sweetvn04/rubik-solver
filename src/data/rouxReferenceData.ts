@@ -372,23 +372,108 @@ export const LSE_EO_CASES: EOCase[] = [
 // 3. DỮ LIỆU CẨM NANG LSE — UL/UR & L4E
 // ─────────────────────────────────────────────────────────────
 
+export interface ULURSampleCase {
+  id: string;
+  name: string;
+  caseType: '1_u_1_d' | '2_u' | '2_d' | 'solved_one';
+  condition: string;
+  alg: string;
+  setupAlg: string;
+  tip: string;
+}
+
 export const LSE_UL_UR_GUIDE = {
-  title: 'Bước 4b: Đưa 2 cạnh UL và UR về đúng vị trí',
-  objective: 'Đưa 2 cạnh UL (Đỏ - Vàng) và UR (Cam - Vàng) về đúng vị trí bên trái và bên phải tầng U mà KHÔNG làm hỏng hướng EO đã định hình ở bước 4a (chỉ dùng <M, U>).',
-  steps: [
+  title: 'Bước 4b: Đưa 2 cạnh cánh UL & UR về đúng vị trí (Chuẩn Roux)',
+  objective: 'Giải 2 cạnh bên hông tầng U (UL màu Vàng-Cam và UR màu Vàng-Đỏ) để phân tách toàn bộ cạnh cánh ra khỏi cột giữa M. Sau bước này, khối Rubik chỉ còn đúng 4 cạnh trên cột giữa M (bước 4c L4E) chỉ dùng <M, U2>.',
+  rules: [
+    'Tập nước đi duy nhất được phép sử dụng: <M, U>. Tuyệt đối không xoay R, L, F, B để bảo vệ First Block và Second Block.',
+    'Bảo toàn định hướng EO: Vì bước 4a đã giải xong EO nên tất cả 6 cạnh đều đã là Good Edges. Mọi thao tác xoay <M, U> đều giữ nguyên tính chất Good của các cạnh.',
+    'Nhận diện màu 2 cánh: Cạnh UL (Vàng - Cam, nằm bên trái), Cạnh UR (Vàng - Đỏ, nằm bên phải) khi mặt F là Xanh lá (Lục).',
+  ],
+  initialCases: [
     {
-      title: 'Xác định vị trí hiện tại của 2 cạnh UL & UR',
-      content: 'Nhìn nhanh tìm 2 cạnh có màu Đỏ/Vàng và Cam/Vàng. Chúng có thể đang ở tầng U hoặc tầng D (DF / DB).',
+      caseType: '1_u_1_d',
+      title: 'Trường hợp 1: Một cạnh ở tầng U, một cạnh ở tầng D',
+      description: 'Phổ biến nhất. Chỉ cần xoay U đưa cạnh ở tầng U vào vị trí đối diện với cạnh ở tầng D (ví dụ: cạnh ở D tại DB thì đưa cạnh ở U về UF; cạnh ở D tại DF thì đưa cạnh ở U về UB).',
+      nextAction: 'Chuyển sang Giai đoạn 2 để úp cả 2 cạnh xuống đáy D.',
     },
     {
-      title: 'Đưa 1 viên xuống tầng D',
-      content: 'Nếu cả 2 viên đang ở tầng U: Xoay U để đưa 1 viên vào cột M (vị trí UF hoặc UB), gạt M2 đưa viên đó xuống đáy D (DF hoặc DB).',
+      caseType: '2_u',
+      title: 'Trường hợp 2: Cả 2 cạnh UL & UR đều ở tầng U',
+      description: 'Xoay U đưa 1 cạnh vào vị trí UF hoặc UB. Gạt M hoặc M\' (hoặc M2) để đẩy viên đó xuống tầng D. Sau đó xoay U đưa viên còn lại vào vị trí đối diện.',
+      nextAction: 'Đã chuyển thành Trường hợp 1, tiếp tục Giai đoạn 2.',
     },
     {
-      title: 'Khớp viên còn lại vào vị trí đối diện',
-      content: 'Xoay tầng U để đưa viên UL/UR thứ hai vào vị trí đối diện trên cột M. Sau đó xoay M2 để hoán đổi 2 viên xuống đáy hoặc đưa trực tiếp về 2 cánh UL / UR.',
+      caseType: '2_d',
+      title: 'Trường hợp 3: Cả 2 cạnh UL & UR đều đã ở tầng D (DF & DB)',
+      description: 'Cực kỳ may mắn! Bạn không cần làm Giai đoạn 1 và 2 mà đi thẳng trực tiếp tới Giai đoạn 3 (chỉ cần canh màu góc F rồi gạt M2).',
+      nextAction: 'Nhảy thẳng sang Giai đoạn 3 để hoàn tất 2 cánh!',
     },
   ],
+  phases: [
+    {
+      step: 1,
+      title: 'Giai đoạn 1: Đưa 2 cạnh vào vị trí đối nhau trên cột M',
+      content: 'Tìm vị trí của 2 cạnh UL (Vàng-Cam) và UR (Vàng-Đỏ). Bằng các nước đi U và M/M\', hãy đưa 2 cạnh này vào 2 vị trí đối diện nhau qua tâm: một viên ở UF và một viên ở DB (hoặc một viên ở UB và một viên ở DF).',
+    },
+    {
+      step: 2,
+      title: 'Giai đoạn 2: Gom cả 2 cạnh UL & UR xuống tầng đáy D',
+      content: 'Khi 2 cạnh đã ở thế đối nhau: Xoay M hoặc M\' để úp viên ở U xuống D, xoay U2 để đưa viên còn lại vào thế đối, rồi xoay tiếp M hoặc M\' để gom cả 2 viên UL và UR xuống nằm trọn vẹn ở 2 vị trí đáy DF và DB.',
+    },
+    {
+      step: 3,
+      title: 'Giai đoạn 3: Canh góc tầng U và gạt M2 đưa về 2 cánh',
+      content: 'Quan sát màu mặt F của 2 góc tầng U. Xoay U, U\' hoặc U2 sao cho màu mặt F của góc đối màu (hoặc cùng màu) với cạnh ở DF. Sau đó gạt M2 dứt điểm: hai viên UL và UR sẽ tự động bay thẳng từ đáy D lên đúng 2 cánh trái/phải 100%!',
+    },
+  ],
+  samples: [
+    {
+      id: 'ulur_sample_1',
+      name: 'Thế 1: 1 cạnh ở UF, 1 cạnh ở DB (Đối nhau qua tâm)',
+      caseType: '1_u_1_d',
+      condition: 'Cạnh UL đang ở UF (tầng U), cạnh UR đang ở DB (tầng D).',
+      alg: "U' M' U2 M",
+      setupAlg: "M' U2 M U",
+      tip: "Xoay U' đưa về trục, gạt M' úp xuống D, U2 ghép cặp đối, M đưa cả 2 về D.",
+    },
+    {
+      id: 'ulur_sample_2',
+      name: 'Thế 2: 1 cạnh ở UB, 1 cạnh ở DF (Đối nhau qua tâm)',
+      caseType: '1_u_1_d',
+      condition: 'Cạnh UL đang ở UB (tầng U), cạnh UR đang ở DF (tầng D).',
+      alg: "U' M U2 M",
+      setupAlg: "M' U2 M' U",
+      tip: "Đối xứng của Thế 1. Xoay U' M U2 M để gom 2 cạnh xuống đáy.",
+    },
+    {
+      id: 'ulur_sample_3',
+      name: 'Thế 3: Cả 2 cạnh đều ở tầng U (UF và UB)',
+      caseType: '2_u',
+      condition: 'Cả 2 viên UL và UR đều nằm trên cột M ở tầng U (vị trí UF và UB).',
+      alg: "U2 M' U2 M' U M2",
+      setupAlg: "M2 U' M U2 M U2",
+      tip: "Úp 1 viên xuống đáy, U2 đưa viên kia vào đối diện, gạt M' đưa cả 2 xuống D rồi kết thúc bằng M2.",
+    },
+    {
+      id: 'ulur_sample_4',
+      name: 'Thế 4: Cả 2 cạnh đã ở sẵn tầng đáy D (DF và DB)',
+      caseType: '2_d',
+      condition: 'Cả 2 viên UL và UR đã nằm ở đáy DF và DB. Chỉ cần canh góc U rồi gạt M2.',
+      alg: "U M2",
+      setupAlg: "M2 U'",
+      tip: "Quan sát màu mặt F của góc U, xoay U để canh góc đối màu với DF, rồi gạt M2 là xong 2 cánh!",
+    },
+    {
+      id: 'ulur_sample_5',
+      name: 'Thế 5: 1 cạnh đã ở đúng vị trí UL, 1 cạnh ở đáy DF',
+      caseType: 'solved_one',
+      condition: 'Cạnh UL đã nằm đúng bên trái, cạnh UR đang ở đáy DF.',
+      alg: "M' U2 M",
+      setupAlg: "M' U2 M",
+      tip: "Đưa cạnh UR từ đáy lên cánh phải UR mà không làm xáo trộn cạnh UL bên trái.",
+    },
+  ] as ULURSampleCase[],
 };
 
 export const LSE_L4E_INTUITIVE_GUIDE = {
