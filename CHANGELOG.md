@@ -6,6 +6,34 @@
 
 ## 📅 2026-10-13
 
+### ⚡ [Commit `c6a3e35`] — Phân Tách Tốc Độ Xoay Động: Tráo Nhanh (90ms) & Giải Roux / Minh Họa Sư Phạm Chậm Rãi (380-400ms)
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng yêu cầu tinh chỉnh trải nghiệm thị giác công thái học: Tốc độ tráo khối (Scramble) mặc định phải xoay nhanh để người chơi không phải chờ đợi lâu, trong khi tốc độ giải tự động (Solve) và minh hoạ bài học giáo trình (Tutor / Lesson Demo) phải xoay chậm rãi để mắt người kịp quan sát từng nước đi và học hỏi phương pháp Roux.
+  - Trước đây, ứng dụng dùng biến toàn cục duy nhất `turnDuration` ép buộc mọi chuỗi xoay đều chạy cùng một tốc độ, khiến việc tăng tốc độ tráo sẽ làm tốc độ giải quá nhanh không nhìn kịp, còn giảm tốc độ giải thì tráo 20 bước lại quá lâu.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Bổ Sung Thuộc Tính Tốc Độ Xoay Cục Bộ Cho Từng Move (`Move.duration`):**
+     - Mở rộng interface `Move` trong `src/types/index.ts` với trường tùy chọn `duration?: number` (ms).
+     - Cho phép `parseAlgorithm(alg, customDuration)` truyền trực tiếp thời gian quay mong muốn vào từng bước xoay.
+  2. **Áp Dụng Tốc Độ Động Cho Renderer 3D (`RubikCube.tsx`):**
+     - Đọc giá trị ưu tiên: `const durationMs = move.duration ?? turnDuration; const durationSec = Math.max(0.04, durationMs / 1000);`.
+     - Cho phép từng nước đi trong queue có nhịp xoay riêng biệt mà không ảnh hưởng cài đặt toàn cục của người dùng.
+  3. **Cấu Hình Tốc Độ Chuyên Biệt Từng Kịch Bản:**
+     - **Tráo Rubik (Scramble):** 90ms / move (nhanh như gió, xáo xong 20 bước chỉ mất ~1.8s).
+     - **Thiết lập thế cờ giáo trình (Setup Case):** 90ms / move (nạp thế cờ tức thì).
+     - **Tự động giải Master Roux (Solve 100%):** 380ms / move (chậm rãi, đầm tay, dễ nhìn chuyển động FB $\rightarrow$ SB $\rightarrow$ CMLL $\rightarrow$ LSE).
+     - **Dạy giải từng bước (Tutor Mode):** 350ms khi bước tới, 250ms khi lùi bước, 380ms khi phát cả cụm (Chunk).
+     - **Minh họa bài học giáo trình (Lesson Demo):** 400ms / move (chuẩn sư phạm).
+* **Files tác động:**
+  - `src/types/index.ts`: Thêm trường `duration?: number` vào `Move`.
+  - `src/engine/moveParser.ts`: Hỗ trợ tham số `customDuration` trong `parseAlgorithm`.
+  - `src/engine/scrambler.ts`: Thiết lập tốc độ scramble mặc định 90ms.
+  - `src/components/cube/RubikCube.tsx`: Tính toán `durationSec` theo `move.duration ?? turnDuration`.
+  - `src/store/useRubikStore.ts`: Cập nhật `enqueueMove`, `enqueueAlgorithm`, `solveFullCube`, `tutorNextStep`, `tutorPlayChunk`.
+  - `src/components/ui/LessonDrawer.tsx`: Phân tách tốc độ setup (90ms) và minh họa (400ms).
+
+---
+
 ### 🚀 [Commit `01225f6`] — Tái Cấu Trúc Bottom Bar: Hợp Nhất Thẻ Trạng Thái & Tinh Gọn Dock 3 Nhóm Logic Chuẩn Mobile
 
 * **Bối cảnh & Yêu cầu:**

@@ -436,6 +436,12 @@
 | 416 | 2026-10-13 00:11 | `git status` | Kiểm tra các file thay đổi để chuẩn bị commit | Nhận diện PlayerBar.tsx và App.tsx |
 | 417 | 2026-10-13 00:12 | `git add src/components/ui/PlayerBar.tsx src/App.tsx && git commit -m "refactor(ui): streamline player dock into 3 logical groups and unify face legend into status pill"` | Commit tái cấu trúc thanh PlayerBar và tích hợp quy ước mặt vào status pill | Commit `01225f6` |
 | 418 | 2026-10-13 00:12 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 01225f6"` | Đồng bộ commit hash 01225f6 vào CHANGELOG và COMMAND_LOG | Commit `8af3843` |
+| 419 | 2026-10-13 00:16 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi cấu hình tốc độ xoay động (90ms scramble, 380-400ms solve/demo) | Exit 0 — Thành công (built in 695ms) |
+| 420 | 2026-10-13 00:16 | `git status` | Kiểm tra trạng thái git working tree | 6 files modified |
+| 421 | 2026-10-13 00:16 | `git diff --stat` | Khảo sát thống kê các file và số dòng thay đổi của tính năng tốc độ xoay động | 6 files changed |
+| 422 | 2026-10-13 00:16 | `git diff src/types/index.ts src/engine/moveParser.ts src/engine/scrambler.ts src/components/cube/RubikCube.tsx` | Soát chi tiết diff các module core engine | Khớp yêu cầu kỹ thuật |
+| 423 | 2026-10-13 00:16 | `git diff src/store/useRubikStore.ts src/components/ui/LessonDrawer.tsx` | Soát chi tiết diff store và bài học | Khớp yêu cầu kỹ thuật |
+| 424 | 2026-10-13 00:17 | `git add src/types/index.ts src/engine/moveParser.ts src/engine/scrambler.ts src/components/cube/RubikCube.tsx src/store/useRubikStore.ts src/components/ui/LessonDrawer.tsx && git commit -m "feat(cube): implement dynamic turn speeds with fast scramble and slow educational solve/demo"` | Commit triển khai tốc độ xoay động (Scramble 90ms, Giải/Demo 380-400ms) | Commit `c6a3e35` |
 
 
 
