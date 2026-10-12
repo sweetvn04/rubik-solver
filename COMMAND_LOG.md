@@ -442,6 +442,7 @@
 | 422 | 2026-10-13 00:16 | `git diff src/types/index.ts src/engine/moveParser.ts src/engine/scrambler.ts src/components/cube/RubikCube.tsx` | Soát chi tiết diff các module core engine | Khớp yêu cầu kỹ thuật |
 | 423 | 2026-10-13 00:16 | `git diff src/store/useRubikStore.ts src/components/ui/LessonDrawer.tsx` | Soát chi tiết diff store và bài học | Khớp yêu cầu kỹ thuật |
 | 424 | 2026-10-13 00:17 | `git add src/types/index.ts src/engine/moveParser.ts src/engine/scrambler.ts src/components/cube/RubikCube.tsx src/store/useRubikStore.ts src/components/ui/LessonDrawer.tsx && git commit -m "feat(cube): implement dynamic turn speeds with fast scramble and slow educational solve/demo"` | Commit triển khai tốc độ xoay động (Scramble 90ms, Giải/Demo 380-400ms) | Commit `c6a3e35` |
+| 425 | 2026-10-13 00:17 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit c6a3e35"` | Đồng bộ commit hash c6a3e35 vào CHANGELOG và COMMAND_LOG | Commit `65529ec` |
 
 
 
