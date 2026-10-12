@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-12
 
-### 🚀 [Commit `PENDING`] — Tái Thiết Kế Top Navbar Chuẩn Web 2026, Tách Biệt Bàn Xoay 3D & Giáo Trình Lý Thuyết, Tối Ưu Thẻ Hướng Dẫn Giải Mobile
+### 🚀 [Commit `44d37dd`] — Tái Thiết Kế Top Navbar Chuẩn Web 2026, Tách Biệt Bàn Xoay 3D & Giáo Trình Lý Thuyết, Tối Ưu Thẻ Hướng Dẫn Giải Mobile
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng gửi ảnh chụp màn hình điện thoại phản ánh sau khi xáo Rubik và bấm "Hướng dẫn" thì giao diện bị lộn xộn/lung tung: Top Bar phân mảnh thành 2 cụm nút trôi nổi chen chúc nhau ở mép trên, thẻ Hướng Dẫn Giải (`TutorCard`) bung quá to (chiếm 80% màn hình) đè lấp toàn bộ khối Rubik 3D.

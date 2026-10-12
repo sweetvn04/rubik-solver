@@ -412,6 +412,7 @@
 | 392 | 2026-10-12 22:46 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi tạo TopNavbar và tối ưu TutorCard | Lỗi TS6133 (unused import Sparkles, Info) |
 | 393 | 2026-10-12 22:46 | `npm run build` | Kiểm tra biên dịch lại sau khi loại bỏ import thừa trong TopNavbar | Thành công (built in 781ms) |
 | 394 | 2026-10-12 22:46 | `git status` | Kiểm tra các file thay đổi để chuẩn bị commit | Nhận diện đủ các file src và docs |
+| 395 | 2026-10-12 22:47 | `git add . && git commit -m "feat(ui): redesign top navbar to 2026 web standard and decouple 3d workspace from theory curriculum"` | Commit toàn bộ tính năng Top Navbar chuẩn Web 2026, tách biệt Bàn xoay 3D và Giáo trình lý thuyết, tinh gọn thẻ hướng dẫn giải mobile | Commit `44d37dd` |
 
 
 
