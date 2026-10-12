@@ -8,6 +8,7 @@ import {
   LSE_BAD_EDGE_RULES,
   LSE_EO_CASES,
   LSE_UL_UR_GUIDE,
+  LSE_L4E_INTUITIVE_GUIDE,
   LSE_L4E_CASES,
   type TwoLookCornerCase,
   type EOCase,
@@ -75,6 +76,7 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
   // Sub-tabs & filter cho Cẩm nang LSE
   const [lseSubTab, setLseSubTab] = useState<'eo' | 'fast_eo' | 'ulur' | 'dots_skip' | 'l4e' | 'eolr'>('eo');
   const [eoFilter, setEoFilter] = useState<'all' | 'base' | '2bad' | '4bad' | '6bad'>('all');
+  const [l4eFilter, setL4eFilter] = useState<'all' | 'intuitive' | '1_white_edge' | '1_white_edge_center' | 'special'>('all');
 
   // Sub-tabs cho Tab Nâng cao & Pro
   const [proSubTab, setProSubTab] = useState<'techniques' | 'sub_x' | 'meyer'>('techniques');
@@ -129,6 +131,12 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
     if (eoFilter === '6bad') return LSE_EO_CASES.filter((c) => c.badCount === 6);
     return LSE_EO_CASES;
   }, [eoFilter]);
+
+  // Lọc danh sách L4E cases
+  const filteredL4ECases = useMemo(() => {
+    if (l4eFilter === 'all' || l4eFilter === 'intuitive') return LSE_L4E_CASES;
+    return LSE_L4E_CASES.filter((c) => c.group === l4eFilter);
+  }, [l4eFilter]);
 
   // Hành động: Chạy công thức giải trực tiếp lên khối Rubik
   const handleRunAlg = (alg: string, name: string) => {
@@ -807,61 +815,171 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({ isOpen, onClose }) =
 
             {/* ── NỘI DUNG 4c: L4E (CỘT M) ── */}
             {lseSubTab === 'l4e' && (
-              <div className="space-y-2.5">
-                <div className="p-3 bg-[#fcf8f2] rounded-2xl border border-[#ebdcca] text-xs text-[#706459]">
-                  Sau khi giải xong UL và UR, khối Rubik chỉ còn đúng 4 cạnh trên cột giữa M (DF, DB, UF, UB). Dưới đây là các thế cờ L4E kinh điển:
-                </div>
-
-                {LSE_L4E_CASES.map((caseItem) => (
-                  <div
-                    key={caseItem.id}
-                    className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs flex flex-col gap-2"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">
-                          {caseItem.name}
-                        </h4>
-                        <p className="text-[11px] text-[#5c4f43] mt-1 leading-snug">
-                          {caseItem.recognition}
-                        </p>
-                      </div>
-
-                      {/* Sơ đồ hoán vị cột M */}
-                      <L4EDiagram caseId={caseItem.id} />
-                    </div>
-
-                    {/* Công thức */}
-                    <div className="p-2 bg-[#faf6ee] rounded-xl border border-[#ebdcca] font-mono font-bold text-xs text-[#a06030] select-all break-all">
-                      {caseItem.alg}
-                    </div>
-
-                    <div className="text-[10px] italic text-[#706459]">
-                      💡 {caseItem.tip}
-                    </div>
-
-                    {/* Nút Tập & Chạy giải */}
-                    <div className="flex items-center gap-2 pt-1 border-t border-[#f4ebe1]">
-                      <button
-                        type="button"
-                        onClick={() => handleSetupCase(caseItem.setupAlg, caseItem.name, true)}
-                        className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all hover:scale-102 active:scale-98 cursor-pointer"
-                      >
-                        <RotateCcw className="w-3 h-3 text-[#3d5a80]" />
-                        <span>Tập thế này</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleRunAlg(caseItem.alg, caseItem.name)}
-                        className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-xs transition-all hover:scale-102 active:scale-98 cursor-pointer"
-                      >
-                        <Play className="w-3 h-3 fill-current" />
-                        <span>Chạy giải</span>
-                      </button>
+              <div className="space-y-3">
+                {/* 1. KHỐI HƯỚNG DẪN TỰ NGHIỆM 3 GIAI ĐOẠN */}
+                <div className="p-3 bg-[#fdfaf5] rounded-2xl border border-[#ebdcca] shadow-2xs space-y-2.5">
+                  <div className="flex items-start gap-2">
+                    <Sparkles className="w-4 h-4 text-[#e07a5f] mt-0.5 shrink-0" />
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">
+                        {LSE_L4E_INTUITIVE_GUIDE.title}
+                      </h4>
+                      <p className="text-[11px] text-[#706459] mt-0.5 leading-snug">
+                        {LSE_L4E_INTUITIVE_GUIDE.subtitle}
+                      </p>
                     </div>
                   </div>
-                ))}
+
+                  {/* 3 Bước tự nghiệm */}
+                  <div className="space-y-2 pt-1">
+                    {LSE_L4E_INTUITIVE_GUIDE.steps.map((st, i) => (
+                      <div key={i} className="p-2.5 bg-white rounded-xl border border-[#ede3d5] text-[11px] space-y-1">
+                        <div className="flex items-center gap-1.5 font-bold text-[#2c221e]">
+                          <span className="w-4 h-4 rounded-full bg-[#f4ece1] text-[#a06030] text-[10px] flex items-center justify-center font-mono">
+                            {i + 1}
+                          </span>
+                          <span>{st.title}</span>
+                        </div>
+                        <p className="text-[#5c4f43] pl-5.5 leading-relaxed">
+                          {st.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="p-2 bg-[#f0f7f9] rounded-xl border border-[#cbe3dd] text-[11px] text-[#1b4965] flex items-start gap-1.5">
+                    <Info className="w-3.5 h-3.5 text-[#247c72] mt-0.5 shrink-0" />
+                    <span>
+                      <strong>Quy tắc góc nhìn Rubik Roux:</strong> Luôn giữ mặt <strong>F (Mặt Xanh lá / Green)</strong> đối diện trước mặt khi thực hiện các công thức tối ưu bên dưới!
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2. THANH LỌC NHÓM CÁC THẾ L4E */}
+                <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setL4eFilter('all')}
+                    className={`px-2.5 py-1 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                      l4eFilter === 'all'
+                        ? 'bg-[#3d5a80] text-white shadow-xs'
+                        : 'bg-white text-[#5c4f43] hover:bg-[#faf6ee] border border-[#e2d8c7]'
+                    }`}
+                  >
+                    Tất cả (23)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setL4eFilter('intuitive')}
+                    className={`px-2.5 py-1 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                      l4eFilter === 'intuitive'
+                        ? 'bg-[#e07a5f] text-white shadow-xs'
+                        : 'bg-white text-[#5c4f43] hover:bg-[#faf6ee] border border-[#e2d8c7]'
+                    }`}
+                  >
+                    💡 Tự nghiệm (3 bước)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setL4eFilter('1_white_edge')}
+                    className={`px-2.5 py-1 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                      l4eFilter === '1_white_edge'
+                        ? 'bg-[#247c72] text-white shadow-xs'
+                        : 'bg-white text-[#5c4f43] hover:bg-[#faf6ee] border border-[#e2d8c7]'
+                    }`}
+                  >
+                    Nhóm 1: 1 Cạnh trắng (8)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setL4eFilter('1_white_edge_center')}
+                    className={`px-2.5 py-1 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                      l4eFilter === '1_white_edge_center'
+                        ? 'bg-[#c57b32] text-white shadow-xs'
+                        : 'bg-white text-[#5c4f43] hover:bg-[#faf6ee] border border-[#e2d8c7]'
+                    }`}
+                  >
+                    Nhóm 2: Cạnh + Tâm trắng (8)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setL4eFilter('special')}
+                    className={`px-2.5 py-1 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                      l4eFilter === 'special'
+                        ? 'bg-[#8338ec] text-white shadow-xs'
+                        : 'bg-white text-[#5c4f43] hover:bg-[#faf6ee] border border-[#e2d8c7]'
+                    }`}
+                  >
+                    Nhóm 3: Đặc biệt & Dots (7)
+                  </button>
+                </div>
+
+                {/* 3. DANH SÁCH CÁC THẾ L4E ĐƯỢC LỌC */}
+                {l4eFilter !== 'intuitive' && (
+                  <div className="space-y-2.5">
+                    {filteredL4ECases.map((caseItem) => (
+                      <div
+                        key={caseItem.id}
+                        className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs hover:border-[#d4c5af] transition-all flex flex-col gap-2"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className={`px-2 py-0.5 text-[9px] font-bold uppercase rounded-md border ${
+                                caseItem.group === '1_white_edge'
+                                  ? 'bg-[#eef5f3] text-[#247c72] border-[#cbe3dd]'
+                                  : caseItem.group === '1_white_edge_center'
+                                  ? 'bg-[#fcf3ea] text-[#c57b32] border-[#f4dec7]'
+                                  : 'bg-[#f5eefc] text-[#8338ec] border-[#e4d2fa]'
+                              }`}>
+                                {caseItem.groupName}
+                              </span>
+                              <h4 className="text-xs sm:text-sm font-bold text-[#2c221e]">
+                                {caseItem.name}
+                              </h4>
+                            </div>
+                            <p className="text-[11px] text-[#5c4f43] mt-1 leading-snug">
+                              {caseItem.recognition}
+                            </p>
+                          </div>
+
+                          {/* Sơ đồ hoán vị cột M */}
+                          <L4EDiagram caseId={caseItem.id} />
+                        </div>
+
+                        {/* Công thức */}
+                        <div className="p-2 bg-[#faf6ee] rounded-xl border border-[#ebdcca] font-mono font-bold text-xs text-[#a06030] select-all break-all flex items-center justify-between">
+                          <span>{caseItem.alg}</span>
+                        </div>
+
+                        <div className="text-[10px] text-[#706459] italic">
+                          💡 {caseItem.tip}
+                        </div>
+
+                        {/* Nút Tập & Chạy giải */}
+                        <div className="flex items-center gap-2 pt-1 border-t border-[#f4ebe1]">
+                          <button
+                            type="button"
+                            onClick={() => handleSetupCase(caseItem.setupAlg, caseItem.name, true)}
+                            className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all hover:scale-102 active:scale-98 cursor-pointer"
+                          >
+                            <RotateCcw className="w-3 h-3 text-[#3d5a80]" />
+                            <span>Tập thế này</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleRunAlg(caseItem.alg, caseItem.name)}
+                            className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-xs transition-all hover:scale-102 active:scale-98 cursor-pointer"
+                          >
+                            <Play className="w-3 h-3 fill-current" />
+                            <span>Chạy giải</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

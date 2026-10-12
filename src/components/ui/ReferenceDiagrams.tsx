@@ -293,44 +293,55 @@ export const EODiagram: React.FC<EODiagramProps> = ({ diagramU, diagramD }) => {
 };
 
 /**
- * 3. L4EDiagram: Minh hoạ chu trình cột M (D-Dots, Ub, Ua, H-Perm, Z-Perm)
+ * 3. L4EDiagram: Minh hoạ chu trình cột M (D-Dots, Ub, Ua, H-Perm, Z-Perm & 16 thế tối ưu L4E)
  */
 interface L4EDiagramProps {
   caseId: string;
 }
 
 export const L4EDiagram: React.FC<L4EDiagramProps> = ({ caseId }) => {
+  const isUb = caseId === 'ub_perm' || caseId === 'l4e_ub';
+  const isUa = caseId === 'ua_perm' || caseId === 'l4e_ua';
+  const isH = caseId === 'h_perm' || caseId === 'l4e_h';
+  const isZ = caseId === 'z_perm' || caseId === 'l4e_z';
+  const isDotsBase = caseId === 'd_dots' || caseId === 'l4e_dots_base';
+  const isDotsDiag = caseId === 'l4e_dots_diag';
+  const isDotsLine = caseId === 'l4e_dots_line';
+
+  // Nhóm 1: 1 Cạnh trắng ở U (tâm U vàng)
+  const isGroup1 = caseId.startsWith('l4e_1_');
+  // Nhóm 2: 1 Cạnh trắng + Tâm U trắng (tâm U trắng)
+  const isGroup2 = caseId.startsWith('l4e_2_');
+
+  // Xác định vị trí cạnh trắng ở U (UF hay UB) cho Nhóm 1 và Nhóm 2
+  const whiteAtUF = ['l4e_1_1', 'l4e_1_2', 'l4e_1_5', 'l4e_1_6', 'l4e_2_1', 'l4e_2_2', 'l4e_2_3', 'l4e_2_4'].includes(caseId);
+
   return (
     <div className="w-14 h-14 p-1 bg-[#1f1a17] rounded-xl flex items-center justify-center shrink-0 shadow-xs border border-[#38312a]">
-      {caseId === 'd_dots' && (
+      {isDotsBase && (
         <svg width="46" height="46" viewBox="0 0 46 46">
           <rect width="46" height="46" rx="6" fill="#14110f" />
-          {/* Cạnh DF & DB màu Trắng */}
           <rect x="15" y="3" width="16" height="11" rx="2" fill={CUBE_PALETTE.D} />
           <rect x="15" y="32" width="16" height="11" rx="2" fill={CUBE_PALETTE.D} />
-          {/* Tâm D lệch màu Vàng (D-Dots) */}
           <rect x="15" y="17" width="16" height="12" rx="2" fill={CUBE_PALETTE.U} stroke="#ff3b30" strokeWidth="1.5" />
           <circle cx="23" cy="23" r="3" fill="#ff3b30" />
         </svg>
       )}
 
-      {caseId === 'ub_perm' && (
+      {isUb && (
         <svg width="46" height="46" viewBox="0 0 46 46">
           <rect width="46" height="46" rx="6" fill="#14110f" />
-          {/* UF -> UB -> DF */}
           <circle cx="23" cy="8" r="4.5" fill={CUBE_PALETTE.F} />
           <circle cx="8" cy="36" r="4.5" fill={CUBE_PALETTE.B} />
           <circle cx="38" cy="36" r="4.5" fill={CUBE_PALETTE.D} />
-          {/* Mũi tên tam giác thuận chiều kim đồng hồ */}
           <path d="M 23 15 L 34 31 M 33 36 L 13 36 M 12 31 L 23 15" stroke="#e07a5f" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 2" fill="none" />
           <polygon points="23,12 20,17 26,17" fill="#e07a5f" />
         </svg>
       )}
 
-      {caseId === 'ua_perm' && (
+      {isUa && (
         <svg width="46" height="46" viewBox="0 0 46 46">
           <rect width="46" height="46" rx="6" fill="#14110f" />
-          {/* Ngược chiều kim đồng hồ */}
           <circle cx="23" cy="8" r="4.5" fill={CUBE_PALETTE.F} />
           <circle cx="8" cy="36" r="4.5" fill={CUBE_PALETTE.D} />
           <circle cx="38" cy="36" r="4.5" fill={CUBE_PALETTE.B} />
@@ -339,33 +350,90 @@ export const L4EDiagram: React.FC<L4EDiagramProps> = ({ caseId }) => {
         </svg>
       )}
 
-      {caseId === 'h_perm' && (
+      {isH && (
         <svg width="46" height="46" viewBox="0 0 46 46">
           <rect width="46" height="46" rx="6" fill="#14110f" />
-          {/* Đổi đối xứng 2 cặp: UF <-> UB và DF <-> DB */}
           <circle cx="23" cy="7" r="4" fill={CUBE_PALETTE.F} />
           <circle cx="23" cy="39" r="4" fill={CUBE_PALETTE.B} />
           <circle cx="7" cy="23" r="4" fill={CUBE_PALETTE.U} />
           <circle cx="39" cy="23" r="4" fill={CUBE_PALETTE.D} />
-          {/* Mũi tên 2 chiều đối xứng */}
           <line x1="23" y1="13" x2="23" y2="33" stroke="#e07a5f" strokeWidth="2.5" strokeLinecap="round" />
           <line x1="13" y1="23" x2="33" y2="23" stroke="#2a9d8f" strokeWidth="2.5" strokeLinecap="round" />
         </svg>
       )}
 
-      {caseId === 'z_perm' && (
+      {isZ && (
         <svg width="46" height="46" viewBox="0 0 46 46">
           <rect width="46" height="46" rx="6" fill="#14110f" />
-          {/* Đổi chéo 2 cặp */}
           <circle cx="10" cy="10" r="4" fill={CUBE_PALETTE.F} />
           <circle cx="36" cy="10" r="4" fill={CUBE_PALETTE.D} />
           <circle cx="10" cy="36" r="4" fill={CUBE_PALETTE.B} />
           <circle cx="36" cy="36" r="4.5" fill={CUBE_PALETTE.U} />
-          {/* 2 đường chéo hoán đổi */}
           <line x1="13" y1="13" x2="33" y2="33" stroke="#e76f51" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 2" />
           <line x1="33" y1="13" x2="13" y2="33" stroke="#e76f51" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 2" />
+        </svg>
+      )}
+
+      {isDotsDiag && (
+        <svg width="46" height="46" viewBox="0 0 46 46">
+          <rect width="46" height="46" rx="6" fill="#14110f" />
+          <circle cx="12" cy="12" r="4.5" fill={CUBE_PALETTE.D} />
+          <circle cx="34" cy="34" r="4.5" fill={CUBE_PALETTE.U} />
+          <circle cx="34" cy="12" r="4.5" fill={CUBE_PALETTE.U} />
+          <circle cx="12" cy="34" r="4.5" fill={CUBE_PALETTE.D} />
+          <line x1="16" y1="16" x2="30" y2="30" stroke="#e07a5f" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 2" />
+          <line x1="30" y1="16" x2="16" y2="30" stroke="#2a9d8f" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 2" />
+        </svg>
+      )}
+
+      {isDotsLine && (
+        <svg width="46" height="46" viewBox="0 0 46 46">
+          <rect width="46" height="46" rx="6" fill="#14110f" />
+          <rect x="15" y="4" width="16" height="10" rx="2" fill={CUBE_PALETTE.U} stroke="#ff3b30" strokeWidth="1" />
+          <rect x="15" y="18" width="16" height="10" rx="2" fill={CUBE_PALETTE.D} stroke="#ff3b30" strokeWidth="1" />
+          <rect x="15" y="32" width="16" height="10" rx="2" fill={CUBE_PALETTE.U} stroke="#ff3b30" strokeWidth="1" />
+          <line x1="23" y1="14" x2="23" y2="18" stroke="#ff3b30" strokeWidth="2" />
+          <line x1="23" y1="28" x2="23" y2="32" stroke="#ff3b30" strokeWidth="2" />
+        </svg>
+      )}
+
+      {(isGroup1 || isGroup2) && (
+        <svg width="46" height="46" viewBox="0 0 46 46">
+          <rect width="46" height="46" rx="6" fill="#14110f" />
+          {/* Cột M tầng U: UB (trên), Tâm U (giữa), UF (dưới) */}
+          <rect
+            x="14"
+            y="4"
+            width="18"
+            height="10"
+            rx="2"
+            fill={!whiteAtUF ? CUBE_PALETTE.D : (isGroup2 ? CUBE_PALETTE.U : CUBE_PALETTE.U)}
+            stroke={!whiteAtUF ? '#ffffff' : 'none'}
+            strokeWidth={!whiteAtUF ? '1' : '0'}
+          />
+          <rect
+            x="14"
+            y="17"
+            width="18"
+            height="12"
+            rx="2"
+            fill={isGroup2 ? CUBE_PALETTE.D : CUBE_PALETTE.U}
+            stroke={isGroup2 ? '#ff3b30' : 'none'}
+            strokeWidth={isGroup2 ? '1.5' : '0'}
+          />
+          <rect
+            x="14"
+            y="32"
+            width="18"
+            height="10"
+            rx="2"
+            fill={whiteAtUF ? CUBE_PALETTE.D : (isGroup2 ? CUBE_PALETTE.U : CUBE_PALETTE.U)}
+            stroke={whiteAtUF ? '#ffffff' : 'none'}
+            strokeWidth={whiteAtUF ? '1' : '0'}
+          />
         </svg>
       )}
     </div>
   );
 };
+

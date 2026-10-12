@@ -410,26 +410,28 @@ export const ROUX_LESSONS: Lesson[] = [
     subtitle: 'Giải quyết 6 cạnh cuối cùng chỉ với <M, U>',
     avgMoves: '12 - 17 moves',
     description:
-      'LSE là chặng về đích độc đáo và thần tốc nhất của Roux. Toàn bộ 6 cạnh còn lại (UL, UR, UF, UB, DF, DB) chỉ cần giải quyết bằng hai mặt duy nhất là tầng giữa M và tầng trên U <M, U>. Tốc độ xoay ngón tay (TPS) ở bước này cực kỳ cao và đã tay!',
+      'LSE là chặng về đích độc đáo và thần tốc nhất của phương pháp Roux. Toàn bộ 6 cạnh còn lại (UL, UR, UF, UB, DF, DB) chỉ cần giải quyết bằng hai mặt duy nhất là tầng giữa M và tầng trên U <M, U>. Tốc độ xoay ngón tay (TPS) ở bước này cực kỳ cao và đã tay vì hoàn toàn không cần xoay khối (Rotationless)!',
     objectives: [
       '4a. Edge Orientation (EO): Lật đúng hướng tất cả 6 cạnh (đưa số bad edges về 0).',
-      '4b. UL và UR: Đưa 2 cạnh bên UL (Đỏ/Vàng) và UR (Cam/Vàng) vào đúng vị trí.',
-      '4c. L4E (Last 4 Edges): Hoán vị 4 cạnh còn lại trên tầng giữa (UB, UF, DF, DB) để hoàn thành khối Rubik 100%!',
+      '4b. UL và UR Placement: Đưa 2 cạnh bên UL (Đỏ/Vàng) và UR (Cam/Vàng) vào đúng vị trí hai bên.',
+      '4c. Tự nghiệm L4E (Intuitive): Dùng <M, U2> gom 2 cạnh đáy trắng xuống D, sửa tâm D-Dots và hoán vị U.',
+      '4d. Bảng công thức tối ưu L4E: Nhận biết 16 thế cờ 1 cạnh trắng ở U và các thế đặc biệt Ub, Ua, H, Z.',
     ],
     keyTechniques: [
       'Quy tắc nhận diện Bad Edge: Cạnh ở U/D có màu Vàng/Trắng hướng lên trên là Good; cạnh ở M có màu F/B hướng ra trước/sau là Good.',
-      'Đưa về thế 4/0, 3/1, 1/1, 2/2 bằng các công thức M\' U M hoặc M\' U\' M.',
-      'L4E chỉ cần các move M2, U2, M để giải xong toàn bộ khối trong vài bước.',
+      'Quy tắc 3/1F và 3/1B: Đưa mọi thế EO về thế cơ bản 3/1 rồi giải dứt điểm chỉ với M\' U\' M\' hoặc M U\' M\'.',
+      'Tập nước đi <M, U2> ở L4E: Chỉ cần xoay M và U2 để gom 2 cạnh trắng xuống D mà không làm hỏng EO và CMLL.',
+      'Xử lý D-Dots: Gạt duy nhất 1 nước M2 là hoán vị tâm U và D về đúng mặt.',
     ],
     proTips: [
       'Luyện tập flick ngón tay tầng giữa (M-slice finger tricks) bằng ngón áp út và ngón giữa.',
-      'Roux là phương pháp có số lượt xoay (Move Count) ít nhất trong số các phương pháp thi đấu WCA hiện đại!',
+      'Ở L4E, không cần học vẹt công thức: chỉ cần nhớ quy tắc gom 2 cạnh trắng xuống đáy D trước, rồi sửa tâm M2 là xong!',
     ],
     steps: [
       {
-        title: '4a. Nhận diện Bad Edges',
+        title: '4a. Nhận diện Bad Edges (Quy tắc màu tâm U/D)',
         description:
-          'Nhìn 6 cạnh M-slice (UF, UB, DF, DB) và 2 cạnh bên (UL, UR). Một cạnh là "Bad" nếu: ở tầng U/D mà màu Vàng/Trắng hướng sang Trái/Phải; ở M-slice mà màu Xanh/Cam/Đỏ hướng lên/xuống.',
+          'Trước khi giải EO, bắt buộc màu tâm ở mặt U phải là màu Vàng hoặc Trắng. Sau đó kiểm tra 6 cạnh: Một cạnh là "Bad" nếu màu Vàng/Trắng của nó nằm ở các mặt bên (F, B, R, L) thay vì nằm trên mặt U hoặc mặt D. Tổng số cạnh sai trên cả khối luôn là một số chẵn: 0, 2, 4 hoặc 6.',
         diagram: {
           U: [X,G,X, X,Y,X, X,B,X] as FaceColors,
           F: [X,Y,X, X,G,X, X,X,X] as FaceColors,
@@ -442,12 +444,12 @@ export const ROUX_LESSONS: Lesson[] = [
         },
         demoAlg: "M' U M",
         highlightPhase: 'lse',
-        note: '🔍 Đếm số Bad Edges (0-4). Mục tiêu: đưa về 0 bad edges.',
+        note: '🔍 Mẹo: Nếu tâm U là Vàng/Trắng thì cạnh có Vàng/Trắng ở F/B/R/L là cạnh sai cần lật.',
       },
       {
-        title: '4b. EO — Đưa về 0 Bad Edges',
+        title: '4b. Định hướng 6 cạnh (EO — Quy về thế cơ bản 3/1)',
         description:
-          'Dùng combo M\' U M hoặc M\' U\' M để lật cạnh. Mỗi lần lật sẽ đổi trạng thái 2 cạnh. Lặp cho đến khi tất cả 6 cạnh đều "Good" (tất cả màu Vàng nhìn lên trên ở tầng U, màu Trắng nhìn xuống ở tầng D).',
+          'Mục tiêu của EO là đưa tất cả các cạnh sai về thế cơ bản 3/1 (3 cạnh sai ở U, 1 cạnh sai ở D) rồi giải dứt điểm bằng M\' U\' M\' (hoặc M U\' M\'). Với thế 2a/0 (2 cạnh sai kề nhau), đặt ở UB và UL rồi xoay M\' U M\' U2. Với thế 2o/0, đặt ở UF và UB rồi xoay M\' U M U\'.',
         diagram: {
           U: [X,Y,X, X,Y,X, X,Y,X] as FaceColors,
           F: [X,G,X, X,G,X, X,X,X] as FaceColors,
@@ -458,14 +460,15 @@ export const ROUX_LESSONS: Lesson[] = [
           highlightCells: ['U-0-1','U-1-1','U-2-1','F-0-1','B-0-1'],
           focusFaces: ['U', 'F', 'B', 'D'],
         },
-        demoAlg: "M' U M U2 M' U M",
+        demoAlg: "M' U M' U2 M' U' M'",
+        setupAlg: "M U M U2 M U' M",
         highlightPhase: 'lse',
-        note: '✅ Khi tất cả cạnh ở tầng U đều Vàng và ở M-slice đều Green/Blue → EO xong!',
+        note: '✅ Khi tất cả 6 cạnh đều hướng Vàng/Trắng lên trên ở U và xuống dưới ở D → EO hoàn tất!',
       },
       {
-        title: '4b. Đặt UL và UR',
+        title: '4c. Đưa 2 cạnh bên UL & UR về vị trí (Bước 4b Roux)',
         description:
-          'Dùng U2 và M2 để đưa viên UL (Đỏ/Vàng) và UR (Cam/Vàng) về đúng bên. Đây là bước "chọn lane" — xoay U cho đến khi thấy cả 2 viên đúng màu ở bên của chúng.',
+          'Tìm 2 viên cạnh UL (Đỏ - Vàng) và UR (Cam - Vàng). Chỉ dùng các nước đi <M, U>: Nếu 2 viên ở tầng U, xoay U để đưa 1 viên vào cột M rồi gạt M2 đưa xuống D. Sau đó xoay U đưa viên thứ hai vào đối diện và dùng M2 đưa cả 2 viên về đúng vị trí bên trái/phải.',
         diagram: {
           U: [RED,Y,ORA, X,Y,X, X,X,X] as FaceColors,
           L: [X,RED,X, X,RED,X, X,X,X],
@@ -476,14 +479,34 @@ export const ROUX_LESSONS: Lesson[] = [
           highlightCells: ['U-0-0','U-0-2','L-0-1','L-1-1','R-0-1','R-1-1'],
           focusFaces: ['U', 'L', 'R'],
         },
-        demoAlg: "U M2 U2 M2",
+        demoAlg: "U' M U2 M",
+        setupAlg: "M' U2 M' U",
         highlightPhase: 'lse',
-        note: '💡 Mẹo: Nếu UL đúng chỗ nhưng UR chưa, dùng U để xoay rồi check lại.',
+        note: '💡 Suốt bước 4b chỉ dùng <M, U> để bảo vệ 100% hướng EO đã làm ở bước 4a.',
       },
       {
-        title: '4c. L4E — Hoàn thành 4 cạnh cuối',
+        title: '4d. Phương pháp tự nghiệm L4E (3 giai đoạn trực quan)',
         description:
-          'Chỉ còn 4 cạnh (UF, UB, DF, DB) chưa đúng vị trí. Dùng M2 và U2 để hoán vị chúng. Thường chỉ cần 1-3 move M2/U2 là xong! Khối Rubik 100% hoàn thành!',
+          'L4E là bước giải 4 cạnh cuối trên cột giữa M (UF, UB, DF, DB) chỉ bằng <M, U2>. Quy trình tự nghiệm 3 giai đoạn: (1) Gom 2 cạnh màu Trắng xuống đáy D bằng M\' U2 M hoặc M U2 M\'; (2) Kiểm tra tâm đáy D: nếu dính D-Dots (tâm đáy vàng) thì gạt M2 để sửa; (3) Hoán vị các cạnh còn lại trên tầng U bằng U2 hoặc M2 U2 M2.',
+        diagram: {
+          U: [X,Y,X, X,Y,X, X,Y,X] as FaceColors,
+          D: [X,W,X, X,W,X, X,W,X] as FaceColors,
+          F: [X,G,X, X,G,X, X,G,X] as FaceColors,
+          B: [X,B,X, X,B,X, X,B,X] as FaceColors,
+          L: [X,RED,X, X,RED,X, X,RED,X] as FaceColors,
+          R: [X,ORA,X, X,ORA,X, X,ORA,X] as FaceColors,
+          highlightCells: ['U-1-1', 'D-1-1', 'F-1-1', 'B-1-1'],
+          focusFaces: ['U', 'F', 'D'],
+        },
+        demoAlg: "U2 M U2 M'",
+        setupAlg: "M U2 M' U2",
+        highlightPhase: 'lse',
+        note: '🎯 Chỉ dùng <M, U2>! Bạn không cần nhớ công thức phức tạp, chỉ cần tư duy gom 2 cạnh trắng xuống đáy!',
+      },
+      {
+        title: '4e. Xử lý D-Dots & Các công thức tối ưu Cột M (Ub, Ua, H, Z)',
+        description:
+          'Khi 2 cạnh đáy đã về D nhưng bị lệch tâm hoặc chu kỳ cạnh: (1) D-Dots cơ bản: gạt M2; (2) Chu trình 3 cạnh Ub: M U2 M2 U2 M\'; (3) Chu trình 3 cạnh Ua: M\' U2 M2 U2 M\'; (4) Thế H-Perm: U2 M2 U2 M2; (5) Thế Z-Perm: M2 U M2 U M\' U2 M2 U2 M\'. Khối Rubik hoàn thành 100%!',
         diagram: {
           U: solved('U'),
           D: solved('D'),
@@ -493,10 +516,12 @@ export const ROUX_LESSONS: Lesson[] = [
           R: solved('R'),
           focusFaces: ['U', 'F', 'B'],
         },
-        demoAlg: "M2 U2 M2 U2",
+        demoAlg: "U2 M2 U2 M2",
+        setupAlg: "M2 U2 M2 U2",
         highlightPhase: 'lse',
-        note: '🎉 Xong! Các pattern L4E phổ biến: Ub (M2 U2 M2), Ua (M2 U2 M2 U2), Skip!',
+        note: '🎉 Chúc mừng! Bạn đã chinh phục trọn vẹn toàn bộ phương pháp Roux!',
       },
     ],
   },
 ];
+
