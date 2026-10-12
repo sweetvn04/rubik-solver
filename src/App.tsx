@@ -89,7 +89,7 @@ export default function App() {
           <TutorCard />
         ) : (
           <footer className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))] left-1/2 -translate-x-1/2 z-20 pointer-events-auto w-full flex justify-center px-2">
-            <PlayerBar />
+            <PlayerBar onOpenInputModal={() => setIsInputModalOpen(true)} />
           </footer>
         )}
       </section>

@@ -15,7 +15,12 @@ import {
   GraduationCap,
   SlidersHorizontal,
   Compass,
+  Palette,
 } from 'lucide-react';
+
+export interface PlayerBarProps {
+  onOpenInputModal?: () => void;
+}
 
 const BASIC_FACES = ['R', 'L', 'U', 'D', 'F', 'B'];
 
@@ -39,7 +44,7 @@ const SAMPLE_ALGORITHMS = [
   { name: 'Roux EOLR', alg: "M' U M' U M' U2 M U M" },
 ];
 
-export function PlayerBar() {
+export function PlayerBar({ onOpenInputModal }: PlayerBarProps = {}) {
   const enqueueMove = useRubikStore((s) => s.enqueueMove);
   const enqueueAlgorithm = useRubikStore((s) => s.enqueueAlgorithm);
   const scramble = useRubikStore((s) => s.scramble);
@@ -55,7 +60,7 @@ export function PlayerBar() {
 
   const [isMovePadOpen, setIsMovePadOpen] = useState(false);
   const [isInputOpen, setIsInputOpen] = useState(false);
-  const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLegendOpen, setIsLegendOpen] = useState(false);
   const [customAlg, setCustomAlg] = useState('');
   const [solverFeedback, setSolverFeedback] = useState<string | null>(null);
@@ -350,179 +355,198 @@ export function PlayerBar() {
         </div>
       )}
 
-      {/* ── 4. THANH DOCK CHÍNH - TINH GỌN, LOGIC & KHÔNG BAO GIỜ TRÀN MÀN HÌNH ── */}
-      <div className="flex items-center gap-1 sm:gap-1.5 p-1 bg-white/90 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-md max-w-full">
-        {/* Nhóm 1: Thao tác khối */}
+      {/* ── 4. THANH DOCK CHÍNH - TINH GỌN, CHUẨN MOBILE, HƯỚNG ĐẾN RUBIK THẬT NGOÀI ĐỜI ── */}
+      <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 bg-white/92 backdrop-blur-xl rounded-2xl border border-[#e8dfcf] shadow-md max-w-full">
+        {/* Nút 1: Nhập Rubik thật ngoài đời (Primary Action) */}
         <button
           type="button"
-          onClick={scramble}
-          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-          title="Xáo khối 20 moves chuẩn WCA (Phím Space)"
+          onClick={onOpenInputModal}
+          className="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+          title="Nhập màu trạng thái cục Rubik thật ngoài đời để nhận lộ trình giải Roux"
         >
-          <Shuffle className="w-3.5 h-3.5 shrink-0" />
-          <span>Xáo</span>
+          <Palette className="w-4 h-4 shrink-0" />
+          <span>Nhập Rubik thật</span>
         </button>
 
-        <button
-          type="button"
-          onClick={reset}
-          className="p-1.5 text-xs text-[#5c4f43] hover:bg-[#efe8dc] rounded-xl transition-all active:scale-90 cursor-pointer shrink-0"
-          title="Khôi phục trạng thái hoàn thành (Phím Esc)"
-        >
-          <RefreshCw className="w-3.5 h-3.5 shrink-0" />
-        </button>
-
-        <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5 shrink-0" />
-
-        {/* Nhóm 2: Hai chế độ giải Roux */}
+        {/* Nút 2: Hướng dẫn giải từng bước (Tutor Mode) */}
         <button
           type="button"
           onClick={handleStartTutorMode}
           disabled={moveQueue.length > 0}
-          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold bg-[#3d5a80] hover:bg-[#344d6d] disabled:opacity-40 text-white rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:cursor-not-allowed whitespace-nowrap"
+          className="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold bg-[#3d5a80] hover:bg-[#344d6d] disabled:opacity-40 text-white rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:cursor-not-allowed whitespace-nowrap"
           title="Bật chế độ hướng dẫn giải từng bước (Tutor Mode)"
         >
-          <GraduationCap className="w-3.5 h-3.5 shrink-0" />
-          <span>Hướng dẫn</span>
+          <GraduationCap className="w-4 h-4 shrink-0" />
+          <span>Hướng dẫn giải</span>
         </button>
 
-        <button
-          type="button"
-          onClick={handleAutoSolveFullRoux}
-          disabled={moveQueue.length > 0}
-          className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-xs font-bold bg-[#2a9d8f] hover:bg-[#238b7f] disabled:opacity-40 text-white rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:cursor-not-allowed whitespace-nowrap"
-          title="Tự động giải toàn bộ 4 bước Roux 100%"
-        >
-          <Wand2 className="w-3.5 h-3.5 shrink-0" />
-          <span className="sm:hidden">Tự giải</span>
-          <span className="hidden sm:inline">Giải Full Roux</span>
-        </button>
-
-        <div className="w-[1px] h-4 bg-[#e0d6c4] mx-0.5 shrink-0" />
-
-        {/* Nhóm 3: Công cụ xoay & Tùy chọn */}
-        <button
-          type="button"
-          onClick={() => {
-            setIsMovePadOpen(!isMovePadOpen);
-            if (!isMovePadOpen) {
-              setIsInputOpen(false);
-              setIsToolsOpen(false);
-            }
-          }}
-          className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-xs font-bold rounded-xl border transition-all active:scale-95 cursor-pointer whitespace-nowrap ${
-            isMovePadOpen
-              ? 'bg-[#3d5a80] text-white border-[#344d6d] shadow-xs'
-              : 'bg-[#faf6ee] hover:bg-white text-[#2c221e] border-[#e2d8c7]'
-          }`}
-          title="Bật/Tắt Hộp Moves (Bảng phím ký hiệu)"
-        >
-          <Grid3X3 className="w-3.5 h-3.5 shrink-0" />
-          <span>Moves</span>
-        </button>
-
-        {/* Nút Công Cụ Popover (Sliders) */}
+        {/* Nút 3: Menu Tiện Ích & Tùy Chọn Khối Ảo */}
         <div className="relative">
           <button
             type="button"
             onClick={() => {
-              setIsToolsOpen(!isToolsOpen);
-              if (!isToolsOpen) {
+              setIsMenuOpen(!isMenuOpen);
+              if (!isMenuOpen) {
                 setIsMovePadOpen(false);
                 setIsInputOpen(false);
               }
             }}
-            className={`p-1.5 text-xs rounded-xl border transition-all active:scale-95 cursor-pointer shrink-0 ${
-              isToolsOpen
-                ? 'bg-[#e07a5f] text-white border-[#cc6b52] shadow-xs'
+            className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl border transition-all active:scale-95 cursor-pointer shrink-0 ${
+              isMenuOpen
+                ? 'bg-[#2c221e] text-white border-[#2c221e] shadow-xs'
                 : 'bg-[#faf6ee] hover:bg-white text-[#5c4f43] border-[#e2d8c7]'
             }`}
-            title="Công cụ & Tùy chọn (Tốc độ, ASMR, Công thức)"
+            title="Tiện ích & Tùy chọn (Xáo ảo, Đặt lại, Tự giải demo, Moves, Tốc độ)"
           >
-            <SlidersHorizontal className="w-3.5 h-3.5 shrink-0" />
+            <SlidersHorizontal className="w-4 h-4 shrink-0" />
           </button>
 
-          {/* Mini Popover Công Cụ */}
-          {isToolsOpen && (
-            <div className="absolute bottom-full mb-2 right-0 p-3 bg-white/98 backdrop-blur-xl rounded-2xl border border-[#e8dfcf] shadow-xl w-60 z-40 animate-in fade-in zoom-in-95 duration-150 space-y-2.5">
+          {/* Popover Tiện Ích Mô Phỏng Ảo */}
+          {isMenuOpen && (
+            <div className="absolute bottom-full mb-2 right-0 p-3 bg-white/98 backdrop-blur-xl rounded-2xl border border-[#e8dfcf] shadow-xl w-64 z-40 animate-in fade-in zoom-in-95 duration-150 space-y-2.5">
               <div className="flex items-center justify-between pb-1.5 border-b border-[#f0e8db]">
                 <span className="text-[11px] font-bold text-[#2c221e] flex items-center gap-1">
                   <SlidersHorizontal className="w-3 h-3 text-[#e07a5f]" />
-                  Công cụ & Tùy chọn
+                  Tiện ích mô phỏng ảo
                 </span>
                 <button
                   type="button"
-                  onClick={() => setIsToolsOpen(false)}
+                  onClick={() => setIsMenuOpen(false)}
                   className="text-[#a89b8d] hover:text-[#2c221e] p-0.5"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </div>
 
-              {/* Tốc độ xoay */}
-              <div>
-                <div className="text-[10px] font-semibold text-[#8c7b6c] mb-1 flex items-center gap-1">
-                  <Gauge className="w-3 h-3 text-[#e07a5f]" />
-                  Tốc độ xoay:
+              {/* Nhóm thao tác khối ảo */}
+              <div className="space-y-1.5">
+                <div className="text-[10px] font-semibold text-[#8c7b6c]">
+                  Thao tác khối ảo:
                 </div>
-                <div className="grid grid-cols-3 gap-1">
-                  {[
-                    { label: 'Nhanh', ms: 120 },
-                    { label: 'Vừa', ms: 220 },
-                    { label: 'Chậm', ms: 420 },
-                  ].map((spd) => (
-                    <button
-                      key={spd.ms}
-                      type="button"
-                      onClick={() => setTurnDuration(spd.ms)}
-                      className={`py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer ${
-                        turnDuration === spd.ms
-                          ? 'bg-[#e07a5f] text-white border-[#cc6b52] shadow-2xs'
-                          : 'bg-[#faf6ee] text-[#5c4f43] border-[#e2d8c7] hover:bg-white'
-                      }`}
-                    >
-                      {spd.label}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      scramble();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center gap-1.5 py-1.5 bg-[#fbf0ec] hover:bg-[#fae4dc] text-[#d4684c] text-[11px] font-bold rounded-xl border border-[#f5ccbf] transition-all active:scale-95 cursor-pointer"
+                    title="Xáo ngẫu nhiên 20 bước WCA"
+                  >
+                    <Shuffle className="w-3 h-3 shrink-0" />
+                    <span>Xáo ảo</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      reset();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center gap-1.5 py-1.5 bg-[#faf6ee] hover:bg-white text-[#5c4f43] text-[11px] font-bold rounded-xl border border-[#e2d8c7] transition-all active:scale-95 cursor-pointer"
+                    title="Đặt lại khối về trạng thái hoàn thành"
+                  >
+                    <RefreshCw className="w-3 h-3 shrink-0" />
+                    <span>Đặt lại</span>
+                  </button>
                 </div>
-              </div>
 
-              {/* Âm thanh xoay ASMR */}
-              <div className="flex items-center justify-between pt-1.5 border-t border-[#f0e8db]">
-                <span className="text-[10px] font-semibold text-[#8c7b6c] flex items-center gap-1">
-                  {isMuted ? (
-                    <VolumeX className="w-3 h-3 text-[#a89b8d]" />
-                  ) : (
-                    <Volume2 className="w-3 h-3 text-[#e07a5f]" />
-                  )}
-                  Âm click ASMR:
-                </span>
-                <button
-                  type="button"
-                  onClick={toggleMute}
-                  className={`px-2 py-0.5 text-[10px] font-bold rounded-md border transition-all cursor-pointer ${
-                    isMuted
-                      ? 'bg-[#faf6ee] text-[#8c7b6c] border-[#e2d8c7]'
-                      : 'bg-[#fbf0ec] text-[#e07a5f] border-[#f4c8bc]'
-                  }`}
-                >
-                  {isMuted ? 'Tắt' : 'Bật'}
-                </button>
-              </div>
-
-              {/* Nhập chuỗi công thức */}
-              <div className="pt-1.5 border-t border-[#f0e8db]">
+                {/* Tự giải demo */}
                 <button
                   type="button"
                   onClick={() => {
-                    setIsToolsOpen(false);
-                    setIsInputOpen(true);
+                    handleAutoSolveFullRoux();
+                    setIsMenuOpen(false);
+                  }}
+                  disabled={moveQueue.length > 0}
+                  className="w-full flex items-center justify-center gap-1.5 py-1.5 bg-[#eef7f5] hover:bg-[#e0f1ed] text-[#247c72] text-[11px] font-bold rounded-xl border border-[#cbe3dd] transition-all active:scale-95 cursor-pointer disabled:opacity-40"
+                  title="Tự động xoay demo toàn bộ 4 bước Roux 100%"
+                >
+                  <Wand2 className="w-3 h-3 shrink-0" />
+                  <span>Tự giải demo (Máy tính xoay)</span>
+                </button>
+
+                {/* Hộp phím xoay Moves */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsMovePadOpen(true);
                   }}
                   className="w-full flex items-center justify-center gap-1.5 py-1.5 bg-[#faf6ee] hover:bg-white text-[#2c221e] text-[11px] font-bold rounded-xl border border-[#e2d8c7] transition-all cursor-pointer"
+                  title="Mở bảng phím xoay ảo (R, U, F, M...)"
                 >
-                  <Sparkles className="w-3 h-3 text-[#e07a5f]" />
-                  <span>Nhập công thức tùy ý</span>
+                  <Grid3X3 className="w-3 h-3 shrink-0 text-[#3d5a80]" />
+                  <span>Bảng phím xoay (Moves)</span>
                 </button>
+              </div>
+
+              {/* Cài đặt tốc độ & âm thanh */}
+              <div className="pt-2 border-t border-[#f0e8db] space-y-2">
+                <div>
+                  <div className="text-[10px] font-semibold text-[#8c7b6c] mb-1 flex items-center gap-1">
+                    <Gauge className="w-3 h-3 text-[#e07a5f]" />
+                    Tốc độ xoay tự do:
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    {[
+                      { label: 'Nhanh', ms: 120 },
+                      { label: 'Vừa', ms: 220 },
+                      { label: 'Chậm', ms: 420 },
+                    ].map((spd) => (
+                      <button
+                        key={spd.ms}
+                        type="button"
+                        onClick={() => setTurnDuration(spd.ms)}
+                        className={`py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer ${
+                          turnDuration === spd.ms
+                            ? 'bg-[#e07a5f] text-white border-[#cc6b52] shadow-2xs'
+                            : 'bg-[#faf6ee] text-[#5c4f43] border-[#e2d8c7] hover:bg-white'
+                        }`}
+                      >
+                        {spd.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Âm thanh xoay ASMR */}
+                <div className="flex items-center justify-between pt-1 border-t border-[#f0e8db]">
+                  <span className="text-[10px] font-semibold text-[#8c7b6c] flex items-center gap-1">
+                    {isMuted ? (
+                      <VolumeX className="w-3 h-3 text-[#a89b8d]" />
+                    ) : (
+                      <Volume2 className="w-3 h-3 text-[#e07a5f]" />
+                    )}
+                    Âm click ASMR:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className={`px-2 py-0.5 text-[10px] font-bold rounded-md border transition-all cursor-pointer ${
+                      isMuted
+                        ? 'bg-[#faf6ee] text-[#8c7b6c] border-[#e2d8c7]'
+                        : 'bg-[#fbf0ec] text-[#e07a5f] border-[#f4c8bc]'
+                    }`}
+                  >
+                    {isMuted ? 'Tắt' : 'Bật'}
+                  </button>
+                </div>
+
+                {/* Nhập chuỗi công thức */}
+                <div className="pt-1 border-t border-[#f0e8db]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsInputOpen(true);
+                    }}
+                    className="w-full flex items-center justify-center gap-1.5 py-1.5 bg-[#faf6ee] hover:bg-white text-[#2c221e] text-[11px] font-bold rounded-xl border border-[#e2d8c7] transition-all cursor-pointer"
+                  >
+                    <Sparkles className="w-3 h-3 text-[#e07a5f]" />
+                    <span>Nhập công thức tùy ý</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
