@@ -6,6 +6,32 @@
 
 ## 📅 2026-10-13
 
+### 🎯 [Commit `ef3eb1c`] — Tối Giản Bottom Bar: 3 Nút Chuẩn Mobile Tập Trung Trực Diện Vào Giải Rubik Thật Ngoài Đời
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng phản ánh ảnh chụp màn hình điện thoại: Thanh dock dưới đáy vẫn bị quá nhiều nút khiến nút `Moves` bị cắt cụt thành `[▦ M...]` và các nút công cụ rớt ra ngoài viền màn hình.
+  - Người dùng phân tích sâu sắc về mục đích sản phẩm: Chơi và giải Rubik ảo trên màn hình điện thoại rất bất tiện và không phải mục đích chính; định hướng thực sự của ứng dụng là **đồng hành và hướng dẫn cho người chơi đang cầm cục Rubik vật lý ngoài đời thật**. Nút "Tự giải máy tính xoay 100%" hay "Xáo ảo" không cần thiết phải chiếm vị trí ưu tiên ở thanh dock chính.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Định Vị Lại Trải Nghiệm "Trợ Giảng 3D Cho Rubik Thật":**
+     - Đưa nút **`[ 📥 Nhập Rubik thật ]`** (Palette icon, cam đất ấm) ra vị trí ưu tiên hàng đầu ngay trên dock chính để người dùng mở ngay bảng tô màu 6 mặt cho khối thật.
+     - Đặt nút **`[ 🎓 Hướng dẫn giải ]`** (GraduationCap icon, navy thanh lịch) bên cạnh: khi có khối đã nhập hoặc có bài tập, lập tức kích hoạt Tutor Mode từng bước có thuyết minh và dừng chờ người chơi xoay trên tay.
+  2. **Gom Toàn Bộ Tính Năng Mô Phỏng Khối Ảo Vào Menu Tiện Ích `[ ⚙️ ]`:**
+     - Thiết kế nút popover `[ ⚙️ ]` (SlidersHorizontal) nhỏ gọn ở góc phải dock.
+     - Khi bấm mở popover kính mờ chứa toàn bộ các công cụ ảo:
+       - `🔀 Xáo ảo (20 bước WCA)` + `🔄 Đặt lại (Reset)`.
+       - `🪄 Tự giải demo (Máy tính xoay 100%)`.
+       - `▦ Mở bảng phím xoay (Moves: R, U, F, M...)`.
+       - Tùy chỉnh tốc độ xoay tự do (Nhanh / Vừa / Chậm).
+       - Âm click xoay ASMR (Bật / Tắt).
+       - Nhập công thức tùy ý (Form input).
+  3. **Kích Thước Vừa Vặn Tuyệt Đối Trên Mọi Màn Hình Mobile:**
+     - Chiều rộng dock thu gọn chỉ còn ~330px, nằm lọt lòng 100% giữa màn hình điện thoại di động (kể cả iPhone SE 375px hay Android nhỏ), không bao giờ bị cắt chữ hay rớt dòng.
+* **Files tác động:**
+  - `src/components/ui/PlayerBar.tsx`: Tái cấu trúc thanh dock 3 nút tinh gọn, bổ sung prop `onOpenInputModal`, đóng gói menu popover tiện ích khối ảo.
+  - `src/App.tsx`: Truyền `onOpenInputModal={() => setIsInputModalOpen(true)}` xuống `PlayerBar`.
+
+---
+
 ### ⚡ [Commit `c6a3e35`] — Phân Tách Tốc Độ Xoay Động: Tráo Nhanh (90ms) & Giải Roux / Minh Họa Sư Phạm Chậm Rãi (380-400ms)
 
 * **Bối cảnh & Yêu cầu:**

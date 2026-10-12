@@ -446,6 +446,10 @@
 | 426 | 2026-10-13 00:17 | `git commit -am "docs: finalize COMMAND_LOG.md with command 425" && git status` | Lưu commit tài liệu COMMAND_LOG và kiểm tra working tree | Commit `80f7621` — clean |
 | 427 | 2026-10-13 00:18 | `git commit -am "docs: log command 426 in COMMAND_LOG.md" && git status` | Lưu commit nhật ký lệnh 426 vào COMMAND_LOG.md | Commit `aee6728` — clean |
 | 428 | 2026-10-13 00:18 | `ss -tulpn \| grep 5173 \|\| true` | Kiểm tra tiến trình dev server Vite trên cổng 5173 | Đang lắng nghe *:5173 |
+| 429 | 2026-10-13 00:22 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi tái cấu trúc Bottom Bar thành 3 nút tinh gọn tập trung vào Rubik thật ngoài đời | Exit 0 — Thành công (built in 705ms) |
+| 430 | 2026-10-13 00:22 | `git status` | Kiểm tra trạng thái git working tree | 2 files modified (App.tsx, PlayerBar.tsx) |
+| 431 | 2026-10-13 00:22 | `git diff --stat` | Khảo sát thống kê file thay đổi của dock bar tinh gọn | 2 files changed (+147 -123) |
+| 432 | 2026-10-13 00:23 | `git add src/App.tsx src/components/ui/PlayerBar.tsx && git commit -m "refactor(ui): streamline bottom dock to 3 clean buttons focused on physical rubik solving"` | Commit tái cấu trúc Bottom Bar thành 3 nút tinh gọn tập trung giải Rubik thật ngoài đời | Commit `ef3eb1c` |
 
 
 
