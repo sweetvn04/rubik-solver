@@ -63,8 +63,8 @@ interface RubikStore {
   lofiVolume: number;
 
   // Actions
-  enqueueMove: (moveOrRaw: Move | string) => void;
-  enqueueAlgorithm: (alg: string) => void;
+  enqueueMove: (moveOrRaw: Move | string, customDuration?: number) => void;
+  enqueueAlgorithm: (alg: string, customDuration?: number) => void;
   startNextMove: () => Move | null;
   completeCurrentMove: () => void;
   scramble: () => void;
@@ -171,11 +171,14 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     set({ lofiVolume: vol });
   },
 
-  enqueueMove: (moveOrRaw) => {
-    const move =
-      typeof moveOrRaw === 'string'
-        ? parseAlgorithm(moveOrRaw)[0]
-        : moveOrRaw;
+  enqueueMove: (moveOrRaw, customDuration) => {
+    let move: Move | null = null;
+    if (typeof moveOrRaw === 'string') {
+      const parsed = parseAlgorithm(moveOrRaw, customDuration)[0];
+      move = parsed || null;
+    } else {
+      move = customDuration ? { ...moveOrRaw, duration: customDuration } : moveOrRaw;
+    }
 
     if (!move) return;
 
@@ -185,8 +188,8 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     invalidate();
   },
 
-  enqueueAlgorithm: (alg) => {
-    const moves = parseAlgorithm(alg);
+  enqueueAlgorithm: (alg, customDuration) => {
+    const moves = parseAlgorithm(alg, customDuration);
     if (!moves.length) return;
 
     set((state) => ({
@@ -352,7 +355,8 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     const solution = solveCompleteRoux(solverState);
 
     if (solution.isSuccess && solution.allMoves.length > 0) {
-      get().enqueueAlgorithm(solution.allMoves.join(' '));
+      // Tốc độ giải tự động mặc định chậm rãi (380ms) để người dùng kịp quan sát
+      get().enqueueAlgorithm(solution.allMoves.join(' '), 380);
     }
 
     return solution;
@@ -464,7 +468,8 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
 
     const nextMove = tutorAllMoves[tutorCurrentIndex];
     set({ tutorCurrentIndex: tutorCurrentIndex + 1 });
-    get().enqueueMove(nextMove);
+    // Tốc độ xoay từng bước trong tutor: 350ms (đầm tay, rõ ràng)
+    get().enqueueMove(nextMove, 350);
   },
 
   tutorPrevStep: () => {
@@ -475,7 +480,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     const lastMove = tutorAllMoves[tutorCurrentIndex - 1];
     const revMove = invertMove(lastMove);
     set({ tutorCurrentIndex: tutorCurrentIndex - 1 });
-    get().enqueueMove(revMove);
+    get().enqueueMove(revMove, 250);
   },
 
   tutorPlayCurrentPhase: () => {
@@ -492,7 +497,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     if (remaining.length === 0) return;
 
     set({ tutorCurrentIndex: currentPhase.endIndex });
-    get().enqueueAlgorithm(remaining.join(' '));
+    get().enqueueAlgorithm(remaining.join(' '), 380);
   },
 
   tutorPlayChunk: (chunkId: string) => {
@@ -510,7 +515,7 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     if (remaining.length === 0) return;
 
     set({ tutorCurrentIndex: chunk.endIndex });
-    get().enqueueAlgorithm(remaining.join(' '));
+    get().enqueueAlgorithm(remaining.join(' '), 380);
   },
 
   exitTutorMode: () => {

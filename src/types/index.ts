@@ -20,6 +20,7 @@ export interface Move {
   direction: 1 | -1; // 1 = Clockwise, -1 = Counter-Clockwise
   double?: boolean;  // 180 degree rotation
   raw: string;       // e.g. "R", "U'", "M2"
+  duration?: number; // Tùy chọn tốc độ xoay riêng tính bằng ms
 }
 
 export type RouxPhase = 'FB' | 'SB' | 'CMLL' | 'LSE_EO' | 'LSE_ULUR' | 'LSE_M';

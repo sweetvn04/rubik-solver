@@ -198,27 +198,27 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
     return LSE_L4E_CASES.filter((c) => c.group === l4eFilter);
   }, [l4eFilter]);
 
-  // Hành động xoay công thức lên Rubik 3D
+  // Hành động xoay công thức lên Rubik 3D (Tốc độ minh hoạ chậm 400ms để học viên quan sát)
   const handleRunAlg = (alg: string, name: string) => {
     if (isAnimating || moveQueue.length > 0) return;
-    enqueueAlgorithm(alg);
+    enqueueAlgorithm(alg, 400);
     showToast(`Đang xoay: ${name}`);
     if (onSwitchTo3D) {
       setTimeout(() => onSwitchTo3D(name), 100);
     }
   };
 
-  // Hành động thiết lập thế cờ lên Rubik 3D
+  // Hành động thiết lập thế cờ lên Rubik 3D (Setup nạp nhanh 90ms để không mất thời gian chờ)
   const handleSetupCase = (algOrSetup: string, name: string, isAlreadySetupMoves = false) => {
     if (isAnimating || moveQueue.length > 0) return;
     let setupMovesStr = algOrSetup;
     if (!isAlreadySetupMoves) {
-      const moves = parseAlgorithm(algOrSetup);
+      const moves = parseAlgorithm(algOrSetup, 90);
       setupMovesStr = [...moves].reverse().map((m) => invertMove(m.raw)).join(' ');
     }
     reset();
     setTimeout(() => {
-      enqueueAlgorithm(setupMovesStr);
+      enqueueAlgorithm(setupMovesStr, 90);
       showToast(`Đã thiết lập thế cờ: ${name}`);
     }, 150);
     if (onSwitchTo3D) {
@@ -226,27 +226,27 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
     }
   };
 
-  // Demo sub-step trên Rubik 3D
+  // Demo sub-step trên Rubik 3D: Setup nạp nhanh 90ms, sau đó minh hoạ chậm rãi 400ms
   const handleRunStepDemo = () => {
     if (isAnimating || moveQueue.length > 0) return;
     const step = currentSubStep;
     if (!step) return;
 
     if (step.setupAlg) {
-      const moves = parseAlgorithm(step.setupAlg);
+      const moves = parseAlgorithm(step.setupAlg, 90);
       const setupMoves = [...moves].reverse().map((m) => invertMove(m.raw)).join(' ');
       reset();
       setTimeout(() => {
-        enqueueAlgorithm(setupMoves);
+        enqueueAlgorithm(setupMoves, 90);
         if (step.demoAlg) {
           setTimeout(() => {
-            enqueueAlgorithm(step.demoAlg!);
+            enqueueAlgorithm(step.demoAlg!, 400);
             showToast(`Minh hoạ: ${step.title}`);
           }, 300);
         }
       }, 150);
     } else if (step.demoAlg) {
-      enqueueAlgorithm(step.demoAlg);
+      enqueueAlgorithm(step.demoAlg, 400);
       showToast(`Minh hoạ: ${step.title}`);
     }
     if (onSwitchTo3D) {

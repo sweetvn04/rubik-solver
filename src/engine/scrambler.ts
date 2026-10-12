@@ -46,5 +46,6 @@ export function generateScramble(length: number = 20): { raw: string; moves: Mov
   }
 
   const raw = chosen.join(' ');
-  return { raw, moves: parseAlgorithm(raw) };
+  // Mặc định các bước tráo Rubik có tốc độ nhanh (90ms / move)
+  return { raw, moves: parseAlgorithm(raw, 90) };
 }

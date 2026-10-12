@@ -78,7 +78,8 @@ export function RubikCube() {
 
     // Giới hạn delta (tối đa 35ms) để tránh giật frame khi vừa thức dậy sau lúc ngủ demand
     const safeDelta = Math.min(delta, 0.035);
-    const durationSec = Math.max(0.06, turnDuration / 1000);
+    const durationMs = move.duration ?? turnDuration;
+    const durationSec = Math.max(0.04, durationMs / 1000);
     progressRef.current += safeDelta / durationSec;
     const progress = Math.min(1.0, progressRef.current);
     const easedProgress = easeOutCubic(progress);

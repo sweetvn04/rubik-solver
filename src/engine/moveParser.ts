@@ -12,7 +12,7 @@ export interface MoveExecutionInfo {
  * Phân tích chuỗi công thức Rubik thành mảng Move
  * Ví dụ: "R U R' U' M2 U M" -> Move[]
  */
-export function parseAlgorithm(alg: string): Move[] {
+export function parseAlgorithm(alg: string, customDuration?: number): Move[] {
   if (!alg) return [];
 
   // Regex bắt các move: R, L, U, D, F, B, M, E, S, r, l, u, d, f, b kèm ' hoặc 2
@@ -32,6 +32,7 @@ export function parseAlgorithm(alg: string): Move[] {
       direction,
       double,
       raw: match[0],
+      ...(customDuration ? { duration: customDuration } : {}),
     });
   }
 
