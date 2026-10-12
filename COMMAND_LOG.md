@@ -406,6 +406,8 @@
 | 386 | 2026-10-12 20:31 | `git remote -v` | Kiểm tra remote URL đã cấu hình sau khi người dùng gặp lỗi push | origin trỏ git@github.com:sweetvn/Rubik-Solver.git |
 | 387 | 2026-10-12 20:31 | `which gh 2>/dev/null \|\| true` | Kiểm tra sự tồn tại của GitHub CLI trên hệ thống | /usr/bin/gh |
 | 388 | 2026-10-12 20:31 | `gh auth status 2>&1 \|\| true` | Kiểm tra trạng thái đăng nhập của GitHub CLI | Chưa đăng nhập gh |
+| 389 | 2026-10-12 20:57 | `git add COMMAND_LOG.md && git commit -m "docs: log commands 386-388 in COMMAND_LOG.md"` | Lưu commit nhật ký lệnh 386 đến 388 | Commit `a9a9294` trên branch main |
+| 390 | 2026-10-12 20:58 | `git status && git branch -a` | Kiểm tra branch hiện tại và remote tracking branch | Branch main, tracking origin/main |
 
 
 
