@@ -399,6 +399,8 @@
 | 379 | 2026-10-12 17:17 | `git add src/components/ui/LessonDrawer.tsx && git commit -m "fix(ui): replace accordion with dropdown step selector to fix badge clipping and layout issues"` | Commit giao diện mới Dropdown Step Selector khắc phục lỗi cắt badge | Commit `982554c` |
 | 380 | 2026-10-12 17:18 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 982554c"` | Đồng bộ commit hash 982554c vào CHANGELOG và COMMAND_LOG | Commit `52dd180` |
 | 381 | 2026-10-12 17:18 | `git commit -am "docs: finalize COMMAND_LOG.md with command 380" && git status` | Lưu commit tài liệu COMMAND_LOG và kiểm tra working tree | Commit `7b84fd2` — working tree clean |
+| 382 | 2026-10-12 17:49 | `git remote -v; ls -la` | Kiểm tra remote repository và cấu trúc thư mục phục vụ tư vấn phương án deploy | Exit 0 — chưa có remote, thư mục sẵn sàng |
+| 383 | 2026-10-12 17:50 | `git status` | Kiểm tra trạng thái git working tree | Exit 0 — working tree clean trên branch master |
 
 
 
