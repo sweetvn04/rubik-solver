@@ -6,6 +6,49 @@
 
 ## 📅 2026-10-12
 
+### 🚀 [Commit `9c6f578`] — Bổ Sung Cẩm Nang Hướng Dẫn Bước 4b (UL/UR) Toàn Diện Cho Người Mới & Tái Cấu Trúc Điều Hướng LSE Rõ Ràng Trực Quan
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng phản ánh không thấy chỗ mở L4E và chưa thấy phần hướng dẫn chi tiết cho 2 cạnh cánh UL & UR, yêu cầu bổ sung đầy đủ tất cả các bước cho người mới bắt đầu.
+  - Phân tích nguyên nhân:
+    1. Trên thanh tab chính, tab LSE chỉ ghi chữ "Cẩm nang LSE", thanh sub-tabs bên trong là một hàng cuộn ngang khiến các nút quan trọng như `4b: UL & UR` và `4c: L4E Cột M` bị trôi sang phải che khuất trên màn hình nhỏ.
+    2. Nội dung sub-tab `4b: UL & UR` trước đó chỉ có 3 đoạn tóm tắt sơ sài, thiếu phân tích tình huống, thiếu sơ đồ minh họa và thiếu các thế cờ mẫu để tương tác 3D.
+    3. Tab bài học "4 Bước Roux" chỉ điều hướng bằng các chấm nhỏ, người dùng không thấy được lộ trình các bước con của Bước 4 (EO $\rightarrow$ UL/UR $\rightarrow$ L4E).
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Cẩm nang Bước 4b (UL & UR) chuẩn Google Site RouxMethodVN (`LSE_UL_UR_GUIDE`):**
+     - **Nhận diện màu 2 cánh:** Cạnh UL (Vàng - Cam, nằm bên trái), Cạnh UR (Vàng - Đỏ, nằm bên phải) khi mặt F là Xanh lá (Lục). Cả 6 cạnh đều đã là Good Edges từ bước 4a.
+     - **Quy tắc bất biến:** Chỉ dùng tập nước đi $\langle M, U \rangle$. Tuyệt đối không xoay R, L, F, B để bảo vệ First Block và Second Block.
+     - **3 Tình huống ban đầu (`initialCases`):**
+       * *Trường hợp 1 (1 ở U, 1 ở D):* Phổ biến nhất — Xoay U đưa cạnh ở U vào vị trí đối diện với cạnh ở D rồi tiếp tục Giai đoạn 2.
+       * *Trường hợp 2 (Cả 2 cạnh ở U):* Xoay U đưa 1 cạnh vào UF/UB, gạt M/M' (hoặc M2) úp xuống D, xoay U đưa cạnh còn lại vào vị trí đối nhau.
+       * *Trường hợp 3 (Cả 2 cạnh ở D):* May mắn nhất — Đi thẳng sang Giai đoạn 3!
+     - **Lộ trình 3 Giai đoạn tự nghiệm (`phases`):**
+       * *Giai đoạn 1:* Đưa 2 cạnh vào vị trí đối diện trên cột M (UF & DB hoặc UB & DF).
+       * *Giai đoạn 2:* Úp cả 2 viên xuống tầng đáy D (DF & DB).
+       * *Giai đoạn 3:* Canh màu mặt F của góc tầng U và gạt $M2$ dứt điểm: hai viên UL và UR tự động bay thẳng về 2 cánh trái/phải đúng 100%!
+     - **5 Thế cờ thực chiến tiêu biểu (`samples`):**
+       * Thế 1: 1 cạnh ở UF, 1 cạnh ở DB (`U' M' U2 M`)
+       * Thế 2: 1 cạnh ở UB, 1 cạnh ở DF (`U' M U2 M`)
+       * Thế 3: Cả 2 cạnh đều ở tầng U (`U2 M' U2 M' U M2`)
+       * Thế 4: Cả 2 cạnh đã ở sẵn tầng đáy D (`U M2`)
+       * Thế 5: 1 cạnh đã ở đúng cánh UL, 1 cạnh ở đáy DF (`M' U2 M`)
+       * Mỗi thế đều có nút "Tập thế này" và "Chạy giải" 3D tương tác.
+  2. **SVG Component `ULURDiagram` ([`ReferenceDiagrams.tsx`](./src/components/ui/ReferenceDiagrams.tsx)):**
+     - Thiết kế sơ đồ trực quan thể hiện 2 khối First Block (L - Cam) và Second Block (R - Đỏ), vị trí 2 cánh và trạng thái phân bố trên cột M (`1_u_1_d`, `2_u`, `2_d`, `solved_one`).
+  3. **Tái cấu trúc giao diện UX ([`LessonDrawer.tsx`](./src/components/ui/LessonDrawer.tsx)):**
+     - Đổi tên tab chính thành: **`LSE (EO • UL/UR • L4E)`** to rõ, dễ hiểu.
+     - Tách thanh điều hướng LSE thành 2 hàng phân cấp:
+       * **Hàng 1 (Cốt lõi cho người mới):** Chia 3 cột đều chằn chặn: `Bước 4a: 10 Thế EO`, `Bước 4b: Hai Cánh UL/UR`, `Bước 4c: L4E Cột M (23 Thế)` — hiển thị 100% trên mọi kích thước màn hình mà không cần cuộn ngang!
+       * **Hàng 2 (Kỹ thuật tốc độ):** `Nhìn FD <1s`, `Né D-Dots & Ez`, `EOLR Master`.
+     - Tại Tab "4 Bước Roux": Bổ sung thanh chọn nhanh có nhãn từng phần con và 3 nút chuyển nhanh sang cẩm nang EO, UL/UR, L4E.
+     - Thêm các nút CTA điều hướng liền mạch: từ bài học nhảy sang cẩm nang chi tiết, và từ Bước 4b (UL/UR) có nút chuyển tiếp trực tiếp sang Bước 4c (L4E).
+* **Files tác động:**
+  - `src/data/rouxReferenceData.ts`: Mở rộng toàn diện `LSE_UL_UR_GUIDE` (3 initial cases, 3 phases, 5 samples).
+  - `src/components/ui/ReferenceDiagrams.tsx`: Bổ sung SVG component `ULURDiagram`.
+  - `src/components/ui/LessonDrawer.tsx`: Tái cấu trúc 2 hàng điều hướng LSE, tích hợp UI hướng dẫn UL/UR chi tiết, và bổ sung thanh liên kết nhanh.
+
+---
+
 ### 🚀 [Commit `df7f8b5`] — Bổ Sung Cẩm Nang Hướng Dẫn Tự Nghiệm L4E (3 Giai Đoạn) & Trọn Bộ 23 Thế Cờ L4E Tối Ưu Chuẩn Google Site RouxMethodVN
 
 * **Bối cảnh & Yêu cầu:**
