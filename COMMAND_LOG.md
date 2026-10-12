@@ -424,6 +424,7 @@
 | 404 | 2026-10-13 00:00 | `curl -I http://192.168.1.77:5173` | Kiểm tra gọi HTTP tới địa chỉ LAN 192.168.1.77:5173 | HTTP/1.1 200 OK |
 | 405 | 2026-10-13 00:00 | `grep 5173 /etc/ufw/user.rules 2>/dev/null \|\| true` | Kiểm tra quy tắc ufw cho cổng 5173 | Đã có sẵn rule ACCEPT cho cả tcp/udp |
 | 406 | 2026-10-13 00:01 | `git add vite.config.ts package.json && git commit -m "fix(dev): expose vite dev server to lan host 0.0.0.0 for mobile access"` | Commit cấu hình host và dev script cho Vite | Commit `5752cc9` |
+| 407 | 2026-10-13 00:01 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 5752cc9"` | Đồng bộ commit hash 5752cc9 vào CHANGELOG và COMMAND_LOG | Commit `ec2db3a` |
 
 
 
