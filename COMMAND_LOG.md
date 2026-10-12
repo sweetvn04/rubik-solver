@@ -391,6 +391,7 @@
 | 371 | 2026-10-12 15:51 | `git status` | Kiểm tra trạng thái git working tree | 1 file modified (LessonDrawer.tsx) |
 | 372 | 2026-10-12 15:51 | `grep -rn "LessonDrawer" src/` | Kiểm tra các component sử dụng LessonDrawer | Xác nhận App.tsx tương thích 100% |
 | 373 | 2026-10-12 15:51 | `git add src/components/ui/LessonDrawer.tsx && git commit -m "feat(ui): redesign LessonDrawer with step-by-step accordion dropdown and unified tabs"` | Commit toàn bộ giao diện mới LessonDrawer | Commit `a9540d8` |
+| 374 | 2026-10-12 15:52 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit a9540d8"` | Đồng bộ commit hash a9540d8 vào CHANGELOG và COMMAND_LOG | Commit `1332bdd` |
 
 
 
