@@ -6,6 +6,33 @@
 
 ## 📅 2026-10-12
 
+### 🚀 [Commit `a9540d8`] — Tái Cấu Trúc Toàn Diện Giao Diện Hướng Dẫn: Accordion Dropdown Step-by-Step Theo 4 Bước Roux & Hợp Nhất Thư Viện Tra Cứu
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng yêu cầu cập nhật lại giao diện hướng dẫn theo kiểu giải từng bước theo phương pháp Roux với menu dạng drop down, dễ dùng nhất cho người mới bắt đầu để vừa xem vừa giải theo trên khối Rubik thật.
+  - Trước đây hệ thống tab bị phân mảnh thành 5 tab ngang rời rạc, bước 4 LSE bị tách riêng khỏi giáo trình chính khiến người mới khó theo dõi quy trình giải liên tục.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Hệ thống 3 Tab Cấp Cao Thống Nhất:**
+     - 🗺️ **Hành trình (Journey Mode):** Trục xương sống chính với menu dạng Accordion Collapsible cho cả 4 bước Roux (FB $\rightarrow$ SB $\rightarrow$ CMLL $\rightarrow$ LSE).
+     - 📖 **Tra cứu (Reference Library):** Gom toàn bộ bảng công thức tham khảo (2-Look CMLL OLL/PLL, 45 CMLL 2H/OH, 11 thế EO, UL/UR, 23 thế L4E, Fast EO, Né D-Dots, EOLR Master).
+     - ⚡ **Pro Tips:** Kỹ thuật nâng cao, lộ trình Sub-X và Roux 4x4 Meyer.
+  2. **Giao diện Accordion Dropdown 4 Bước Roux (`Journey Mode`):**
+     - Mỗi bước là một thẻ accordion có badge số thứ tự, màu nhận diện riêng (Xanh lá, Xanh lam, Tím, Vàng), tên bước, mô tả và số moves trung bình.
+     - Nhấp để mở ra (expand) hoặc thu gọn (collapse).
+     - Bên trong mỗi bước:
+       * Hệ thống pill tabs cho các sub-step (1a, 1b... hoặc 4a, 4b...).
+       * Sơ đồ 2D (`CubeDiagram2D`) trực quan.
+       * Mô tả chi tiết từng thao tác.
+       * Nút **Demo 3D** để chạy mô phỏng trực tiếp trên khối Rubik bên cạnh màn hình, giúp người dùng vừa xem vừa làm theo.
+       * Mẹo thực chiến và quy tắc kỹ thuật cốt lõi.
+  3. **Tích hợp Liền Mạch Bước 4 LSE Vào Hành Trình:**
+     - Bước 4 trong Accordion được chia thành 3 sub-tab chuyên dụng: `4a. EO` (kèm bảng 11 thế cờ & mẹo chéo 1/1), `4b. UL/UR` (kèm 3 tình huống & sơ đồ), `4c. L4E` (kèm 3 giai đoạn tự nghiệm & 4 bài tập thực hành 3D).
+     - Nút điều hướng chuyển tiếp liền mạch giữa các giai đoạn con.
+* **Files tác động:**
+  - `src/components/ui/LessonDrawer.tsx`: Viết lại toàn bộ cấu trúc drawer từ 5 tab sang 3 tab với accordion dropdown và logic tương tác.
+
+---
+
 ### 🚀 [Commit `4571590`] — Làm Rõ Quy Tắc Căn Chỉnh Tầng U (AUF) & Vị Trí Chéo Nhau Cho Thế 1/1 EO: Khắc Phục Lỗi Lặp Thế Khi Cầm Rubik Thật
 
 * **Bối cảnh & Yêu cầu:**

@@ -384,6 +384,14 @@
 | 364 | 2026-10-12 15:19 | `git status` | Kiểm tra trạng thái sau dọn dẹp scratch | 2 files modified |
 | 365 | 2026-10-12 15:19 | `git add src/ && git commit -m "fix(lse): clarify 1/1 EO AUF alignment rules and diagonal placement"` | Commit thay đổi code AUF và quy tắc chéo 1/1 | Commit `4571590` |
 | 366 | 2026-10-12 15:20 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 4571590"` | Đồng bộ commit hash 4571590 vào CHANGELOG và COMMAND_LOG | Commit `0376d37` |
+| 367 | 2026-10-12 15:20 | `git commit -am "docs: finalize COMMAND_LOG.md with command 366" && git status` | Hoàn tất lưu commit tài liệu | Commit `00cd7c4` |
+| 368 | 2026-10-12 15:26 | `find /home/sweetvn/MyProjects/Rubik-Solver/src -type f | sort && ...` | Khảo sát danh sách file và quy mô codebase | Liệt kê toàn bộ files src và đếm dòng |
+| 369 | 2026-10-12 15:47 | `npm run build 2>&1 | head -80` | Kiểm tra biên dịch sau khi viết lại LessonDrawer | Exit 0 (báo 2 lỗi TS TS2339) |
+| 370 | 2026-10-12 15:51 | `npm run build` | Kiểm tra biên dịch sau khi sửa lỗi type FAST_EO lookupTable | Exit 0 — Build thành công trong 656ms |
+| 371 | 2026-10-12 15:51 | `git status` | Kiểm tra trạng thái git working tree | 1 file modified (LessonDrawer.tsx) |
+| 372 | 2026-10-12 15:51 | `grep -rn "LessonDrawer" src/` | Kiểm tra các component sử dụng LessonDrawer | Xác nhận App.tsx tương thích 100% |
+| 373 | 2026-10-12 15:51 | `git add src/components/ui/LessonDrawer.tsx && git commit -m "feat(ui): redesign LessonDrawer with step-by-step accordion dropdown and unified tabs"` | Commit toàn bộ giao diện mới LessonDrawer | Commit `a9540d8` |
+
 
 
 
