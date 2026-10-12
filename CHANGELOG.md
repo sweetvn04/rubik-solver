@@ -6,6 +6,47 @@
 
 ## 📅 2026-10-12
 
+### 🚀 [Commit `df7f8b5`] — Bổ Sung Cẩm Nang Hướng Dẫn Tự Nghiệm L4E (3 Giai Đoạn) & Trọn Bộ 23 Thế Cờ L4E Tối Ưu Chuẩn Google Site RouxMethodVN
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng phản ánh app chưa có phần hướng dẫn chi tiết cho bước L4E (Last Four Edges — 4 cạnh cuối cùng trên cột giữa M sau khi đã giải xong UL và UR), trước đó chỉ có 5 thế PLL cơ bản.
+  - Cần bám sát 100% giáo trình `rouxmethodvn/lse/l4e`: cung cấp cả phương pháp tự nghiệm (Intuitive) dễ hiểu cho người mới và bảng 23 công thức tối ưu cho speedcuber.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Phương pháp Tự nghiệm (Intuitive) L4E 3 Giai đoạn (`LSE_L4E_INTUITIVE_GUIDE`):**
+     - Đúc kết nguyên lý cốt lõi của Roux L4E: toàn bộ bước chỉ sử dụng duy nhất tập nước đi $\langle M, U2 \rangle$ mà không cần học vẹt công thức.
+     - **Giai đoạn 1 (Đưa 2 cạnh Trắng xuống đáy D):** Tìm 2 cạnh có màu trắng ở cột M. Nếu cả 2 ở U: xoay U2 đưa 1 viên vào đối diện rồi dùng M2 đưa xuống D. Nếu 1 viên ở U và 1 viên ở D: dùng `M' U2 M` hoặc `M U2 M'` gom cả 2 viên về đáy D.
+     - **Giai đoạn 2 (Sửa tâm D-Dots):** Nếu 2 cạnh đáy đã là màu trắng nhưng tâm D lại là Vàng (thế D-Dots): chỉ cần duy nhất 1 nước gạt `M2` để hoán vị tâm U và D về đúng mặt.
+     - **Giai đoạn 3 (Hoán vị các cạnh tầng U & Hoàn tất AUF):** Khớp 2 cạnh còn lại trên tầng U (UF và UB), xoay U / U' / U2 cuối cùng để hoàn thành toàn bộ 6 mặt.
+  2. **Trọn bộ 23 thế cờ L4E tối ưu tốc độ chuẩn Google Site (`LSE_L4E_CASES`):**
+     - **Nhóm 1 (8 thế — `1_white_edge`):** 1 cạnh trắng trên U (tâm U là Vàng) — Thế 1.1 đến Thế 1.8.
+     - **Nhóm 2 (8 thế — `1_white_edge_center`):** 1 cạnh trắng trên U + tâm U là Trắng — Thế 2.1 đến Thế 2.8.
+     - **Nhóm 3 (7 thế — `special`):** Các thế đẹp và đều cột M:
+       * Ub-Perm (`M U2 M2 U2 M'`)
+       * Ua-Perm (`M' U2 M2 U2 M'`)
+       * D-Dots Chéo (`U2 M' U2 M2 U2 M' U2`)
+       * D-Dots Thẳng (`U2 M' U2 M2 U2 M' U2 M2`)
+       * H-Perm (`U2 M2 U2 M2`)
+       * Z-Perm (`M' U2 M2 U2 M' U M2 U2`)
+       * D-Dots Cơ bản (`M2`)
+     - Đã kiểm chứng toán học 23/23 công thức và setupAlg bằng simulator 54-facelet: giải dứt điểm 100% về trạng thái Solved.
+  3. **Mở rộng Giáo trình Bước 4 Roux (`lessonsData.ts`):**
+     - Bổ sung và phân chia rõ ràng 5 sub-steps:
+       * `4a. Nhận diện Bad Edges (EO Rule)`
+       * `4b. Định hướng EO (Edge Orientation)`
+       * `4c. Đặt 2 cạnh UL & UR (Left/Right Edges)`
+       * `4d. Tự nghiệm L4E 3 giai đoạn (Chỉ dùng M và U2)`
+       * `4e. Xử lý D-Dots & Bảng công thức tối ưu Cột M`
+  4. **Nâng cấp giao diện trực quan (`ReferenceDiagrams.tsx` & `LessonDrawer.tsx`):**
+     - Nâng cấp `L4EDiagram`: Hiển thị sơ đồ cột M trực quan (vị trí facelet, mũi tên chu trình hoán vị) cho toàn bộ 23 thế.
+     - Nâng cấp sub-tab `4c: L4E Cột M`: Thêm Card hướng dẫn tự nghiệm 3 giai đoạn, bộ lọc 5 nút linh hoạt ("Tất cả (23)", "💡 Tự nghiệm (3 bước)", "Nhóm 1: 1 Cạnh trắng (8)", "Nhóm 2: Cạnh + Tâm trắng (8)", "Nhóm 3: Đặc biệt & Dots (7)"), cùng nút "Tập thế này" và "Chạy giải" 3D tương tác.
+* **Files tác động:**
+  - `src/data/rouxReferenceData.ts`: Khai báo `LSE_L4E_INTUITIVE_GUIDE`, mở rộng `LSE_L4E_CASES` thành 23 trường hợp hoàn chỉnh.
+  - `src/data/lessonsData.ts`: Mở rộng Bước 4 thành 5 sub-steps sư phạm bài bản.
+  - `src/components/ui/ReferenceDiagrams.tsx`: Nâng cấp diagram hoán vị cột M cho 23 thế.
+  - `src/components/ui/LessonDrawer.tsx`: Tích hợp toàn diện giao diện cẩm nang L4E và bộ lọc nhóm.
+
+---
+
 ### 🐛 [Commit `371e64e`] — Rà Soát & Khắc Phục Lỗi Vị Trí Cạnh Sai LSE EO (Sửa Triệt Để Vòng Lặp Vô Tận 2/0 → 2/0)
 
 * **Nguyên nhân kỹ thuật & Bản chất vấn đề:**
