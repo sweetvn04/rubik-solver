@@ -425,6 +425,11 @@
 | 405 | 2026-10-13 00:00 | `grep 5173 /etc/ufw/user.rules 2>/dev/null \|\| true` | Kiểm tra quy tắc ufw cho cổng 5173 | Đã có sẵn rule ACCEPT cho cả tcp/udp |
 | 406 | 2026-10-13 00:01 | `git add vite.config.ts package.json && git commit -m "fix(dev): expose vite dev server to lan host 0.0.0.0 for mobile access"` | Commit cấu hình host và dev script cho Vite | Commit `5752cc9` |
 | 407 | 2026-10-13 00:01 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 5752cc9"` | Đồng bộ commit hash 5752cc9 vào CHANGELOG và COMMAND_LOG | Commit `ec2db3a` |
+| 408 | 2026-10-13 00:01 | `git commit -am "docs: finalize COMMAND_LOG.md with command 407" && git status` | Lưu commit hoàn thiện COMMAND_LOG và kiểm tra working tree | Commit `79878a6` — clean |
+| 409 | 2026-10-13 00:06 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite sau khi nâng cấp Floating Island TopNavbar | Lỗi TS6133 (unused import Check) |
+| 410 | 2026-10-13 00:06 | `npm run build` | Kiểm tra biên dịch lại sau khi loại bỏ import thừa Check | Thành công (built in 662ms) |
+| 411 | 2026-10-13 00:06 | `git status` | Kiểm tra các file thay đổi để chuẩn bị commit | Nhận diện TopNavbar.tsx và App.tsx |
+| 412 | 2026-10-13 00:07 | `git add src/components/ui/TopNavbar.tsx src/App.tsx && git commit -m "style(ui): redesign top navbar as floating island and eliminate mobile text wrapping"` | Commit thiết kế lại TopNavbar dạng Floating Island và khắc phục rớt dòng mobile | Commit `55dff57` |
 
 
 

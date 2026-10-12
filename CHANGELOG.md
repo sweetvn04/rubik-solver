@@ -6,6 +6,30 @@
 
 ## 📅 2026-10-13
 
+### 🎨 [Commit `55dff57`] — Thiết Kế Lại Top Navbar Dạng Floating Island Siêu Thanh Thoát, Triệt Tiêu Lỗi Rớt Dòng Chữ Trên Mobile
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng gửi ảnh phản ánh thanh Top Bar trên mobile vẫn chưa đẹp: chữ logo `Roux Method VN` bị ép bẻ thành 3 dòng, tab switcher ở giữa bị bẻ thành 2-3 dòng chữ (`Bàn Xoay / 3D` và `Giáo / Trình`) làm cả thanh bar bị dày cộp và méo mó, 3 nút icon bên phải bị dồn ép sát mép.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Chuyển Top Bar Thành Floating Island Bar Đồng Điệu Bottom Dock:**
+     - Thiết kế thanh đảo nổi bo cong mềm mại (`fixed top-2 sm:top-3.5 inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 rounded-2xl bg-white/88 backdrop-blur-xl border border-[#e8dfcf] shadow-sm`).
+     - Chiều cao cố định thanh thoát `h-11 sm:h-13` (44px trên mobile, 52px trên desktop).
+  2. **Triệt Tiêu Hoàn Toàn Lỗi Rớt Dòng (No Text Wrap):**
+     - Khóa `whitespace-nowrap` trên tất cả text và nhãn tab.
+     - Logo mobile: `Roux VN` gọn gàng 1 dòng.
+     - Tab switcher ở giữa: Thu gọn thành `[🎲 3D]` và `[📖 Giáo trình]` trên mobile, `[🎲 Bàn Xoay 3D]` trên desktop.
+  3. **Tối Giản Nút Bấm Trên Mobile:**
+     - Chỉ giữ đúng 2 nút vuông bo tròn đối xứng hoàn hảo bên phải: `[🎵 Lo-fi]` (32x32px) và `[☰ Menu]` (32x32px).
+     - Toàn bộ tính năng mở rộng (Nhập Rubik thật, Đặt lại góc nhìn chuẩn Roux, Phím tắt) đặt gọn gàng trong Mobile Sheet Drawer kính mờ.
+  4. **Căn Chỉnh Layout Trong `App.tsx`:**
+     - Điều chỉnh vị trí banner demo 3D `top-14 sm:top-18` nằm ngay dưới floating navbar.
+     - Thêm `pt-13 sm:pt-16` cho section Giáo Trình toàn trang để không bị che khuất nội dung.
+* **Files tác động:**
+  - `src/components/ui/TopNavbar.tsx`: Tái cấu trúc thành Floating Island, sửa text wrap và bộ nút mobile.
+  - `src/App.tsx`: Điều chỉnh vị trí banner demo 3D và padding-top cho section lý thuyết.
+
+---
+
 ### 🔧 [Commit `5752cc9`] — Cấu Hình Vite Dev Server Lắng Nghe Mạng LAN (0.0.0.0) Để Kết Nối Từ Điện Thoại
 
 * **Bối cảnh & Yêu cầu:**
