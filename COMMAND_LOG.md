@@ -452,6 +452,12 @@
 | 432 | 2026-10-13 00:23 | `git add src/App.tsx src/components/ui/PlayerBar.tsx && git commit -m "refactor(ui): streamline bottom dock to 3 clean buttons focused on physical rubik solving"` | Commit tái cấu trúc Bottom Bar thành 3 nút tinh gọn tập trung giải Rubik thật ngoài đời | Commit `ef3eb1c` |
 | 433 | 2026-10-13 00:23 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit ef3eb1c"` | Đồng bộ commit hash ef3eb1c vào CHANGELOG và COMMAND_LOG | Commit `b61e8f3` |
 | 434 | 2026-10-13 00:23 | `git commit -am "docs: finalize COMMAND_LOG.md with command 433" && git status` | Lưu commit tài liệu COMMAND_LOG và kiểm tra working tree | Commit `197ade5` — clean |
+| 435 | 2026-10-13 00:29 | `dig +short CNAME roux.sweetvn2004.id.vn && dig +short roux.sweetvn2004.id.vn && dig +short rubik-solver-8qa.pages.dev` | Khảo sát IP và CNAME của domain tùy chỉnh và pages.dev | Trả về IP Cloudflare Anycast |
+| 436 | 2026-10-13 00:29 | `dig roux.sweetvn2004.id.vn ANY +noall +answer` | Khảo sát các bản ghi DNS ANY của roux.sweetvn2004.id.vn | RFC8482 HINFO response từ Cloudflare |
+| 437 | 2026-10-13 00:29 | `curl -I https://rubik-solver-8qa.pages.dev && curl -I https://roux.sweetvn2004.id.vn` | Kiểm tra phản hồi HTTP header của 2 domain | pages.dev trả 200 OK, domain tùy chỉnh trả 522 Connection timed out |
+| 438 | 2026-10-13 00:29 | `dig CNAME roux.sweetvn2004.id.vn @1.1.1.1` | Kiểm tra CNAME record trên Cloudflare DNS 1.1.1.1 | 0 answer (do proxied thành A record) |
+| 439 | 2026-10-13 00:29 | `dig A roux.sweetvn2004.id.vn @1.1.1.1` | Kiểm tra A record phân giải từ Cloudflare Proxy | Trả về 104.21.80.225 và 172.67.154.134 |
+| 440 | 2026-10-13 00:29 | `dig NS sweetvn2004.id.vn +short` | Kiểm tra nameservers của zone sweetvn2004.id.vn | adrian và tadeo .ns.cloudflare.com |
 
 
 
