@@ -45,7 +45,7 @@ export default function App() {
       >
         {/* Banner thông báo khi chuyển từ bài học sang xem demo 3D */}
         {demoToastInfo && (
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-3.5 py-1.5 bg-white/95 backdrop-blur-md text-xs font-bold text-[#2c221e] rounded-xl border border-[#e8dfcf] shadow-md animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto">
+          <div className="absolute top-14 sm:top-18 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-3.5 py-1.5 bg-white/95 backdrop-blur-md text-xs font-bold text-[#2c221e] rounded-xl border border-[#e8dfcf] shadow-md animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto">
             <MonitorPlay className="w-3.5 h-3.5 text-[#e07a5f]" />
             <span className="truncate max-w-[180px] sm:max-w-xs">
               Minh hoạ: {demoToastInfo}
@@ -99,7 +99,7 @@ export default function App() {
 
       {/* 2B. CHẾ ĐỘ GIÁO TRÌNH LÝ THUYẾT (THEORY VIEW TOÀN TRANG) */}
       {activeView === 'theory' && (
-        <section className="flex-1 w-full h-full relative overflow-hidden">
+        <section className="flex-1 w-full h-full relative overflow-hidden pt-13 sm:pt-16">
           <LessonDrawer
             isOpen={true}
             isFullPage={true}
