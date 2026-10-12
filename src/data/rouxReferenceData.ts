@@ -242,10 +242,10 @@ export const LSE_EO_CASES: EOCase[] = [
     badD: 1,
     triggerAlg: "M' U' M U'",
     fullSolution: "M' U' M U' M' U' M'",
-    setupAlg: "M U M U' M' U M",
-    recognitionTip: 'Đặt 1 cạnh sai ở U tại vị trí UF (trước), 1 cạnh sai ở D tại vị trí DF (trước). Xoay trigger M\' U\' M U\' sẽ chuyển thành thế cơ bản 3/1 (F).',
-    diagramU: ['G', 'G', 'B', 'G'],
-    diagramD: ['G', 'B'],
+    setupAlg: "M U M U M' U M",
+    recognitionTip: 'Đặt 1 cạnh sai ở U tại vị trí UB (phía sau), 1 cạnh sai ở D tại vị trí DF (phía trước). Xoay trigger M\' U\' M U\' sẽ chuyển thành thế cơ bản 3/1 (F).',
+    diagramU: ['B', 'G', 'G', 'G'], // UB Bad
+    diagramD: ['G', 'B'],          // DF Bad
   },
   {
     id: '1_1_B',
@@ -257,9 +257,9 @@ export const LSE_EO_CASES: EOCase[] = [
     triggerAlg: "M' U' M' U'",
     fullSolution: "M' U' M' U' M U' M'",
     setupAlg: "M U M' U M U M",
-    recognitionTip: 'Đặt 1 cạnh sai ở U tại vị trí UB (sau), 1 cạnh sai ở D tại vị trí DB (sau). Xoay trigger M\' U\' M\' U\' sẽ chuyển thành thế cơ bản 3/1 (B).',
-    diagramU: ['B', 'G', 'G', 'G'],
-    diagramD: ['B', 'G'],
+    recognitionTip: 'Đặt 1 cạnh sai ở U tại vị trí UF (phía trước), 1 cạnh sai ở D tại vị trí DB (phía sau). Xoay trigger M\' U\' M\' U\' sẽ chuyển thành thế cơ bản 3/1 (B).',
+    diagramU: ['G', 'G', 'B', 'G'], // UF Bad
+    diagramD: ['B', 'G'],          // DB Bad
   },
   {
     id: '0_2',
@@ -270,7 +270,7 @@ export const LSE_EO_CASES: EOCase[] = [
     badD: 2,
     triggerAlg: "M' U' M' U",
     fullSolution: "M' U' M' U M U' M'",
-    setupAlg: "M U' M' U' M U M",
+    setupAlg: "M U M' U' M U M",
     recognitionTip: 'Tầng U cả 4 cạnh đều tốt. Hai cạnh sai đều nằm ở tầng D (DF và DB). Xoay trigger M\' U\' M\' U sẽ chuyển thành thế cơ bản 3/1 (B).',
     diagramU: ['G', 'G', 'G', 'G'],
     diagramD: ['B', 'B'],
@@ -284,9 +284,9 @@ export const LSE_EO_CASES: EOCase[] = [
     badD: 0,
     triggerAlg: "M' U M U'",
     fullSolution: "M' U M U' M' U' M'",
-    setupAlg: "M U M U' M' U' M",
+    setupAlg: "M U M U M' U' M",
     recognitionTip: 'Tầng D không có cạnh sai. Hai cạnh sai ở tầng U nằm đối diện nhau qua tâm (đặt ở UF và UB). Xoay trigger M\' U M U\' sẽ chuyển thành thế cơ bản 3/1 (F).',
-    diagramU: ['B', 'G', 'B', 'G'],
+    diagramU: ['B', 'G', 'B', 'G'], // UB Bad, UF Bad
     diagramD: ['G', 'G'],
   },
   {
@@ -299,8 +299,8 @@ export const LSE_EO_CASES: EOCase[] = [
     triggerAlg: "M' U M' U2",
     fullSolution: "M' U M' U2 M' U' M'",
     setupAlg: "M U M U2 M U' M",
-    recognitionTip: 'Tầng D không có cạnh sai. Hai cạnh sai ở tầng U nằm kề nhau (đặt tại UF và UL). Xoay trigger M\' U M\' U2 sẽ chuyển thành thế cơ bản 3/1 (F).',
-    diagramU: ['G', 'G', 'B', 'B'],
+    recognitionTip: 'Tầng D không có cạnh sai. Hai cạnh sai ở tầng U nằm kề nhau: BẮT BUỘC đặt tại vị trí UB (sau) và UL (trái). (Nếu để ở UF/UL xoay sẽ bị lặp vòng 2/0). Xoay trigger M\' U M\' U2 sẽ chuyển thành thế cơ bản 3/1 (F). Mẹo: Nếu đặt tại UB và UR thì công thức đối xứng là M\' U\' M\' U2.',
+    diagramU: ['B', 'G', 'G', 'B'], // UB Bad, UL Bad
     diagramD: ['G', 'G'],
   },
 
@@ -329,8 +329,8 @@ export const LSE_EO_CASES: EOCase[] = [
     triggerAlg: "M2 U'",
     fullSolution: "M2 U' M' U' M'",
     setupAlg: "M U M U M2",
-    recognitionTip: '2 cạnh sai ở U kề nhau (đặt tại UF và UL). 2 cạnh sai ở D (DF và DB). Chỉ cần xoay trigger cực ngắn M2 U\' là đưa thẳng về thế cơ bản 3/1 (F).',
-    diagramU: ['G', 'G', 'B', 'B'],
+    recognitionTip: '2 cạnh sai ở U kề nhau (đặt tại UB và UL). 2 cạnh sai ở D (DF và DB). Chỉ cần xoay trigger cực ngắn M2 U\' là đưa thẳng về thế cơ bản 3/1 (F).',
+    diagramU: ['B', 'G', 'G', 'B'], // UB Bad, UL Bad
     diagramD: ['B', 'B'],
   },
   {
@@ -342,9 +342,9 @@ export const LSE_EO_CASES: EOCase[] = [
     badD: 2,
     triggerAlg: "M U2 M' U2",
     fullSolution: "M U2 M' U2 M' U' M'",
-    setupAlg: "M U M U2 M' U2 M",
-    recognitionTip: '2 cạnh sai ở U đối diện nhau (UF và UB). 2 cạnh sai ở D (DF và DB). Xoay trigger M U2 M\' U2 sẽ chuyển thành thế cơ bản 3/1 (F).',
-    diagramU: ['B', 'G', 'B', 'G'],
+    setupAlg: "M U M U2 M U2 M'",
+    recognitionTip: '2 cạnh sai ở U đối diện nhau (đặt tại UL và UR ở 2 bên hông). 2 cạnh sai ở D (DF và DB). Xoay trigger M U2 M\' U2 sẽ chuyển thành thế cơ bản 3/1 (F).',
+    diagramU: ['G', 'B', 'G', 'B'], // UR Bad, UL Bad
     diagramD: ['B', 'B'],
   },
 
@@ -358,12 +358,13 @@ export const LSE_EO_CASES: EOCase[] = [
     badD: 2,
     triggerAlg: "M' U M' U2",
     fullSolution: "R U' r' U' M' U r U r'",
-    setupAlg: "r' U' r' U' M U r U r'",
-    recognitionTip: 'Cả 4 cạnh tầng U và cả 2 cạnh tầng D đều sai. Cách 1 (Roux cơ bản): M\' U M\' U2 đưa về thế 1/1 (F) rồi giải tiếp. Cách 2 (1-look nâng cao): R U\' r\' U\' M\' U r U r\'.',
+    setupAlg: "M U M U M' U M U2 M U' M",
+    recognitionTip: 'Toàn bộ 6 cạnh đều sai (4 ở tầng U và 2 ở tầng D). Cách 1 (Roux cơ bản): Xoay M\' U M\' U2 đưa về thế 1/1 (F) rồi giải tiếp. Cách 2 (1-look nâng cao theo Google Site): R U\' r\' U\' M\' U r U r\'.',
     diagramU: ['B', 'B', 'B', 'B'],
     diagramD: ['B', 'B'],
   },
 ];
+
 
 // ─────────────────────────────────────────────────────────────
 // 3. DỮ LIỆU CẨM NANG LSE — UL/UR & L4E
