@@ -397,6 +397,7 @@
 | 377 | 2026-10-12 17:17 | `npm run build` | Kiểm tra biên dịch sau khi loại bỏ unused imports | Exit 0 — Build thành công trong 534ms |
 | 378 | 2026-10-12 17:17 | `git status` | Kiểm tra trạng thái git sau build | Exit 0 — 1 file modified (LessonDrawer.tsx) |
 | 379 | 2026-10-12 17:17 | `git add src/components/ui/LessonDrawer.tsx && git commit -m "fix(ui): replace accordion with dropdown step selector to fix badge clipping and layout issues"` | Commit giao diện mới Dropdown Step Selector khắc phục lỗi cắt badge | Commit `982554c` |
+| 380 | 2026-10-12 17:18 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit 982554c"` | Đồng bộ commit hash 982554c vào CHANGELOG và COMMAND_LOG | Commit `52dd180` |
 
 
 
