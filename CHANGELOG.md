@@ -6,6 +6,31 @@
 
 ## 📅 2026-10-12
 
+### 🐛 [Commit `371e64e`] — Rà Soát & Khắc Phục Lỗi Vị Trí Cạnh Sai LSE EO (Sửa Triệt Để Vòng Lặp Vô Tận 2/0 → 2/0)
+
+* **Nguyên nhân kỹ thuật & Bản chất vấn đề:**
+  - Người dùng phản ánh khi làm theo công thức trường hợp 2/0 trong app thì khối Rubik cứ bị lặp lại về 2/0 mà không chuyển về thế cơ bản 3/1 hay giải xong.
+  - Qua kiểm chứng toán học bằng simulator mô phỏng 54-facelet và đối chiếu trực tiếp với giáo trình Google Site `rouxmethodvn/lse/eo`:
+    1. **Trường hợp `2a/0` (2 cạnh sai kề nhau ở tầng U):**
+       - Công thức chuẩn trên Google Site là `M' U M' U2` để chuyển về thế cơ bản `3/1 (F)`.
+       - Tuy nhiên, trong mã nguồn cũ, `recognitionTip` lại hướng dẫn người dùng đặt 2 cạnh sai ở vị trí `UF` và `UL`, đồng thời `diagramU` vẽ ở `UF` và `UL`.
+       - Khi đặt ở `UF` và `UL`, xoay `M' U M' U2` sẽ biến 2 cạnh sai thành `UR` và `UF` (vẫn là 2a/0!). Nếu xoay tiếp `M' U' M'`, 2 cạnh sai biến thành `UB` và `UR` (vẫn là 2a/0!). Khối Rubik bị kẹt trong vòng lặp vô tận 2/0!
+       - **Giải pháp:** Với công thức `M' U M' U2`, 2 cạnh sai **bắt buộc phải đặt tại UB (sau) và UL (trái)**! Khi đặt đúng tại `UB` và `UL`, `M' U M' U2` đưa chuẩn xác về `3/1 (F)` (với 3 cạnh sai UR, UF, UL ở tầng U và 1 cạnh sai DF ở tầng D), sau đó xoay `M' U' M'` là giải xong 100% EO! Ngoài ra, bổ sung mẹo: nếu đặt tại `UB` và `UR` thì công thức đối xứng tương ứng là `M' U' M' U2`.
+    2. **Rà soát & chuẩn hóa toàn bộ các case còn lại:**
+       - **`1/1 (F)`:** Sửa vị trí cạnh sai ở U thành `UB` (sau) và D thành `DF` (trước) để khi áp dụng `M' U' M U'` chuyển về đúng `3/1 (F)`. Sửa `setupAlg` thành `M U M U M' U M`.
+       - **`1/1 (B)`:** Sửa vị trí cạnh sai ở U thành `UF` (trước) và D thành `DB` (sau) để khi áp dụng `M' U' M' U'` chuyển về đúng `3/1 (B)`. Sửa `setupAlg` thành `M U M' U M U M`.
+       - **`0/2`:** Sửa `setupAlg` thành `M U M' U' M U M` (cũ là `M U' M' U' M U M` bị sai chiều xoay).
+       - **`2o/0`:** Sửa `setupAlg` thành `M U M U M' U' M` (cũ là `M U M U' M' U' M` bị lệch move `U'`).
+       - **`2a/2`:** Sửa vị trí 2 cạnh sai ở U thành `UB` và `UL`.
+       - **`2o/2`:** Sửa vị trí 2 cạnh sai ở U thành `UL` và `UR` (hai bên hông, vuông góc với cột M) và `setupAlg` thành `M U M U2 M U2 M'`.
+       - **`4/2`:** Cập nhật công thức chuẩn 1-look `R U' r' U' M' U r U r'` (9 moves) và `setupAlg` chuẩn `M U M U M' U M U2 M U' M`.
+  - Đã chạy test toán học kiểm chứng 10/10 case đều đạt 100% (cả setup khớp diagram lẫn fullSolution giải dứt điểm EO).
+* **Files tác động:**
+  - `src/data/rouxReferenceData.ts`: Cập nhật toàn bộ 10 định nghĩa `LSE_EO_CASES` với vị trí, `setupAlg`, `recognitionTip`, `diagramU`, `diagramD` chính xác theo lý thuyết Roux và Google Site.
+
+---
+
+
 ### 🚀 [Commit `fb315a8`] — Tích Hợp Toàn Bộ 100% Nội Dung & Công Thức Còn Lại Từ Google Site RouxMethodVN (Fast EO, Dots Skipping, EOLR, Kỹ Thuật Pro, OH CMLL, Sub-X, Meyer 4×4)
 
 * **Mục đích:**

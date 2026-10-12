@@ -340,6 +340,22 @@
 | 316 | 2026-10-12 00:42 | `git add src/data/rouxAdvancedData.ts src/components/ui/LessonDrawer.tsx && git commit -m "feat: integrate all advanced Roux modules from rouxmethodvn (Fast EO, Dots Skipping, EOLR, Pro Techniques, OH CMLL, Sub-X, Meyer 4x4)"` | Commit tính năng tích hợp 100% nội dung nâng cao từ rouxmethodvn | Commit `fb315a8` |
 | 317 | 2026-10-12 00:43 | `git add CHANGELOG.md COMMAND_LOG.md && git commit -m "docs: sync CHANGELOG.md and COMMAND_LOG.md for commit fb315a8"` | Đồng bộ commit hash fb315a8 vào CHANGELOG và COMMAND_LOG | Commit `91c5ffb` |
 | 318 | 2026-10-12 00:43 | `git commit -am "docs: finalize COMMAND_LOG.md with command 317" && git status` | Lưu commit nhật ký lệnh vào COMMAND_LOG.md và kiểm tra git status | Commit `854c5ce` — Clean 100% |
+| 319 | 2026-10-12 11:20 | `ls -la scratch/crawled_roux` | Kiểm tra thư mục crawled_roux trong scratch | Thư mục không tồn tại (Exit code 2) |
+| 320 | 2026-10-12 11:21 | `python3 scratch/find_links.py` | Trích xuất các liên kết từ trang tổng quan tongquan | Tìm thấy chính xác /view/rouxmethodvn/lse, /lse/eo, /lse/ulur, /lse/l4e |
+| 321 | 2026-10-12 11:21 | `python3 scratch/parse_eo.py` | Chạy script phân tích trang EO | Báo lỗi thiếu bs4 (Exit code 1) |
+| 322 | 2026-10-12 11:22 | `python3 scratch/parse_eo.py` | Chạy lại script phân tích với HTMLParser | Trích xuất thành công toàn bộ text EO từ trang rouxmethodvn |
+| 323 | 2026-10-12 11:22 | `python3 scratch/inspect_eo_html.py` | Khảo sát cấu trúc ảnh và text các case EO trên HTML | Lấy được link các ảnh minh họa từng trường hợp |
+| 324 | 2026-10-12 11:23 | `npx tsx scratch/test_eo_cases.ts` | Chạy test xác thực toàn bộ các case LSE EO | Báo lỗi đường dẫn import ./src thay vì ../src (Exit code 1) |
+| 325 | 2026-10-12 11:23 | `npx tsx scratch/test_eo_cases.ts` | Chạy benchmark kiểm tra toàn bộ 10 case EO trong rouxReferenceData | Phát hiện nhiều case setupAlg và fullSolution bị sai lệch toán học (1/1F, 2o/0, 2o/2, 4/2) |
+| 326 | 2026-10-12 11:23 | `npx tsx scratch/test_positions.ts` | Khảo sát toán học nghịch đảo trigger 2o/0 và 2a/0 | Xác định 2a/0 cần đặt tại UB và UL (hoặc UB và UR) chứ KHÔNG PHẢI UF và UL |
+| 327 | 2026-10-12 11:24 | `npx tsx scratch/test_user_bug.ts` | Tái hiện chính xác 100% bug người dùng phản ánh | Nếu đặt tại UF và UL, xoay M' U M' U2 cube bị lặp vô tận về 2/0 (badU=2, badD=0) |
+| 328 | 2026-10-12 11:24 | `npx tsx scratch/test_refined_eo.ts` | Kiểm chứng toán học chi tiết 100% từng vị trí cạnh sai và setupAlg | Xác định vị trí chuẩn Roux cho toàn bộ 10 case EO, sửa triệt để các sai lệch trong app |
+| 329 | 2026-10-12 11:25 | `python3 scratch/parse_ulur_l4e.py` | Bóc tách text nội dung các trang ULUR và L4E từ Google Site | Trích xuất thành công nội dung ulur_text.txt và l4e_text.txt |
+| 330 | 2026-10-12 11:26 | `npx tsx scratch/test_final_eo_config.ts` | Chạy test nghiệm chứng bộ dữ liệu chuẩn mới cho toàn bộ 10/10 case EO | 10/10 case đều PASS 100% (setup khớp diagram và fullSolution giải dứt điểm EO) |
+| 331 | 2026-10-12 11:27 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite | Exit 0 — Build thành công trong 865ms |
+| 332 | 2026-10-12 11:27 | `rm -f scratch/*` | Dọn dẹp toàn bộ file test benchmark và parse tạm thời trong scratch | Hoàn tất dọn dẹp |
+| 333 | 2026-10-12 11:28 | `git status` | Kiểm tra trạng thái git working tree | Nhận diện modified rouxReferenceData.ts và tài liệu |
+| 334 | 2026-10-12 11:28 | `git add src/data/rouxReferenceData.ts && git commit -m "fix(lse): fix bad edge positions and setup algorithms for EO cases (resolve 2/0 loop)"` | Commit bản sửa lỗi vị trí cạnh sai và setup EO | Commit `371e64e` |
 
 
 
