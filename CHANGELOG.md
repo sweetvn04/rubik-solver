@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-14
 
-### 📱 [Commit `TBD`] — Tối Ưu Triệt Để Trải Nghiệm Học Thế Cờ 3D Trên Android & Màn Hình Nhỏ (344px Viewport)
+### 📱 [Commit `3c7fa23`] — Tối Ưu Triệt Để Trải Nghiệm Học Thế Cờ 3D Trên Android & Màn Hình Nhỏ (344px Viewport)
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng gửi ảnh chụp màn hình giả lập Android (344 x 780, Galaxy S24) và phản ánh: "chưa tối ưu trên android nè".

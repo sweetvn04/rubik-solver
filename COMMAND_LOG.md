@@ -527,6 +527,8 @@
 | 507 | 2026-10-14 01:07 | `git commit -am "docs: sync commit hash in changelog and command log"` | Cập nhật commit hash 7879fe8 vào CHANGELOG.md và COMMAND_LOG.md | Exit 0 — Commit `f0a774d` |
 | 508 | 2026-10-14 01:07 | `npm run build` | Kiểm tra biên dịch xác nhận toàn bộ dự án không có lỗi sau khi đồng bộ tài liệu | Exit 0 — Build thành công trong 876ms |
 | 509 | 2026-10-14 01:22 | `npm run build` | Kiểm tra biên dịch sau khi tối ưu CaseStudyHUD và camera cho Android | Exit 0 — Build thành công trong 591ms |
+| 510 | 2026-10-14 01:23 | `git status -s` | Kiểm tra trạng thái git working tree trước khi commit | Exit 0 — 4 files modified |
+| 511 | 2026-10-14 01:23 | `git add . && git commit -m "fix(mobile): ..."` | Commit tối ưu HUD và camera 3D cho Android và màn hình hẹp | Exit 0 — Commit `3c7fa23` |
 
 
 
