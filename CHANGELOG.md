@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-13
 
-### 🎨 [Commit `feat(lessons)`] — Bổ Sung Toàn Bộ 31 Thế First Block (FB) & 28 Thế Second Block (SB) Kèm Sơ Đồ Isometric 3D & Demo Tương Tác Chuẩn Roux VN
+### 🎨 [Commit `f504acb`] — Bổ Sung Toàn Bộ 31 Thế First Block (FB) & 28 Thế Second Block (SB) Kèm Sơ Đồ Isometric 3D & Demo Tương Tác Chuẩn Roux VN
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng phản ánh ứng dụng còn thiếu hướng dẫn cụ thể và hình minh họa cho các trường hợp giải First Block (FB) và Second Block (SB).

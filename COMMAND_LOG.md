@@ -478,7 +478,9 @@
 | 458 | 2026-10-13 20:43 | `git status -s` | Kiểm tra trạng thái git working tree trước khi commit | Exit 0 — 5 files modified/untracked |
 | 459 | 2026-10-13 20:44 | `git add .` | Stage toàn bộ các thay đổi mã nguồn, dữ liệu FB/SB và tài liệu | Exit 0 |
 | 460 | 2026-10-13 20:45 | `git commit -m "..."` | Commit theo chuẩn Conventional Commits cho tính năng cẩm nang FB & SB | Exit 0 |
-| 461 | 2026-10-13 20:45 | `git status -s` | Xác nhận working tree sạch sẽ sau commit | Exit 0 — Clean tree |
+| 461 | 2026-10-13 20:44 | `git status -s` | Xác nhận working tree sạch sẽ sau commit | Exit 0 — Clean tree |
+| 462 | 2026-10-13 20:44 | `git status -s` | Kiểm tra trạng thái file doc CHANGELOG.md | Exit 0 — M CHANGELOG.md |
+| 463 | 2026-10-13 20:45 | `git commit -am "docs: sync commit hash in changelog and command log"` | Cập nhật commit hash f504acb vào tài liệu | Exit 0 |
 
 
 
