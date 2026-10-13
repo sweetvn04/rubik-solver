@@ -93,17 +93,17 @@ export const FB_CASES: BlockCase[] = [
   },
   {
     "id": "fb_dl_m_slice",
-    "name": "DL nằm ở cột giữa M (DF hoặc DB)",
+    "name": "DL nằm ở DF cột giữa",
     "group": "dl_anchor",
     "groupName": "Mỏ neo DL (Trắng - Đỏ)",
     "blockType": "fb",
     "targetSlot": "DL",
     "cornerPos": "Tự do",
     "edgePos": "DF",
-    "alg": "M' U2 M L2",
-    "setupAlg": "L2 M' U2 M",
-    "recognition": "Cạnh Trắng/Đỏ bị kẹt ở DF hoặc DB trên cột giữa",
-    "tip": "Tận dụng cột M hoàn toàn tự do ở FB: dùng M' đưa lên U rồi L2 đưa về DL."
+    "alg": "F L",
+    "setupAlg": "L' F'",
+    "recognition": "Cạnh Trắng/Đỏ nằm ở DF cột giữa, mặt Trắng hướng ra F, mặt Đỏ hướng xuống D",
+    "tip": "Xoay F đưa cạnh lên FL, rồi L đưa thẳng về mỏ neo DL."
   },
   {
     "id": "fb_fp_wl_uf",
@@ -198,10 +198,10 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "FL",
     "cornerPos": "UFL",
     "edgePos": "UF",
-    "alg": "U F' U' F",
-    "setupAlg": "F' U F U'",
+    "alg": "r' U' R U2 r F'",
+    "setupAlg": "F r' U2 R' U r",
     "recognition": "Góc ở UFL có Trắng ở F; Cạnh FL ở UF",
-    "tip": "Đẩy góc bằng U, mở khe F', ghép đôi và đóng khe F."
+    "tip": "r' U' R nhấc cạnh, U2 ghép góc trên U và r F' chèn vào khe FL."
   },
   {
     "id": "fb_fp_wf_ul",
@@ -240,10 +240,10 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "FL",
     "cornerPos": "UFL",
     "edgePos": "UR",
-    "alg": "r' U' R F",
-    "setupAlg": "F' R' U r",
+    "alg": "F U F'",
+    "setupAlg": "F U' F'",
     "recognition": "Góc ở UFL có Trắng ở F; Cạnh FL ở UR",
-    "tip": "r' giấu cạnh, U' ghép đôi và R F đưa vào khe FL."
+    "tip": "F mở khe, U ghép góc với cạnh và F' đưa cả cặp xuống khe FL."
   },
   {
     "id": "fb_fp_wf_fr",
@@ -254,8 +254,8 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "FL",
     "cornerPos": "UFL",
     "edgePos": "FR",
-    "alg": "R U' R' U F'",
-    "setupAlg": "F U' R U R'",
+    "alg": "R F U F'",
+    "setupAlg": "F U' F' R'",
     "recognition": "Góc ở UFL có Trắng ở F; Cạnh FL kẹt ở FR",
     "tip": "R U' R' đưa cạnh lên U, U F' chèn vào FL."
   },
@@ -268,8 +268,8 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "FL",
     "cornerPos": "UFL",
     "edgePos": "DF",
-    "alg": "M' U2 M F'",
-    "setupAlg": "F M' U2 M",
+    "alg": "U' R' F",
+    "setupAlg": "F' R U",
     "recognition": "Góc ở UFL có Trắng ở F; Cạnh FL ở DF đáy",
     "tip": "M' đưa cạnh lên U, U2 ghép góc và F' hoàn tất."
   },
@@ -282,8 +282,8 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "FL",
     "cornerPos": "UFL",
     "edgePos": "UF",
-    "alg": "F' U2 F U F' U' F",
-    "setupAlg": "F' U F U' F' U2 F",
+    "alg": "r' U2 R' U r F'",
+    "setupAlg": "F r' U' R U2 r",
     "recognition": "Góc ở UFL có Trắng ở U; Cạnh FL ở UF",
     "tip": "F' tách cạnh, U2 chỉnh góc úp mặt trắng xuống, rồi chèn bằng F' U' F."
   },
@@ -324,8 +324,8 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "FL",
     "cornerPos": "UFL",
     "edgePos": "DF",
-    "alg": "M' U r F'",
-    "setupAlg": "F r' U' M",
+    "alg": "U2 R' U r F'",
+    "setupAlg": "F r' U' R U2",
     "recognition": "Góc ở UFL có Trắng ở U; Cạnh FL ở DF đáy",
     "tip": "M' đưa cạnh lên, U ghép với góc trên U và r F' chèn xuống."
   },
@@ -366,8 +366,8 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "BL",
     "cornerPos": "UBL",
     "edgePos": "UB",
-    "alg": "U' B U B'",
-    "setupAlg": "B U' B' U",
+    "alg": "r U R B'",
+    "setupAlg": "B R' U' r'",
     "recognition": "Góc ở UBL có Trắng ở B; Cạnh BL ở UB",
     "tip": "U' mở góc, B mở khe sau, U ghép đôi và B' chèn xuống."
   },
@@ -380,8 +380,8 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "BL",
     "cornerPos": "UBL",
     "edgePos": "UB",
-    "alg": "B U2 B' U' B U B'",
-    "setupAlg": "B' U' B U B U2 B'",
+    "alg": "r U2 R U' r' B",
+    "setupAlg": "B' r U R' U2 r'",
     "recognition": "Góc ở UBL có Trắng ở U; Cạnh BL ở UB",
     "tip": "B xoay lật góc, U2 ghép đôi và B U B' chèn vào."
   },
@@ -394,8 +394,8 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "BL",
     "cornerPos": "UBL",
     "edgePos": "DB",
-    "alg": "M U' r' B",
-    "setupAlg": "B' r U M'",
+    "alg": "U R' U' R B'",
+    "setupAlg": "B R' U R U'",
     "recognition": "Góc ở UBL có Trắng ở U; Cạnh BL ở DB đáy",
     "tip": "M đưa cạnh lên tầng U, U' ghép với góc và r' B chèn vào khe sau."
   },
@@ -478,8 +478,8 @@ export const FB_CASES: BlockCase[] = [
     "targetSlot": "BL",
     "cornerPos": "DBL",
     "edgePos": "UB",
-    "alg": "F r2 F'",
-    "setupAlg": "F r2 F'",
+    "alg": "u R u'",
+    "setupAlg": "u R' u'",
     "recognition": "Góc DBL đã đúng vị trí; Cạnh BL ở UB",
     "tip": "F r2 F' đưa thẳng cạnh từ UB xuống khe sau BL mà không vỡ DL."
   }
@@ -580,7 +580,7 @@ export const SB_CASES: BlockCase[] = [
     "cornerPos": "UFR",
     "edgePos": "UR",
     "alg": "U' R U' R' U R U R'",
-    "setupAlg": "R' U' R' U' R U R' U",
+    "setupAlg": "R U' R' U' R U R' U",
     "recognition": "Góc ở UFR có Trắng ở U; Cạnh FR ở UR kề bên",
     "tip": "U' R U' R' tách cặp trên U rồi ghép lại chèn vào FR."
   },
@@ -608,7 +608,7 @@ export const SB_CASES: BlockCase[] = [
     "cornerPos": "UFR",
     "edgePos": "FR",
     "alg": "U R U R' U2 R U R'",
-    "setupAlg": "R' U' R' U2 R U' R' U'",
+    "setupAlg": "R U' R' U2 R U' R' U'",
     "recognition": "Góc ở UFR có Trắng ở U; Cạnh FR bị kẹt ở khe FR",
     "tip": "R U R' giải cứu cạnh lên U rồi ghép cặp đưa vào."
   },

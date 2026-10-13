@@ -498,6 +498,28 @@
 | 478 | 2026-10-14 00:24 | `git commit -am "docs: sync commit hash in changelog and command log"` | Cập nhật commit hash ff61af3 vào CHANGELOG.md và COMMAND_LOG.md | Exit 0 — Commit `15f062b` |
 | 479 | 2026-10-14 00:24 | `git status -s` | Kiểm tra working tree sau commit tài liệu | Exit 0 — Clean tree |
 | 480 | 2026-10-14 00:24 | `npm run build` | Kiểm tra biên dịch xác nhận lần cuối toàn bộ dự án | Exit 0 — Build thành công trong 877ms |
+| 481 | 2026-10-14 00:55 | `find src -name "*.ts" -o -name "*.tsx"` | Tìm kiếm cấu trúc file typescript trong source tree | Exit 0 — Liệt kê toàn bộ file ts/tsx |
+| 482 | 2026-10-14 00:55 | `ls -la scratch/ ...` | Kiểm tra các file script test trong thư mục scratch | Exit 0 — Danh sách các file scratch |
+| 483 | 2026-10-14 00:55 | `npx tsx .../check_fb_positions.ts` | Chạy chẩn đoán kiểm tra vị trí góc & cạnh sau setupAlg của toàn bộ 31 FB case | Exit 0 — Phát hiện 10 case FB bị mismatch vị trí |
+| 484 | 2026-10-14 00:56 | `npx tsx .../test_all_cases.ts` | Kiểm tra tính đối xứng setupAlg vs alg (sau khi chạy alg có phục hồi khối giải) | Exit 0 — FB errors = 1, SB errors = 2 |
+| 485 | 2026-10-14 00:57 | `npx tsx .../dump_mismatches.ts` | In chi tiết 10 case FB bị mismatch để phân tích nguyên nhân | Exit 0 — Danh sách chi tiết 10 case |
+| 486 | 2026-10-14 00:58 | `npx tsx .../fix_all_cases.ts` | Chạy thử nghiệm các ứng viên thuật toán từ giáo trình Roux | Exit 1 — Thiếu export invertAlgorithm |
+| 487 | 2026-10-14 00:58 | `grep -rn "invert" src/` | Tìm vị trí hàm invertMove trong codebase | Exit 0 — Định nghĩa tại src/engine/tutorHelper.ts |
+| 488 | 2026-10-14 00:58 | `npx tsx scratch/fix_all_cases.ts` | Chạy kiểm tra các công thức toán học từ giáo trình Roux | Exit 0 — Khớp 100% các case FB chính xác |
+| 489 | 2026-10-14 00:59 | `npx tsx scratch/test_dl_moves.ts` | Tìm kiếm các chuỗi move đưa cạnh DL về DF hoặc DB | Exit 0 — L' F' đưa DL về DF, D đưa DL về DF |
+| 490 | 2026-10-14 00:59 | `npx tsx scratch/test_bl_edge.ts` | Khảo sát các ứng viên giải chèn cạnh BL khi góc DBL đã ở đáy | Exit 0 |
+| 491 | 2026-10-14 00:59 | `npx tsx scratch/test_bl_edge2.ts` | Xác thực công thức u R u' từ giáo trình cho case fb_edge_bl_ub | Exit 0 — Khớp 100% Corner DBL, Edge UB, Slot solved |
+| 492 | 2026-10-14 01:02 | `file src/data/rouxBlockData.ts` | Kiểm tra định dạng encoding và line terminator của file dữ liệu | Exit 0 — UTF-8 Unicode text |
+| 493 | 2026-10-14 01:02 | `grep -n "fb_fp_wf_fr" src/data/rouxBlockData.ts` | Tìm chính xác số dòng của case fb_fp_wf_fr | Exit 0 — Dòng 249 |
+| 494 | 2026-10-14 01:03 | `head -n 262 ... | tail -n 10 | cat -A` | Kiểm tra định dạng byte và ký tự ẩn trong file | Exit 0 — UTF-8 multichar |
+| 495 | 2026-10-14 01:04 | `grep -n "fb_edge_bl_ub" src/data/rouxBlockData.ts` | Tìm vị trí dòng của fb_edge_bl_ub | Exit 0 — Dòng 473 |
+| 496 | 2026-10-14 01:04 | `grep -n "sb_fp_wu_ur" src/data/rouxBlockData.ts` | Tìm vị trí dòng của sb_fp_wu_ur | Exit 0 — Dòng 574 |
+| 497 | 2026-10-14 01:04 | `npx tsx .../check_fb_positions.ts` | Chạy chẩn đoán toàn bộ 31 FB case sau khi sửa 9 case | Exit 0 — Chỉ còn 1 case fb_bp_wt_ub cần tinh chỉnh |
+| 498 | 2026-10-14 01:04 | `npx tsx scratch/test_bp_wt_ub.ts` | Xác thực thuật toán r U2 R U' r' B cho case fb_bp_wt_ub | Exit 0 — Khớp 100% Corner UBL, Edge UB, Slot solved |
+| 499 | 2026-10-14 01:05 | `npx tsx .../check_fb_positions.ts` | Kiểm tra lại toàn bộ 31 case FB sau khi fix toàn diện | Exit 0 — 0 mismatch, toàn bộ 31 case FB chính xác |
+| 500 | 2026-10-14 01:05 | `npx tsx .../test_all_cases.ts` | Kiểm tra khả năng giải phục hồi toàn bộ 31 FB và 28 SB cases | Exit 0 — FB errors = 0, SB errors = 0 |
+| 501 | 2026-10-14 01:05 | `npm run build` | Kiểm tra biên dịch TypeScript và Vite build | Exit 2 — TS2304 thiếu import Move trong RubikCube.tsx |
+| 502 | 2026-10-14 01:05 | `npm run build` | Kiểm tra biên dịch sau khi sửa import Move | Exit 0 — Build thành công trong 1.08s |
 
 
 

@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useRubikStore } from '../../store/useRubikStore';
 import { getMoveExecutionInfo } from '../../engine/moveParser';
 import { isCubieInPhase, isCubieInCaseStudy, type FocusPhaseId } from '../../engine/highlightRules';
+import type { Move } from '../../types';
 import { Cubie } from './Cubie';
 
 const SPACING = 1.00;
@@ -48,6 +49,7 @@ export function RubikCube() {
 
   const cubieRefs = useRef<Map<string, THREE.Group>>(new Map());
   const progressRef = useRef(0);
+  const activeMoveRef = useRef<Move | null>(null);
 
   const handleRegisterRef = useCallback((id: string, group: THREE.Group | null) => {
     if (group) {
@@ -71,7 +73,18 @@ export function RubikCube() {
       if (moveQueue.length > 0) {
         move = startNextMove();
       }
-      if (!move) return;
+      if (!move) {
+        if (progressRef.current !== 0 || activeMoveRef.current !== null) {
+          progressRef.current = 0;
+          activeMoveRef.current = null;
+        }
+        return;
+      }
+    }
+
+    if (move !== activeMoveRef.current) {
+      progressRef.current = 0;
+      activeMoveRef.current = move;
     }
 
     const moveInfo = getMoveExecutionInfo(move);
@@ -114,6 +127,7 @@ export function RubikCube() {
 
     if (progress >= 1.0) {
       progressRef.current = 0;
+      activeMoveRef.current = null;
       completeCurrentMove();
       invalidate();
     }

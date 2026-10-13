@@ -6,7 +6,58 @@
 
 ## 📅 2026-10-14
 
-### 🎯 [Commit `ff61af3`] — Làm Xám Các Viên Cubie Không Liên Quan Trong Chế Độ Học 3D (Focus Mode Cho FB & SB)
+### 🎬 [Commit `TBD`] — Khắc Phục Triệt Để Lỗi Ngắt/Loạn Animation 3D Và Chuẩn Hóa 100% Vị Trí & Thuật Toán Các Thế Cờ First Block (FB) & Second Block (SB)
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng phản hồi: "các bước xoay bị loạn ròi bạn, nó bị ngắt animation và bị sai trường hợp ở FB bạn hãy check lại".
+  - Phân tích nguyên nhân gốc rễ (Root Cause Analysis):
+    1. **Loạn và ngắt animation:**
+       - Trong `src/store/useRubikStore.ts`, các hàm `startCaseStudy`, `resetCaseStudyState` và `playCaseStudyDemo` trước đây sử dụng các hàm bất đồng bộ `setTimeout` (120ms, 200ms) kết hợp `enqueueAlgorithm(setupAlg, 90)`. Khi người dùng mở thế cờ hoặc bấm chạy demo, chuỗi xoay setup (thường mất 360–540ms) vẫn đang xoay dở thì công thức giải đã bị nhét vào queue, gây xung đột hàng đợi, giật lag và đè nát animation.
+       - Trong `src/components/cube/RubikCube.tsx`, `progressRef.current` không được đưa về 0 khi `currentMove` bị huỷ hoặc thay đổi đột ngột giữa frame, khiến move tiếp theo khởi đầu với progress dở dang và kết thúc sớm bất thường.
+       - `caseCurrentMoveIndex` bị gán nhảy vọt thành `moves.length` ngay khi bấm nút chạy demo thay vì tăng từng bước theo từng nước đi thực tế hoàn tất.
+    2. **Sai trường hợp ở First Block (FB):**
+       - Qua script chẩn đoán `scratch/check_fb_positions.ts`, phát hiện 10 trường hợp FB và 2 trường hợp SB bị sai lệch vị trí góc hoặc cạnh sau chuỗi `setupAlg` (ví dụ `fb_dl_m_slice`, `fb_fp_wf_uf`, `fb_fp_wf_ur`, `fb_fp_wf_fr`, `fb_fp_wf_df`, `fb_fp_wt_uf`, `fb_fp_wt_df`, `fb_bp_wb_ub`, `fb_bp_wt_ub`, `fb_bp_wt_db`, `fb_edge_bl_ub`) do nhầm lẫn công thức với F2L CFOP hoặc sai sót nghịch đảo setup.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Khởi Tạo Trạng Thái Thế Cờ Bằng Toán Học Tức Thời (`applyAlgorithmToCubies` trong `src/store/useRubikStore.ts`):**
+     - Loại bỏ 100% các lệnh `setTimeout` và `enqueueAlgorithm(setupAlg, 90)` khi vào thế cờ hay bấm Reset.
+     - Tính toán trực tiếp vị trí và quaternion của từng cubie tức thời (0ms) bằng cách áp dụng thuật toán xoay lên mảng `CubieState[]` ban đầu:
+       `const setupCubies = applyAlgorithmToCubies(initial, caseItem.setupAlg);`
+     - Khi mở case study hay bấm Đặt lại, khối Rubik nhảy chuẩn xác tuyệt đối vào đúng thế cờ trong 1 frame duy nhất, triệt tiêu hoàn toàn race condition và xung đột hàng đợi.
+  2. **Đồng Bộ Bước Đi Trực Tiếp Trong Vòng Đời Animation (`completeCurrentMove`):**
+     - Bổ sung cờ `isBackward?: boolean` vào interface `Move` (`src/types/index.ts`).
+     - Khi mỗi move hoàn thành trong `completeCurrentMove`, hệ thống tự động cập nhật `caseCurrentMoveIndex`:
+       - Tăng +1 khi chạy bình thường (demo hoặc bấm `Bước ›`).
+       - Giảm -1 khi đi lùi (bấm `‹ Bước`).
+     - Thanh chuỗi công thức trên `CaseStudyHUD` highlight chuyển động theo thời gian thực từng nước đi mượt mà.
+  3. **Khử Giật Khung Hình & Bảo Vệ Tiến Độ Xoay (`src/components/cube/RubikCube.tsx`):**
+     - Bổ sung `activeMoveRef` theo dõi move đang chạy. Bất cứ khi nào chuyển move mới hoặc khi hàng đợi rỗng, `progressRef.current` lập tức được reset về 0.0, đảm bảo mọi animation luôn bắt đầu và kết thúc trọn vẹn 100%.
+  4. **Chuẩn Hóa Toàn Diện 100% Dữ Liệu FB & SB Theo Giáo Trình Roux Method VN (`src/data/rouxBlockData.ts`):**
+     - Đối chiếu trực tiếp với toàn bộ nội dung giáo trình gốc từ `rouxmethodvn/fb/tổng-hợp-công-thức-fb` và `rouxmethodvn/fb/ghép-cạnh-fb`:
+       - `fb_dl_m_slice`: Cập nhật `setupAlg: "L' F'"`, `alg: "F L"` — đưa cạnh DL về đúng vị trí DF cột giữa và giải mượt mà.
+       - `fb_fp_wf_uf`: Cập nhật `setupAlg: "F r' U2 R' U r"`, `alg: "r' U' R U2 r F'"` — đúng chuẩn góc UFL (Trắng F), cạnh FL tại UF.
+       - `fb_fp_wf_ur`: Cập nhật `setupAlg: "F U' F'"`, `alg: "F U F'"`.
+       - `fb_fp_wf_fr`: Cập nhật `setupAlg: "F U' F' R'"`, `alg: "R F U F'"`.
+       - `fb_fp_wf_df`: Cập nhật `setupAlg: "F' R U"`, `alg: "U' R' F"`.
+       - `fb_fp_wt_uf`: Cập nhật `setupAlg: "F r' U' R U2 r"`, `alg: "r' U2 R' U r F'"`.
+       - `fb_fp_wt_df`: Cập nhật `setupAlg: "F r' U' R U2"`, `alg: "U2 R' U r F'"`.
+       - `fb_bp_wb_ub`: Cập nhật `setupAlg: "B R' U' r'"`, `alg: "r U R B'"`.
+       - `fb_bp_wt_ub`: Cập nhật `setupAlg: "B' r U R' U2 r'"`, `alg: "r U2 R U' r' B"`.
+       - `fb_bp_wt_db`: Cập nhật `setupAlg: "B R' U R U'"`, `alg: "U R' U' R B'"`.
+       - `fb_edge_bl_ub`: Cập nhật `setupAlg: "u R' u'"`, `alg: "u R u'"`.
+       - `sb_fp_wu_ur`: Sửa lỗi typo `setupAlg: "R U' R' U' R U R' U"`.
+       - `sb_fp_wu_fr`: Sửa lỗi typo `setupAlg: "R U' R' U2 R U' R' U'"`.
+     - Xác thực lại bằng 2 script chẩn đoán tự động:
+       - `scratch/check_fb_positions.ts`: **0 mismatch** (31/31 case FB khớp vị trí góc và cạnh 100%).
+       - `scratch/test_all_cases.ts`: **0 errors** (31 FB cases và 28 SB cases đều phục hồi khối hoàn chỉnh sau khi giải).
+* **Files tác động:**
+  - `src/types/index.ts`: Bổ sung `isBackward?: boolean` vào interface `Move`.
+  - `src/components/cube/RubikCube.tsx`: Thêm `activeMoveRef`, reset `progressRef` an toàn, import `Move`.
+  - `src/store/useRubikStore.ts`: Triển khai `applyAlgorithmToCubies`, xóa `setTimeout`, đồng bộ `caseCurrentMoveIndex`.
+  - `src/data/rouxBlockData.ts`: Chuẩn hóa lại 10 case FB và 2 case SB.
+  - `COMMAND_LOG.md`: Ghi nhật ký lệnh kiểm tra và biên dịch.
+  - `CHANGELOG.md`: Cập nhật tài liệu thay đổi mã nguồn.
+
+---
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng gửi ảnh chụp màn hình chế độ Split-View và phản hồi: "sao bạn không làm xám mấy viên k liên quan để dễ xem".

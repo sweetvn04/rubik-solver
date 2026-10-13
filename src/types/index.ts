@@ -21,6 +21,7 @@ export interface Move {
   double?: boolean;  // 180 degree rotation
   raw: string;       // e.g. "R", "U'", "M2"
   duration?: number; // Tùy chọn tốc độ xoay riêng tính bằng ms
+  isBackward?: boolean; // Đánh dấu nước đi lùi (undo/prev step)
 }
 
 export type RouxPhase = 'FB' | 'SB' | 'CMLL' | 'LSE_EO' | 'LSE_ULUR' | 'LSE_M';

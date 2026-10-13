@@ -146,6 +146,18 @@ function rotateCubies(cubies: CubieState[], move: Move): CubieState[] {
   });
 }
 
+/**
+ * Áp dụng tức thời một chuỗi công thức lên các cubie mà không qua hàng đợi animation
+ */
+function applyAlgorithmToCubies(cubies: CubieState[], alg: string): CubieState[] {
+  let state = cubies;
+  const moves = parseAlgorithm(alg);
+  for (const m of moves) {
+    state = rotateCubies(state, m);
+  }
+  return state;
+}
+
 export const useRubikStore = create<RubikStore>((set, get) => ({
   cubies: createInitialCubies(),
   isAnimating: false,
@@ -237,16 +249,27 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   },
 
   completeCurrentMove: () => {
-    const { currentMove, cubies, moveHistory } = get();
+    const { currentMove, cubies, moveHistory, activeCaseStudy, caseCurrentMoveIndex } = get();
     if (!currentMove) return;
 
     const updatedCubies = rotateCubies(cubies, currentMove);
+
+    let nextCaseMoveIndex = caseCurrentMoveIndex;
+    if (activeCaseStudy) {
+      const totalMoves = parseAlgorithm(activeCaseStudy.alg).length;
+      if (currentMove.isBackward) {
+        nextCaseMoveIndex = Math.max(0, caseCurrentMoveIndex - 1);
+      } else {
+        nextCaseMoveIndex = Math.min(totalMoves, caseCurrentMoveIndex + 1);
+      }
+    }
 
     set({
       cubies: updatedCubies,
       currentMove: null,
       isAnimating: false,
       moveHistory: [...moveHistory, currentMove.raw],
+      caseCurrentMoveIndex: nextCaseMoveIndex,
     });
 
     // Phát âm thanh click cơ học giòn tan khi hoàn thành 1 move
@@ -558,21 +581,23 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     const idx = list.findIndex((c) => c.id === caseItem.id);
     const validIdx = idx >= 0 ? idx : 0;
 
+    // Thiết lập trạng thái khối Rubik tức thời theo toán học, xoá bỏ hoàn toàn animation 90ms và timer
+    const initial = createInitialCubies();
+    const setupCubies = applyAlgorithmToCubies(initial, caseItem.setupAlg);
+
     set({
       isTutorActive: false,
       activeCaseStudy: caseItem,
       caseStudyGroup: list,
       caseStudyIndex: validIdx,
       caseCurrentMoveIndex: 0,
+      cubies: setupCubies,
       moveQueue: [],
       currentMove: null,
       isAnimating: false,
+      moveHistory: [],
     });
-
-    get().reset();
-    setTimeout(() => {
-      get().enqueueAlgorithm(caseItem.setupAlg, 90);
-    }, 120);
+    invalidate();
   },
 
   closeCaseStudy: () => {
@@ -582,45 +607,52 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
       caseStudyIndex: 0,
       caseCurrentMoveIndex: 0,
     });
+    invalidate();
   },
 
   resetCaseStudyState: () => {
-    const { activeCaseStudy, isAnimating, moveQueue } = get();
-    if (!activeCaseStudy || isAnimating || moveQueue.length > 0) return;
+    const { activeCaseStudy } = get();
+    if (!activeCaseStudy) return;
+
+    // Đặt lại tức thời về thế cờ ban đầu của case study
+    const initial = createInitialCubies();
+    const setupCubies = applyAlgorithmToCubies(initial, activeCaseStudy.setupAlg);
 
     set({
-      caseCurrentMoveIndex: 0,
+      cubies: setupCubies,
       moveQueue: [],
       currentMove: null,
       isAnimating: false,
+      caseCurrentMoveIndex: 0,
     });
-    get().reset();
-    setTimeout(() => {
-      get().enqueueAlgorithm(activeCaseStudy.setupAlg, 90);
-    }, 120);
+    invalidate();
   },
 
   playCaseStudyDemo: () => {
     const { activeCaseStudy, isAnimating, moveQueue, caseCurrentMoveIndex } = get();
     if (!activeCaseStudy || isAnimating || moveQueue.length > 0) return;
 
-    const moves = parseAlgorithm(activeCaseStudy.alg, 400);
+    const moves = parseAlgorithm(activeCaseStudy.alg, 380);
     if (!moves.length) return;
 
     if (caseCurrentMoveIndex >= moves.length) {
-      get().reset();
-      setTimeout(() => {
-        get().enqueueAlgorithm(activeCaseStudy.setupAlg, 90);
-        setTimeout(() => {
-          get().enqueueAlgorithm(activeCaseStudy.alg, 400);
-          set({ caseCurrentMoveIndex: moves.length });
-        }, 200);
-      }, 120);
+      // Đã giải xong: reset tức thời về thế cờ ban đầu rồi chạy demo giải
+      const initial = createInitialCubies();
+      const setupCubies = applyAlgorithmToCubies(initial, activeCaseStudy.setupAlg);
+      set({
+        cubies: setupCubies,
+        moveQueue: [],
+        currentMove: null,
+        isAnimating: false,
+        caseCurrentMoveIndex: 0,
+      });
+      invalidate();
+      get().enqueueAlgorithm(activeCaseStudy.alg, 380);
     } else {
+      // Chưa giải xong: chạy tiếp các nước đi còn lại
       const remainingMoves = moves.slice(caseCurrentMoveIndex);
       const remainingAlg = remainingMoves.map((m) => m.raw).join(' ');
-      get().enqueueAlgorithm(remainingAlg, 400);
-      set({ caseCurrentMoveIndex: moves.length });
+      get().enqueueAlgorithm(remainingAlg, 380);
     }
   },
 
@@ -632,7 +664,6 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     if (caseCurrentMoveIndex < moves.length) {
       const nextMove = moves[caseCurrentMoveIndex];
       get().enqueueMove(nextMove.raw, 350);
-      set({ caseCurrentMoveIndex: caseCurrentMoveIndex + 1 });
     }
   },
 
@@ -643,9 +674,13 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     const moves = parseAlgorithm(activeCaseStudy.alg, 300);
     if (caseCurrentMoveIndex > 0) {
       const prevMove = moves[caseCurrentMoveIndex - 1];
-      const inv = invertMove(prevMove.raw);
-      get().enqueueMove(inv, 300);
-      set({ caseCurrentMoveIndex: caseCurrentMoveIndex - 1 });
+      const invRaw = invertMove(prevMove.raw);
+      const parsedInv = parseAlgorithm(invRaw, 300)[0];
+      if (parsedInv) {
+        parsedInv.isBackward = true;
+        set((state) => ({ moveQueue: [...state.moveQueue, parsedInv] }));
+        invalidate();
+      }
     }
   },
 
