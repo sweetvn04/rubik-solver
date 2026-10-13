@@ -520,6 +520,10 @@
 | 500 | 2026-10-14 01:05 | `npx tsx .../test_all_cases.ts` | Kiểm tra khả năng giải phục hồi toàn bộ 31 FB và 28 SB cases | Exit 0 — FB errors = 0, SB errors = 0 |
 | 501 | 2026-10-14 01:05 | `npm run build` | Kiểm tra biên dịch TypeScript và Vite build | Exit 2 — TS2304 thiếu import Move trong RubikCube.tsx |
 | 502 | 2026-10-14 01:05 | `npm run build` | Kiểm tra biên dịch sau khi sửa import Move | Exit 0 — Build thành công trong 1.08s |
+| 503 | 2026-10-14 01:06 | `git status -s` | Kiểm tra trạng thái git working tree | Exit 0 |
+| 504 | 2026-10-14 01:06 | `cp -r scratch/* ... && rm -rf scratch` | Di chuyển các script scratch vào artifact directory để giữ repo sạch | Exit 0 |
+| 505 | 2026-10-14 01:06 | `git status -s` | Kiểm tra working tree sau khi dọn scratch | Exit 0 — 5 files modified |
+| 506 | 2026-10-14 01:06 | `git add . && git commit -m "fix(case-study): ..."` | Commit sửa lỗi ngắt animation và chuẩn hóa FB/SB cases | Exit 0 — Commit `7879fe8` |
 
 
 

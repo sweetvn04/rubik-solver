@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-14
 
-### 🎬 [Commit `TBD`] — Khắc Phục Triệt Để Lỗi Ngắt/Loạn Animation 3D Và Chuẩn Hóa 100% Vị Trí & Thuật Toán Các Thế Cờ First Block (FB) & Second Block (SB)
+### 🎬 [Commit `7879fe8`] — Khắc Phục Triệt Để Lỗi Ngắt/Loạn Animation 3D Và Chuẩn Hóa 100% Vị Trí & Thuật Toán Các Thế Cờ First Block (FB) & Second Block (SB)
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng phản hồi: "các bước xoay bị loạn ròi bạn, nó bị ngắt animation và bị sai trường hợp ở FB bạn hãy check lại".
