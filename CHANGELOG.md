@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-13
 
-### 🧊 [Commit `pending`] — Trải Nghiệm Học Thế Cờ Tương Tác 3D Trực Tiếp: Tích Hợp Case Study HUD, Chế Độ Chia Màn Hình Split View Desktop & Điều Hướng Chuỗi Thế FB/SB
+### 🧊 [Commit `b1ff779`] — Trải Nghiệm Học Thế Cờ Tương Tác 3D Trực Tiếp: Tích Hợp Case Study HUD, Chế Độ Chia Màn Hình Split View Desktop & Điều Hướng Chuỗi Thế FB/SB
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng phản hồi: "nhưng mà ảnh 2d thì khó nhìn quá, có cách nào để vừa hiện công thức vừa hiện trường hợp đó trên khối 3d k".

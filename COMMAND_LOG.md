@@ -486,6 +486,8 @@
 | 466 | 2026-10-13 21:30 | `npm run build` | Kiểm tra biên dịch sau khi tích hợp CaseStudyHUD và allCasesInGroup | Exit 2 — TS6133 unused imports (ExternalLink, Pause) |
 | 467 | 2026-10-13 21:31 | `npm run build` | Kiểm tra biên dịch lại sau khi loại bỏ 2 unused imports | Exit 0 — Build thành công trong 621ms |
 | 468 | 2026-10-13 21:31 | `git status -s` | Kiểm tra trạng thái git working tree trước khi commit | Exit 0 — 6 files modified, 1 untracked |
+| 469 | 2026-10-13 21:32 | `git add .` | Stage toàn bộ thay đổi mã nguồn CaseStudyHUD, Zustand store, App split-view và LessonDrawer | Exit 0 |
+| 470 | 2026-10-13 21:32 | `git commit -m "feat(case-study): add interactive 3D Case Study HUD and desktop split-view for FB & SB"` | Commit tính năng học thế cờ tương tác 3D và split-view theo chuẩn Conventional Commits | Exit 0 — Commit `b1ff779` |
 
 
 
