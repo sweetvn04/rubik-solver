@@ -524,6 +524,7 @@
 | 504 | 2026-10-14 01:06 | `cp -r scratch/* ... && rm -rf scratch` | Di chuyển các script scratch vào artifact directory để giữ repo sạch | Exit 0 |
 | 505 | 2026-10-14 01:06 | `git status -s` | Kiểm tra working tree sau khi dọn scratch | Exit 0 — 5 files modified |
 | 506 | 2026-10-14 01:06 | `git add . && git commit -m "fix(case-study): ..."` | Commit sửa lỗi ngắt animation và chuẩn hóa FB/SB cases | Exit 0 — Commit `7879fe8` |
+| 507 | 2026-10-14 01:07 | `git commit -am "docs: sync commit hash in changelog and command log"` | Cập nhật commit hash 7879fe8 vào CHANGELOG.md và COMMAND_LOG.md | Exit 0 — Commit `f0a774d` |
 
 
 
