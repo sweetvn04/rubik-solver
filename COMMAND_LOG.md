@@ -493,6 +493,8 @@
 | 473 | 2026-10-13 21:33 | `npm run build` | Kiểm tra biên dịch cuối cùng toàn bộ dự án | Exit 0 — Build thành công trong 555ms |
 | 474 | 2026-10-14 00:23 | `npm run build` | Kiểm tra biên dịch sau khi triển khai làm xám cubie không liên quan trong Case Study | Exit 0 — Build thành công trong 755ms |
 | 475 | 2026-10-14 00:23 | `git status -s` | Kiểm tra trạng thái git working tree trước khi commit tính năng làm mờ | Exit 0 — 5 files modified |
+| 476 | 2026-10-14 00:24 | `git add .` | Stage các file cập nhật highlightRules, RubikCube, CaseStudyHUD và types | Exit 0 |
+| 477 | 2026-10-14 00:24 | `git commit -m "feat(3d-focus): dim unrelated cubies in 3D case study mode for FB and SB"` | Commit tính năng làm xám các viên không liên quan trong Case Study theo chuẩn Conventional Commits | Exit 0 — Commit `ff61af3` |
 
 
 

@@ -6,7 +6,7 @@
 
 ## 📅 2026-10-14
 
-### 🎯 [Commit `pending`] — Làm Xám Các Viên Cubie Không Liên Quan Trong Chế Độ Học 3D (Focus Mode Cho FB & SB)
+### 🎯 [Commit `ff61af3`] — Làm Xám Các Viên Cubie Không Liên Quan Trong Chế Độ Học 3D (Focus Mode Cho FB & SB)
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng gửi ảnh chụp màn hình chế độ Split-View và phản hồi: "sao bạn không làm xám mấy viên k liên quan để dễ xem".
