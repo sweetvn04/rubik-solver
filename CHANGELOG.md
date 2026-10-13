@@ -6,6 +6,51 @@
 
 ## 📅 2026-10-13
 
+### 🎨 [Commit `feat(lessons)`] — Bổ Sung Toàn Bộ 31 Thế First Block (FB) & 28 Thế Second Block (SB) Kèm Sơ Đồ Isometric 3D & Demo Tương Tác Chuẩn Roux VN
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng phản ánh ứng dụng còn thiếu hướng dẫn cụ thể và hình minh họa cho các trường hợp giải First Block (FB) và Second Block (SB).
+  - Yêu cầu xây dựng hệ thống hình minh họa chi tiết và bài học từng bước cho từng trường hợp FB và SB bám sát 100% giáo trình từ Google Site [Roux Method VN](https://sites.google.com/view/rouxmethodvn/tongquan).
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Bộ Dữ Liệu Chuẩn Hóa Toàn Diện (`src/data/rouxBlockData.ts`):**
+     - **31 thế First Block (FB):**
+       - 4 thế định vị mỏ neo DL (Trắng - Đỏ): DL ở U mặt trắng ngửa, DL ở U mặt đỏ ngửa, DL ở D bị lật ngược, DL ở các cạnh trung gian.
+       - 9 thế Front Pair FL (DFL + FL): phân loại theo 3 hướng mặt Trắng (hướng sang Trái L, hướng ra Trước F, hướng lên Trên U).
+       - 9 thế Back Pair BL (DBL + BL): phân loại theo 3 hướng mặt Trắng (hướng sang Trái L, hướng ra Sau B, hướng lên Trên U).
+       - 9 thế chèn cạnh vào khe khi góc đã ở vị trí đáy (DFL/DBL) mà không cần tháo góc ra.
+     - **28 thế Second Block (SB):**
+       - 4 thế định vị mỏ neo DR (Trắng - Cam) với ràng buộc nghiêm ngặt chỉ dùng $\langle R, r, M, U \rangle$ để bảo toàn First Block.
+       - 11 thế Front Pair FR (DFR + FR): góc Trắng trên U, R, F, hoặc góc kẹt ở đáy.
+       - 10 thế Back Pair BR (DBR + BR): góc Trắng trên U, R, B, hoặc góc kẹt ở đáy.
+       - 7 thế chèn cạnh vào khe và kỹ thuật unslotting an toàn, bao gồm finger trick tối ưu $r U R' U' r'$.
+     - Mỗi thế cờ bao gồm đầy đủ: mã định danh, tên tiếng Việt, slot mục tiêu, vị trí góc/cạnh, chuỗi setup thế cờ toán học, công thức xoay tối ưu, công thức thay thế, mẹo nhận biết trực quan và lời khuyên công thái học.
+  2. **Linh Kiện Sơ Đồ Isometric 3D SVG (`BlockDiagram` trong `src/components/ui/ReferenceDiagrams.tsx`):**
+     - Thiết kế đồ họa chiếu trục đo Isometric 3D vector mô phỏng góc nhìn thực tế:
+       - **FB View:** Góc nhìn Top-Front-Left thể hiện mặt U, F, L và dải đáy D (DFL, DL, DBL).
+       - **SB View:** Góc nhìn Top-Front-Right thể hiện mặt U, F, R và dải đáy D (DFR, DR, DBR).
+     - Áp dụng `applyAlgorithm(createSolvedCube(), setupAlg)` lên mô hình 54-facelet để render chính xác màu sắc vật lý của từng nhãn dán.
+     - Phân định rõ rệt: phần khối đã giải, viên góc/cạnh đang hoạt động, viền vàng nét đứt chỉ định khe mục tiêu, và làm mờ các viên không liên quan với sắc graphite ấm (`#2b2621`).
+     - Bổ sung huy hiệu badge hiển thị vị trí và màu sắc cho các viên cạnh nằm ở góc khuất mặt sau/đáy (UB, DB, DF, UL, DL, DR).
+  3. **Linh Kiện Thẻ Minh Họa Thế Cờ (`src/components/ui/BlockCaseCard.tsx`):**
+     - Đóng gói giao diện thẻ bài học chuẩn phong cách Crayon Paper & Claymation của dự án.
+     - Tích hợp 2 nút tương tác 3D: "Tập thế cờ" (tự động đưa khối Rubik 3D về thế cờ trong 90ms) và "Xem Demo 3D" (minh hoạ từng bước xoay giải với tốc độ chậm rãi 400ms).
+  4. **Nâng Cấp Toàn Diện Hành Trình Giải (Journey Mode) trong `LessonDrawer.tsx`:**
+     - **Bước 1 (FB):** Bổ sung 4 sub-tabs chuyên biệt: `1a. Tổng quan` (Triết lý Line $\rightarrow$ Square $\rightarrow$ Block, 3 lộ trình xây dựng), `1b. Mỏ neo DL` (4 thế), `1c. Cặp trên U` (18 thế kèm bộ lọc 6 phân nhóm), `1d. Cạnh vào góc` (9 thế).
+     - **Bước 2 (SB):** Bổ sung 4 sub-tabs chuyên biệt: `2a. Ràng buộc & DR` (Cảnh báo luật vàng $\langle R, r, M, U \rangle$ & 4 thế DR), `2b. Cặp trước FR` (11 thế kèm bộ lọc), `2c. Cặp sau BR` (10 thế kèm bộ lọc), `2d. Cạnh & Tối ưu` (7 thế chèn cạnh & unslotting).
+     - **Bước 3 (CMLL):** Tích hợp nút shortcut dẫn thẳng sang 2-Look CMLL và 45 CMLL.
+  5. **Mở Rộng Thư Viện Tra Cứu (Reference Library) với `fb_ref` & `sb_ref`:**
+     - Thêm tab "FB (31 thế)" và "SB (28 thế)" vào đầu thanh điều hướng tra cứu.
+     - Trang bị ô tìm kiếm thời gian thực theo tên, slot, công thức và mẹo nhận biết, cùng bộ nút lọc theo từng nhóm kỹ thuật.
+* **Files tác động:**
+  - `src/data/rouxBlockData.ts`: Tạo mới file dữ liệu 31 thế FB & 28 thế SB.
+  - `src/components/ui/ReferenceDiagrams.tsx`: Bổ sung linh kiện `BlockDiagram` Isometric 3D SVG.
+  - `src/components/ui/BlockCaseCard.tsx`: Tạo mới component thẻ hiển thị thế cờ và tương tác 3D.
+  - `src/components/ui/LessonDrawer.tsx`: Tích hợp toàn diện vào Journey Mode và Reference Library.
+  - `COMMAND_LOG.md`: Ghi nhật ký đầy đủ các lệnh terminal đã chạy.
+  - `CHANGELOG.md`: Cập nhật chi tiết thay đổi mã nguồn.
+
+---
+
 ### 🎯 [Commit `ef3eb1c`] — Tối Giản Bottom Bar: 3 Nút Chuẩn Mobile Tập Trung Trực Diện Vào Giải Rubik Thật Ngoài Đời
 
 * **Bối cảnh & Yêu cầu:**

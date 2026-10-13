@@ -574,4 +574,349 @@ export const L4EIntuitiveDiagram: React.FC<L4EIntuitiveDiagramProps> = ({ stage 
   );
 };
 
+// ─────────────────────────────────────────────────────────────
+// 5. BlockDiagram: Sơ đồ 3D Isometric cho First Block (FB) và Second Block (SB)
+// ─────────────────────────────────────────────────────────────
+
+interface BlockDiagramProps {
+  blockType: 'fb' | 'sb';
+  targetSlot: 'FL' | 'BL' | 'FR' | 'BR' | 'DL' | 'DR';
+  setupAlg: string;
+  alg?: string;
+  cornerPos?: string;
+  edgePos: string;
+  size?: number;
+}
+
+const EDGE_FACELET_MAP: Record<string, [number, number]> = {
+  UF: [FACELETS.U_F, FACELETS.F_U],
+  UL: [FACELETS.U_L, FACELETS.L_U],
+  UB: [FACELETS.U_B, FACELETS.B_U],
+  UR: [FACELETS.U_R, FACELETS.R_U],
+  FL: [FACELETS.F_L, FACELETS.L_F],
+  FR: [FACELETS.F_R, FACELETS.R_F],
+  BL: [FACELETS.B_L, FACELETS.L_B],
+  BR: [FACELETS.B_R, FACELETS.R_B],
+  DF: [FACELETS.D_F, FACELETS.F_D],
+  DL: [FACELETS.D_L, FACELETS.L_D],
+  DR: [FACELETS.D_R, FACELETS.R_D],
+  DB: [FACELETS.D_B, FACELETS.B_D],
+};
+
+const CORNER_FACELET_MAP: Record<string, [number, number, number]> = {
+  UFL: [FACELETS.U_FL, FACELETS.F_UL, FACELETS.L_UF],
+  UBL: [FACELETS.U_BL, FACELETS.B_UL, FACELETS.L_UB],
+  UFR: [FACELETS.U_FR, FACELETS.F_UR, FACELETS.R_UF],
+  UBR: [FACELETS.U_BR, FACELETS.B_UR, FACELETS.R_UB],
+  DFL: [FACELETS.D_FL, FACELETS.F_DL, FACELETS.L_DF],
+  DBL: [FACELETS.D_BL, FACELETS.B_DL, FACELETS.L_DB],
+  DFR: [FACELETS.D_FR, FACELETS.F_DR, FACELETS.R_DF],
+  DBR: [FACELETS.D_BR, FACELETS.B_DR, FACELETS.R_DB],
+};
+
+export const BlockDiagram: React.FC<BlockDiagramProps> = ({
+  blockType,
+  targetSlot,
+  setupAlg,
+  cornerPos,
+  edgePos,
+  size = 96,
+}) => {
+  const { cubeState, activeIndices, targetSlotIndices, hiddenEdgeStickers } = useMemo(() => {
+    const cube = createSolvedCube();
+    const st = applyAlgorithm(cube, setupAlg);
+
+    const activeSet = new Set<number>();
+    const slotSet = new Set<number>();
+
+    // 1. Phân định các mảnh đang hoạt động (active corner & active edge)
+    if (cornerPos && CORNER_FACELET_MAP[cornerPos]) {
+      CORNER_FACELET_MAP[cornerPos].forEach((idx) => activeSet.add(idx));
+    }
+    if (edgePos && EDGE_FACELET_MAP[edgePos]) {
+      EDGE_FACELET_MAP[edgePos].forEach((idx) => activeSet.add(idx));
+    }
+
+    // 2. Mảnh mỏ neo và phần đã giải của Block
+    if (blockType === 'fb') {
+      activeSet.add(FACELETS.D_L);
+      activeSet.add(FACELETS.L_D);
+      activeSet.add(FACELETS.L_C);
+
+      if (targetSlot === 'FL') {
+        // Cặp sau đã giải xong
+        activeSet.add(FACELETS.D_BL);
+        activeSet.add(FACELETS.B_DL);
+        activeSet.add(FACELETS.L_DB);
+        activeSet.add(FACELETS.B_L);
+        activeSet.add(FACELETS.L_B);
+        // Target slot là FL
+        slotSet.add(FACELETS.F_L);
+        slotSet.add(FACELETS.L_F);
+        slotSet.add(FACELETS.D_FL);
+        slotSet.add(FACELETS.F_DL);
+        slotSet.add(FACELETS.L_DF);
+      } else if (targetSlot === 'BL') {
+        // Cặp trước đã giải xong
+        activeSet.add(FACELETS.D_FL);
+        activeSet.add(FACELETS.F_DL);
+        activeSet.add(FACELETS.L_DF);
+        activeSet.add(FACELETS.F_L);
+        activeSet.add(FACELETS.L_F);
+        // Target slot là BL
+        slotSet.add(FACELETS.B_L);
+        slotSet.add(FACELETS.L_B);
+        slotSet.add(FACELETS.D_BL);
+        slotSet.add(FACELETS.B_DL);
+        slotSet.add(FACELETS.L_DB);
+      } else if (targetSlot === 'DL') {
+        slotSet.add(FACELETS.D_L);
+        slotSet.add(FACELETS.L_D);
+      }
+    } else {
+      // Second Block (SB):
+      // Toàn bộ First Block bên trái (L) đã hoàn thành vững chắc
+      [
+        FACELETS.L_UB, FACELETS.L_U, FACELETS.L_UF,
+        FACELETS.L_B, FACELETS.L_C, FACELETS.L_F,
+        FACELETS.L_DB, FACELETS.L_D, FACELETS.L_DF,
+        FACELETS.D_BL, FACELETS.D_L, FACELETS.D_FL,
+        FACELETS.F_L, FACELETS.F_DL, FACELETS.B_L, FACELETS.B_DL,
+      ].forEach((idx) => activeSet.add(idx));
+
+      activeSet.add(FACELETS.D_R);
+      activeSet.add(FACELETS.R_D);
+      activeSet.add(FACELETS.R_C);
+
+      if (targetSlot === 'FR') {
+        activeSet.add(FACELETS.D_BR);
+        activeSet.add(FACELETS.B_DR);
+        activeSet.add(FACELETS.R_DB);
+        activeSet.add(FACELETS.B_R);
+        activeSet.add(FACELETS.R_B);
+        // Slot FR
+        slotSet.add(FACELETS.F_R);
+        slotSet.add(FACELETS.R_F);
+        slotSet.add(FACELETS.D_FR);
+        slotSet.add(FACELETS.F_DR);
+        slotSet.add(FACELETS.R_DF);
+      } else if (targetSlot === 'BR') {
+        activeSet.add(FACELETS.D_FR);
+        activeSet.add(FACELETS.F_DR);
+        activeSet.add(FACELETS.R_DF);
+        activeSet.add(FACELETS.F_R);
+        activeSet.add(FACELETS.R_F);
+        // Slot BR
+        slotSet.add(FACELETS.B_R);
+        slotSet.add(FACELETS.R_B);
+        slotSet.add(FACELETS.D_BR);
+        slotSet.add(FACELETS.B_DR);
+        slotSet.add(FACELETS.R_DB);
+      } else if (targetSlot === 'DR') {
+        slotSet.add(FACELETS.D_R);
+        slotSet.add(FACELETS.R_D);
+      }
+    }
+
+    // 3. Thông tin nhãn hiển thị nếu cạnh bị giấu ở mặt sau/đáy
+    let hiddenStickers: { name: string; c1: string; c2: string } | null = null;
+    if (['UB', 'DB', 'DF', 'UL', 'DR', 'DL'].includes(edgePos)) {
+      const pair = EDGE_FACELET_MAP[edgePos];
+      if (pair) {
+        hiddenStickers = {
+          name: edgePos,
+          c1: COLOR_ID_TO_HEX[st[pair[0]] as ColorId] || CUBE_PALETTE.CORE,
+          c2: COLOR_ID_TO_HEX[st[pair[1]] as ColorId] || CUBE_PALETTE.CORE,
+        };
+      }
+    }
+
+    return {
+      cubeState: st,
+      activeIndices: activeSet,
+      targetSlotIndices: slotSet,
+      hiddenEdgeStickers: hiddenStickers,
+    };
+  }, [blockType, targetSlot, setupAlg, cornerPos, edgePos]);
+
+  const DIM_COLOR = '#2b2621'; // Màu xám ấm mờ cho các viên không liên quan
+
+  const getColor = (idx: number) => {
+    if (!activeIndices.has(idx)) return DIM_COLOR;
+    return COLOR_ID_TO_HEX[cubeState[idx] as ColorId] || CUBE_PALETTE.CORE;
+  };
+
+  // Cấu hình vẽ Isometric SVG
+  // cx, cy là tâm đỉnh của hình chiếu (gặp nhau của 3 mặt)
+  const cx = 50;
+  const cy = 42;
+  const s = 11.5;
+  const cos30 = 0.866;
+  const sin30 = 0.5;
+
+  // Vector đơn vị
+  const vUpLeft = { x: -cos30 * s, y: -sin30 * s };
+  const vUpRight = { x: cos30 * s, y: -sin30 * s };
+  const vDown = { x: 0, y: s };
+
+  const renderIsometricTile = (
+    baseX: number,
+    baseY: number,
+    v1: { x: number; y: number },
+    v2: { x: number; y: number },
+    faceletIdx: number,
+    key: string
+  ) => {
+    const p0 = { x: baseX, y: baseY };
+    const p1 = { x: baseX + v1.x, y: baseY + v1.y };
+    const p2 = { x: baseX + v1.x + v2.x, y: baseY + v1.y + v2.y };
+    const p3 = { x: baseX + v2.x, y: baseY + v2.y };
+    const pts = `${p0.x.toFixed(1)},${p0.y.toFixed(1)} ${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)}`;
+
+    const fill = getColor(faceletIdx);
+    const isSlot = targetSlotIndices.has(faceletIdx);
+    const stroke = isSlot ? '#fbbf24' : 'rgba(20,17,15,0.7)';
+    const strokeWidth = isSlot ? 1.5 : 0.6;
+    const strokeDash = isSlot ? '2,1' : 'none';
+
+    return (
+      <polygon
+        key={key}
+        points={pts}
+        fill={fill}
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+        strokeDasharray={strokeDash}
+      />
+    );
+  };
+
+  return (
+    <div className="shrink-0 flex flex-col items-center gap-1 p-1 bg-[#1a1614] rounded-xl border border-[#38312a] shadow-inner select-none">
+      <svg width={size} height={size} viewBox="0 0 100 100" className="drop-shadow-xs">
+        <rect width="100" height="100" rx="8" fill="#14110f" />
+
+        {/* 1. MẶT U (TRÊN CÙNG): 3x3 tiles */}
+        {/* r=0..2 (gần tới xa theo vUpRight), c=0..2 (trái sang phải theo vUpLeft) */}
+        {blockType === 'fb' ? (
+          // View FB: Top-Front-Left
+          <>
+            {/* Tầng U */}
+            {[
+              [FACELETS.U_FL, FACELETS.U_L, FACELETS.U_BL],
+              [FACELETS.U_F, FACELETS.U_C, FACELETS.U_B],
+              [FACELETS.U_FR, FACELETS.U_R, FACELETS.U_BR],
+            ].map((col, r) =>
+              col.map((idx, c) => {
+                const bx = cx + r * vUpRight.x + c * vUpLeft.x;
+                const by = cy + r * vUpRight.y + c * vUpLeft.y;
+                return renderIsometricTile(bx, by, vUpRight, vUpLeft, idx, `u-${r}-${c}`);
+              })
+            )}
+
+            {/* Mặt L (Bên trái cột giữa) */}
+            {[
+              [FACELETS.L_UF, FACELETS.L_U, FACELETS.L_UB],
+              [FACELETS.L_F, FACELETS.L_C, FACELETS.L_B],
+              [FACELETS.L_DF, FACELETS.L_D, FACELETS.L_DB],
+            ].map((row, k) =>
+              row.map((idx, c) => {
+                const bx = cx + c * vUpLeft.x + k * vDown.x;
+                const by = cy + c * vUpLeft.y + k * vDown.y;
+                return renderIsometricTile(bx, by, vUpLeft, vDown, idx, `l-${k}-${c}`);
+              })
+            )}
+
+            {/* Mặt F (Bên phải cột giữa) */}
+            {[
+              [FACELETS.F_UL, FACELETS.F_U, FACELETS.F_UR],
+              [FACELETS.F_L, FACELETS.F_C, FACELETS.F_R],
+              [FACELETS.F_DL, FACELETS.F_D, FACELETS.F_DR],
+            ].map((row, k) =>
+              row.map((idx, r) => {
+                const bx = cx + r * vUpRight.x + k * vDown.x;
+                const by = cy + r * vUpRight.y + k * vDown.y;
+                return renderIsometricTile(bx, by, vUpRight, vDown, idx, `f-${k}-${r}`);
+              })
+            )}
+
+            {/* Dải mặt D (Đáy) dưới chân mặt L: DFL, DL, DBL */}
+            <g transform="translate(14, 86)">
+              <text x="0" y="8" fill="#8c8278" fontSize="6.5" fontWeight="bold">D</text>
+              <rect x="9" y="1" width="8.5" height="8.5" rx="1.5" fill={getColor(FACELETS.D_FL)} stroke="#201c18" strokeWidth="0.5" />
+              <rect x="19" y="1" width="8.5" height="8.5" rx="1.5" fill={getColor(FACELETS.D_L)} stroke="#201c18" strokeWidth="0.5" />
+              <rect x="29" y="1" width="8.5" height="8.5" rx="1.5" fill={getColor(FACELETS.D_BL)} stroke="#201c18" strokeWidth="0.5" />
+            </g>
+          </>
+        ) : (
+          // View SB: Top-Front-Right
+          <>
+            {/* Tầng U */}
+            {[
+              [FACELETS.U_FL, FACELETS.U_F, FACELETS.U_FR],
+              [FACELETS.U_L, FACELETS.U_C, FACELETS.U_R],
+              [FACELETS.U_BL, FACELETS.U_B, FACELETS.U_BR],
+            ].map((col, r) =>
+              col.map((idx, c) => {
+                const bx = cx + r * vUpLeft.x + c * vUpRight.x;
+                const by = cy + r * vUpLeft.y + c * vUpRight.y;
+                return renderIsometricTile(bx, by, vUpLeft, vUpRight, idx, `u-sb-${r}-${c}`);
+              })
+            )}
+
+            {/* Mặt F (Bên trái trục giữa của SB) */}
+            {[
+              [FACELETS.F_UR, FACELETS.F_U, FACELETS.F_UL],
+              [FACELETS.F_R, FACELETS.F_C, FACELETS.F_L],
+              [FACELETS.F_DR, FACELETS.F_D, FACELETS.F_DL],
+            ].map((row, k) =>
+              row.map((idx, c) => {
+                const bx = cx + c * vUpLeft.x + k * vDown.x;
+                const by = cy + c * vUpLeft.y + k * vDown.y;
+                return renderIsometricTile(bx, by, vUpLeft, vDown, idx, `f-sb-${k}-${c}`);
+              })
+            )}
+
+            {/* Mặt R (Bên phải trục giữa của SB) */}
+            {[
+              [FACELETS.R_UF, FACELETS.R_U, FACELETS.R_UB],
+              [FACELETS.R_F, FACELETS.R_C, FACELETS.R_B],
+              [FACELETS.R_DF, FACELETS.R_D, FACELETS.R_DB],
+            ].map((row, k) =>
+              row.map((idx, r) => {
+                const bx = cx + r * vUpRight.x + k * vDown.x;
+                const by = cy + r * vUpRight.y + k * vDown.y;
+                return renderIsometricTile(bx, by, vUpRight, vDown, idx, `r-sb-${k}-${r}`);
+              })
+            )}
+
+            {/* Dải mặt D (Đáy) dưới chân mặt R: DFR, DR, DBR */}
+            <g transform="translate(54, 86)">
+              <text x="0" y="8" fill="#8c8278" fontSize="6.5" fontWeight="bold">D</text>
+              <rect x="9" y="1" width="8.5" height="8.5" rx="1.5" fill={getColor(FACELETS.D_FR)} stroke="#201c18" strokeWidth="0.5" />
+              <rect x="19" y="1" width="8.5" height="8.5" rx="1.5" fill={getColor(FACELETS.D_R)} stroke="#201c18" strokeWidth="0.5" />
+              <rect x="29" y="1" width="8.5" height="8.5" rx="1.5" fill={getColor(FACELETS.D_BR)} stroke="#201c18" strokeWidth="0.5" />
+            </g>
+          </>
+        )}
+
+        {/* Nhãn góc/cạnh chỉ dẫn trên ảnh */}
+        <text x="5" y="11" fill="#e0d5c1" fontSize="7" fontWeight="bold" fontFamily="monospace">
+          {blockType === 'fb' ? 'FB (L)' : 'SB (R)'}
+        </text>
+      </svg>
+
+      {/* Pill nhãn hiển thị vị trí cạnh & 2 màu nếu ở vị trí ẩn */}
+      {hiddenEdgeStickers && (
+        <div className="flex items-center gap-1 px-1.5 py-0.5 bg-[#25201b] rounded border border-[#3d362e] text-[8px] text-[#e8dfcf]">
+          <span className="font-semibold">{hiddenEdgeStickers.name}:</span>
+          <span className="w-2 h-2 rounded-xs" style={{ backgroundColor: hiddenEdgeStickers.c1 }} />
+          <span className="w-2 h-2 rounded-xs" style={{ backgroundColor: hiddenEdgeStickers.c2 }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+
 

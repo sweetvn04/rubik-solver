@@ -27,6 +27,11 @@ import { invertMove } from '../../engine/tutorHelper';
 import { CubeDiagram2D } from './CubeDiagram2D';
 import { CMLLDiagram, EODiagram, L4EDiagram, ULURDiagram, L4EIntuitiveDiagram } from './ReferenceDiagrams';
 import {
+  FB_CASES,
+  SB_CASES,
+} from '../../data/rouxBlockData';
+import { BlockCaseCard } from './BlockCaseCard';
+import {
   X,
   BookOpen,
   Sparkles,
@@ -119,11 +124,23 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
   const [subStepIndices, setSubStepIndices] = useState<Record<number, number>>({ 1: 0, 2: 0, 3: 0, 4: 0 });
   const [showNote, setShowNote] = useState(false);
 
+  // ── Bước 1 FB: Phân đoạn con & Lọc cặp ──
+  const [fbSubTab, setFbSubTab] = useState<'1a_overview' | '1b_dl' | '1c_pairs' | '1d_edge_in_slot'>('1a_overview');
+  const [fbPairFilter, setFbPairFilter] = useState<'all' | 'fl' | 'bl' | 'white_u' | 'white_l' | 'white_fb'>('all');
+
+  // ── Bước 2 SB: Phân đoạn con & Lọc cặp ──
+  const [sbSubTab, setSbSubTab] = useState<'2a_dr' | '2b_front_pair' | '2c_back_pair' | '2d_edge_in_slot'>('2a_dr');
+  const [sbFrontPairFilter, setSbFrontPairFilter] = useState<'all' | 'white_u' | 'white_r' | 'white_f' | 'slot'>('all');
+  const [sbBackPairFilter, setSbBackPairFilter] = useState<'all' | 'white_u' | 'white_r' | 'white_b' | 'slot'>('all');
+
   // ── Bước 4 LSE: 3 phân đoạn con ──
   const [lse4SubTab, setLse4SubTab] = useState<'4a_eo' | '4b_ulur' | '4c_l4e'>('4a_eo');
 
   // ── Reference tab ──
-  const [refTab, setRefTab] = useState<'two_look' | 'cmll45' | 'eo_ref' | 'ulur_ref' | 'l4e_ref' | 'fast_eo' | 'dots_skip' | 'eolr'>('two_look');
+  const [refTab, setRefTab] = useState<'fb_ref' | 'sb_ref' | 'two_look' | 'cmll45' | 'eo_ref' | 'ulur_ref' | 'l4e_ref' | 'fast_eo' | 'dots_skip' | 'eolr'>('fb_ref');
+  const [fbRefGroup, setFbRefGroup] = useState<string>('ALL');
+  const [sbRefGroup, setSbRefGroup] = useState<string>('ALL');
+  const [blockRefSearch, setBlockRefSearch] = useState<string>('');
   const [twoLookSubTab, setTwoLookSubTab] = useState<'oll' | 'pll'>('oll');
   const [cmllMode, setCmllMode] = useState<'2h' | 'oh'>('2h');
   const [selectedGroup, setSelectedGroup] = useState<string>('ALL');
@@ -197,6 +214,70 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
     if (l4eFilter === 'all' || l4eFilter === 'intuitive') return LSE_L4E_CASES;
     return LSE_L4E_CASES.filter((c) => c.group === l4eFilter);
   }, [l4eFilter]);
+
+  // Lọc FB Pairs trong Journey Bước 1
+  const filteredFBPairCases = useMemo(() => {
+    const list = FB_CASES.filter((c) => c.group.startsWith('fb_fp') || c.group === 'fb_bp_cases');
+    if (fbPairFilter === 'all') return list;
+    if (fbPairFilter === 'fl') return list.filter((c) => c.targetSlot === 'FL');
+    if (fbPairFilter === 'bl') return list.filter((c) => c.targetSlot === 'BL');
+    if (fbPairFilter === 'white_u') return list.filter((c) => c.id.includes('white_top') || c.id.includes('white_u'));
+    if (fbPairFilter === 'white_l') return list.filter((c) => c.id.includes('white_left') || c.id.includes('white_l'));
+    if (fbPairFilter === 'white_fb') return list.filter((c) => c.id.includes('white_front') || c.id.includes('white_b'));
+    return list;
+  }, [fbPairFilter]);
+
+  // Lọc SB Front Pairs trong Journey Bước 2
+  const filteredSBFrontPairCases = useMemo(() => {
+    const list = SB_CASES.filter((c) => c.group.startsWith('sb_fp'));
+    if (sbFrontPairFilter === 'all') return list;
+    if (sbFrontPairFilter === 'white_u') return list.filter((c) => c.group === 'sb_fp_white_u');
+    if (sbFrontPairFilter === 'white_r') return list.filter((c) => c.group === 'sb_fp_white_r');
+    if (sbFrontPairFilter === 'white_f') return list.filter((c) => c.group === 'sb_fp_white_f');
+    if (sbFrontPairFilter === 'slot') return list.filter((c) => c.group === 'sb_fp_corner_d');
+    return list;
+  }, [sbFrontPairFilter]);
+
+  // Lọc SB Back Pairs trong Journey Bước 2
+  const filteredSBBackPairCases = useMemo(() => {
+    const list = SB_CASES.filter((c) => c.group === 'sb_bp_cases');
+    if (sbBackPairFilter === 'all') return list;
+    if (sbBackPairFilter === 'white_u') return list.filter((c) => c.id.includes('white_u'));
+    if (sbBackPairFilter === 'white_r') return list.filter((c) => c.id.includes('white_r'));
+    if (sbBackPairFilter === 'white_b') return list.filter((c) => c.id.includes('white_b'));
+    if (sbBackPairFilter === 'slot') return list.filter((c) => c.id.includes('slot'));
+    return list;
+  }, [sbBackPairFilter]);
+
+  // Lọc FB trong Reference Library
+  const filteredFBRefCases = useMemo(() => {
+    return FB_CASES.filter((c) => {
+      const matchGroup = fbRefGroup === 'ALL' || c.group === fbRefGroup;
+      const q = blockRefSearch.toLowerCase().trim();
+      const matchQuery =
+        q === '' ||
+        c.name.toLowerCase().includes(q) ||
+        c.alg.toLowerCase().includes(q) ||
+        c.targetSlot.toLowerCase().includes(q) ||
+        c.recognition.toLowerCase().includes(q);
+      return matchGroup && matchQuery;
+    });
+  }, [fbRefGroup, blockRefSearch]);
+
+  // Lọc SB trong Reference Library
+  const filteredSBRefCases = useMemo(() => {
+    return SB_CASES.filter((c) => {
+      const matchGroup = sbRefGroup === 'ALL' || c.group === sbRefGroup;
+      const q = blockRefSearch.toLowerCase().trim();
+      const matchQuery =
+        q === '' ||
+        c.name.toLowerCase().includes(q) ||
+        c.alg.toLowerCase().includes(q) ||
+        c.targetSlot.toLowerCase().includes(q) ||
+        c.recognition.toLowerCase().includes(q);
+      return matchGroup && matchQuery;
+    });
+  }, [sbRefGroup, blockRefSearch]);
 
   // Hành động xoay công thức lên Rubik 3D (Tốc độ minh hoạ chậm 400ms để học viên quan sát)
   const handleRunAlg = (alg: string, name: string) => {
@@ -501,14 +582,493 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
               </div>
             </div>
 
-            {/* ── NỘI DUNG CHI TIẾT CỦA BƯỚC ĐANG CHỌN ── */}
-            {selectedStep !== 4 ? (
-              /* BƯỚC 1, 2, 3: CÓ THANH SUB-STEPS CHUẨN */
+            {/* ── BƯỚC 1: FIRST BLOCK (FB) CHI TIẾT ── */}
+            {selectedStep === 1 && (
               <div className="bg-white rounded-2xl border border-[#e8dfcf] shadow-sm p-3.5 space-y-3">
-                {/* Thanh chọn nhanh sub-step (1a, 1b, 1c...) */}
+                {/* 4 Sub-tabs cho Bước 1 FB */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                  {[
+                    { id: '1a_overview' as const, label: '1a. Tổng quan', sub: 'Triết lý Block', color: 'bg-[#2d6a4f] text-white', inactive: 'bg-[#faf6ee] text-[#2d6a4f] border border-[#c2e2cf] hover:bg-white' },
+                    { id: '1b_dl' as const, label: '1b. Mỏ neo DL', sub: '4 thế mỏ neo', color: 'bg-[#2d6a4f] text-white', inactive: 'bg-[#faf6ee] text-[#2d6a4f] border border-[#c2e2cf] hover:bg-white' },
+                    { id: '1c_pairs' as const, label: '1c. Cặp trên U', sub: '18 thế FL/BL', color: 'bg-[#2d6a4f] text-white', inactive: 'bg-[#faf6ee] text-[#2d6a4f] border border-[#c2e2cf] hover:bg-white' },
+                    { id: '1d_edge_in_slot' as const, label: '1d. Cạnh vào góc', sub: '9 thế chèn', color: 'bg-[#2d6a4f] text-white', inactive: 'bg-[#faf6ee] text-[#2d6a4f] border border-[#c2e2cf] hover:bg-white' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setFbSubTab(tab.id)}
+                      className={`py-2 px-1 rounded-xl font-bold text-[11px] text-center flex flex-col items-center gap-0.5 transition-all cursor-pointer ${
+                        fbSubTab === tab.id ? tab.color : tab.inactive
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      <span className={`text-[9px] font-normal ${fbSubTab === tab.id ? 'opacity-80' : 'opacity-70'}`}>
+                        {tab.sub}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* 1a. Tổng quan FB */}
+                {fbSubTab === '1a_overview' && (
+                  <div className="space-y-3">
+                    {/* Banner triết lý Line -> Square -> Block */}
+                    <div className="p-3 bg-[#f0f9f3] rounded-2xl border border-[#a8d5b8] space-y-2">
+                      <div className="flex items-start gap-2">
+                        <Lightbulb className="w-4 h-4 text-[#2d6a4f] mt-0.5 shrink-0" />
+                        <div>
+                          <h4 className="text-xs font-bold text-[#1b4332]">
+                            Triết lý First Block: Tự do tuyệt đối & Block-building
+                          </h4>
+                          <p className="text-[11px] text-[#2d6a4f] mt-0.5 leading-relaxed">
+                            Khác với CFOP phải rập khuôn làm thập trắng (Cross), ở First Block bạn xây dựng một khối <strong>1×2×3 bên trái</strong> (mặt L Đỏ, đáy D Trắng). Toàn bộ nửa phải (R) và cột giữa (M) hoàn toàn tự do!
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[10.5px] pt-1">
+                        <div className="p-2 bg-white/90 rounded-xl border border-[#c2e2cf]">
+                          <div className="font-bold text-[#2d6a4f] mb-0.5">1. Line (Đường thẳng)</div>
+                          <p className="text-[#5c4f43]">Đặt mỏ neo cạnh DL nối tâm Đỏ (L) và tâm Trắng (D).</p>
+                        </div>
+                        <div className="p-2 bg-white/90 rounded-xl border border-[#c2e2cf]">
+                          <div className="font-bold text-[#2d6a4f] mb-0.5">2. Square (1×2×2)</div>
+                          <p className="text-[#5c4f43]">Ghép cặp sau (DBL+BL) hoặc cặp trước (DFL+FL) thành khối vuông.</p>
+                        </div>
+                        <div className="p-2 bg-white/90 rounded-xl border border-[#c2e2cf]">
+                          <div className="font-bold text-[#2d6a4f] mb-0.5">3. Block (1×2×3)</div>
+                          <p className="text-[#5c4f43]">Ghép cặp còn lại hoàn tất trọn vẹn nửa trái mà không cần xoay cả khối.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 4 Sub-step cơ bản */}
+                    <div className="space-y-2">
+                      {ROUX_LESSONS[0].steps.map((st, idx) => (
+                        <div key={idx} className="p-3 bg-white rounded-2xl border border-[#e8dfcf] space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <h5 className="text-xs font-bold text-[#2c221e]">{st.title}</h5>
+                              <p className="text-[11px] text-[#5c4f43] mt-1 leading-relaxed">{st.description}</p>
+                            </div>
+                            {st.diagram && (
+                              <div className="shrink-0 p-1 bg-[#faf6ee] rounded-xl border border-[#ebdcca]">
+                                <CubeDiagram2D {...st.diagram} />
+                              </div>
+                            )}
+                          </div>
+                          {st.demoAlg && (
+                            <div className="flex items-center gap-2 pt-1 border-t border-[#f4ebe1]">
+                              <div className="flex-1 px-2.5 py-1 bg-[#faf6ee] rounded-lg border border-[#ebdcca] font-mono text-xs text-[#2d6a4f] font-bold truncate">
+                                {st.demoAlg}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleRunAlg(st.demoAlg!, st.title)}
+                                className="flex items-center gap-1 px-3 py-1 text-xs font-bold bg-[#2d6a4f] hover:bg-[#245640] text-white rounded-lg shadow-xs cursor-pointer shrink-0"
+                              >
+                                <MonitorPlay className="w-3 h-3" />
+                                <span>Demo 3D</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setFbSubTab('1b_dl')}
+                      className="w-full flex items-center justify-between p-2.5 bg-[#f0f9f3] hover:bg-[#e2f3e8] text-[#2d6a4f] rounded-xl border border-[#a8d5b8] font-bold text-xs cursor-pointer transition-all"
+                    >
+                      <span>👉 Xem chi tiết 4 thế đặt Mỏ Neo DL (Trắng - Đỏ)</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* 1b. Mỏ neo DL */}
+                {fbSubTab === '1b_dl' && (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-[#f0f9f3] rounded-2xl border border-[#a8d5b8]">
+                      <h4 className="text-xs font-bold text-[#1b4332] flex items-center gap-1.5">
+                        <Compass className="w-3.5 h-3.5 text-[#2d6a4f]" />
+                        <span>Mỏ neo DL (Trắng - Đỏ): Nền móng đầu tiên của FB</span>
+                      </h4>
+                      <p className="text-[11px] text-[#2d6a4f] mt-1 leading-relaxed">
+                        Viên cạnh DL có 2 màu Trắng và Đỏ. Mục tiêu là đưa nó về vị trí đáy-trái: màu Trắng hướng xuống đáy D, màu Đỏ hướng sang mặt L. Dưới đây là 4 tình huống vị trí của cạnh DL:
+                      </p>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {FB_CASES.filter((c) => c.group === 'dl_anchor').map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setFbSubTab('1c_pairs')}
+                      className="w-full flex items-center justify-between p-2.5 bg-[#f0f9f3] hover:bg-[#e2f3e8] text-[#2d6a4f] rounded-xl border border-[#a8d5b8] font-bold text-xs cursor-pointer transition-all"
+                    >
+                      <span>👉 Đã xong DL? Xem tiếp 1c: Ghép cặp trên U (18 thế)</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* 1c. Cặp trên U */}
+                {fbSubTab === '1c_pairs' && (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-[#f0f9f3] rounded-2xl border border-[#a8d5b8]">
+                      <h4 className="text-xs font-bold text-[#1b4332] flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#2d6a4f]" />
+                        <span>Ghép cặp góc-cạnh trên tầng U (18 thế)</span>
+                      </h4>
+                      <p className="text-[11px] text-[#2d6a4f] mt-1 leading-relaxed">
+                        Áp dụng cho Front Pair (DFL + FL) và Back Pair (DBL + BL). Phân loại chính xác theo hướng của mặt Trắng trên viên góc: hướng sang Trái (L), hướng ra Trước/Sau (F/B), hoặc hướng lên Trên (U).
+                      </p>
+                    </div>
+
+                    {/* Thanh lọc phân nhóm */}
+                    <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[10.5px]">
+                      {[
+                        { id: 'all', label: 'Tất cả (18)' },
+                        { id: 'fl', label: 'Front Pair FL (9)' },
+                        { id: 'bl', label: 'Back Pair BL (9)' },
+                        { id: 'white_u', label: 'Trắng trên U (6)' },
+                        { id: 'white_l', label: 'Trắng sang L (6)' },
+                        { id: 'white_fb', label: 'Trắng ra F/B (6)' },
+                      ].map((f) => (
+                        <button
+                          key={f.id}
+                          type="button"
+                          onClick={() => setFbPairFilter(f.id as any)}
+                          className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                            fbPairFilter === f.id
+                              ? 'bg-[#2d6a4f] text-white shadow-xs'
+                              : 'bg-[#faf6ee] text-[#5c4f43] border border-[#e2d8c7] hover:bg-white'
+                          }`}
+                        >
+                          {f.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Danh sách case cards */}
+                    <div className="space-y-2.5">
+                      {filteredFBPairCases.map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setFbSubTab('1d_edge_in_slot')}
+                      className="w-full flex items-center justify-between p-2.5 bg-[#f0f9f3] hover:bg-[#e2f3e8] text-[#2d6a4f] rounded-xl border border-[#a8d5b8] font-bold text-xs cursor-pointer transition-all"
+                    >
+                      <span>👉 Xem tiếp 1d: Chèn cạnh khi góc đã cắm đúng khe (9 thế)</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* 1d. Cạnh vào góc */}
+                {fbSubTab === '1d_edge_in_slot' && (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-[#f0f9f3] rounded-2xl border border-[#a8d5b8]">
+                      <h4 className="text-xs font-bold text-[#1b4332] flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#2d6a4f]" />
+                        <span>Ghép cạnh vào góc (Khi góc đã ở vị trí đáy)</span>
+                      </h4>
+                      <p className="text-[11px] text-[#2d6a4f] mt-1 leading-relaxed">
+                        Nếu viên góc đã tình cờ nằm đúng khe DFL hoặc DBL, bạn <strong>không cần phải lôi góc ra ngoài</strong> để ghép cặp từ đầu! Dưới đây là các kỹ thuật chèn cạnh trực quan 3–5 moves.
+                      </p>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {FB_CASES.filter((c) => c.group === 'fb_edge_insertion').map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Nút hoàn tất Bước 1 chuyển sang Bước 2 */}
+                    <div className="pt-2 border-t border-[#f4ebe1]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedStep(2);
+                          setShowNote(false);
+                        }}
+                        className="w-full flex items-center justify-between p-2.5 bg-[#f0f6fc] hover:bg-[#e3effa] text-[#1d4e89] rounded-xl border border-[#a8c8e8] transition-all cursor-pointer font-bold text-xs"
+                      >
+                        <span>👉 Hoàn tất First Block? Chuyển sang Bước 2: Second Block (SB)</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── BƯỚC 2: SECOND BLOCK (SB) CHI TIẾT ── */}
+            {selectedStep === 2 && (
+              <div className="bg-white rounded-2xl border border-[#e8dfcf] shadow-sm p-3.5 space-y-3">
+                {/* 4 Sub-tabs cho Bước 2 SB */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                  {[
+                    { id: '2a_dr' as const, label: '2a. Ràng buộc & DR', sub: '4 thế DR', color: 'bg-[#1d4e89] text-white', inactive: 'bg-[#faf6ee] text-[#1d4e89] border border-[#c2daf2] hover:bg-white' },
+                    { id: '2b_front_pair' as const, label: '2b. Cặp trước FR', sub: '11 thế FR', color: 'bg-[#1d4e89] text-white', inactive: 'bg-[#faf6ee] text-[#1d4e89] border border-[#c2daf2] hover:bg-white' },
+                    { id: '2c_back_pair' as const, label: '2c. Cặp sau BR', sub: '10 thế BR', color: 'bg-[#1d4e89] text-white', inactive: 'bg-[#faf6ee] text-[#1d4e89] border border-[#c2daf2] hover:bg-white' },
+                    { id: '2d_edge_in_slot' as const, label: '2d. Cạnh & Tối ưu', sub: '7 thế chèn', color: 'bg-[#1d4e89] text-white', inactive: 'bg-[#faf6ee] text-[#1d4e89] border border-[#c2daf2] hover:bg-white' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setSbSubTab(tab.id)}
+                      className={`py-2 px-1 rounded-xl font-bold text-[11px] text-center flex flex-col items-center gap-0.5 transition-all cursor-pointer ${
+                        sbSubTab === tab.id ? tab.color : tab.inactive
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      <span className={`text-[9px] font-normal ${sbSubTab === tab.id ? 'opacity-80' : 'opacity-70'}`}>
+                        {tab.sub}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* 2a. Ràng buộc & DR */}
+                {sbSubTab === '2a_dr' && (
+                  <div className="space-y-3">
+                    {/* Cảnh báo luật vàng <R, r, M, U> */}
+                    <div className="p-3 bg-[#f0f6fc] rounded-2xl border border-[#a8c8e8] space-y-2">
+                      <div className="flex items-start gap-2">
+                        <Lightbulb className="w-4 h-4 text-[#1d4e89] mt-0.5 shrink-0" />
+                        <div>
+                          <h4 className="text-xs font-bold text-[#0c2d48]">
+                            Luật vàng Second Block: Ràng buộc tuyệt đối &lt;R, r, M, U&gt;
+                          </h4>
+                          <p className="text-[11px] text-[#1d4e89] mt-0.5 leading-relaxed">
+                            Khối 1×2×3 bên trái (FB) đã hoàn tất! Vì vậy ở Second Block bạn <strong>TUYỆT ĐỐI KHÔNG xoay các mặt F, B, L, D độc lập</strong>. Mọi thao tác chỉ được dùng <strong>tầng R, xoay 2 tầng r, cột M và tầng U</strong> để bảo toàn 100% First Block.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-[#faf6ee] rounded-2xl border border-[#ebdcca]">
+                      <h4 className="text-xs font-bold text-[#2c221e]">Mỏ neo DR (Trắng - Cam) — 4 trường hợp</h4>
+                      <p className="text-[11px] text-[#706459] mt-0.5 leading-relaxed">
+                        Đặt cạnh đáy phải DR vào vị trí giữa tâm Cam (R) và tâm Trắng (D) bằng các chuỗi xoay &lt;M, U, r&gt; an toàn.
+                      </p>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {SB_CASES.filter((c) => c.group === 'dr_anchor').map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setSbSubTab('2b_front_pair')}
+                      className="w-full flex items-center justify-between p-2.5 bg-[#f0f6fc] hover:bg-[#e3effa] text-[#1d4e89] rounded-xl border border-[#a8c8e8] font-bold text-xs cursor-pointer transition-all"
+                    >
+                      <span>👉 Đã xong DR? Tiếp tục 2b: Cặp trước FR (11 thế)</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* 2b. Cặp trước FR */}
+                {sbSubTab === '2b_front_pair' && (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-[#f0f6fc] rounded-2xl border border-[#a8c8e8]">
+                      <h4 className="text-xs font-bold text-[#0c2d48] flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#1d4e89]" />
+                        <span>Cặp trước FR: Ghép góc DFR + cạnh FR</span>
+                      </h4>
+                      <p className="text-[11px] text-[#1d4e89] mt-1 leading-relaxed">
+                        Phân loại theo hướng mặt Trắng trên viên góc UFR: hướng lên U, hướng sang R, hướng ra F, hoặc góc kẹt ở đáy.
+                      </p>
+                    </div>
+
+                    {/* Thanh lọc */}
+                    <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[10.5px]">
+                      {[
+                        { id: 'all', label: 'Tất cả (11)' },
+                        { id: 'white_u', label: 'Trắng trên U (3)' },
+                        { id: 'white_r', label: 'Trắng sang R (3)' },
+                        { id: 'white_f', label: 'Trắng ra F (3)' },
+                        { id: 'slot', label: 'Góc ở đáy (2)' },
+                      ].map((f) => (
+                        <button
+                          key={f.id}
+                          type="button"
+                          onClick={() => setSbFrontPairFilter(f.id as any)}
+                          className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                            sbFrontPairFilter === f.id
+                              ? 'bg-[#1d4e89] text-white shadow-xs'
+                              : 'bg-[#faf6ee] text-[#5c4f43] border border-[#e2d8c7] hover:bg-white'
+                          }`}
+                        >
+                          {f.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Danh sách case cards */}
+                    <div className="space-y-2.5">
+                      {filteredSBFrontPairCases.map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setSbSubTab('2c_back_pair')}
+                      className="w-full flex items-center justify-between p-2.5 bg-[#f0f6fc] hover:bg-[#e3effa] text-[#1d4e89] rounded-xl border border-[#a8c8e8] font-bold text-xs cursor-pointer transition-all"
+                    >
+                      <span>👉 Tiếp tục 2c: Cặp sau BR (10 thế)</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* 2c. Cặp sau BR */}
+                {sbSubTab === '2c_back_pair' && (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-[#f0f6fc] rounded-2xl border border-[#a8c8e8]">
+                      <h4 className="text-xs font-bold text-[#0c2d48] flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#1d4e89]" />
+                        <span>Cặp sau BR: Ghép góc DBR + cạnh BR</span>
+                      </h4>
+                      <p className="text-[11px] text-[#1d4e89] mt-1 leading-relaxed">
+                        Ghép góc DBR (Trắng/Cam/Xanh lam) và cạnh BR (Cam/Xanh lam) vào khe sau của Second Block.
+                      </p>
+                    </div>
+
+                    {/* Thanh lọc */}
+                    <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[10.5px]">
+                      {[
+                        { id: 'all', label: 'Tất cả (10)' },
+                        { id: 'white_u', label: 'Trắng trên U (3)' },
+                        { id: 'white_r', label: 'Trắng sang R (3)' },
+                        { id: 'white_b', label: 'Trắng ra B (3)' },
+                        { id: 'slot', label: 'Góc ở đáy (1)' },
+                      ].map((f) => (
+                        <button
+                          key={f.id}
+                          type="button"
+                          onClick={() => setSbBackPairFilter(f.id as any)}
+                          className={`px-2.5 py-1.5 font-bold rounded-lg shrink-0 transition-all cursor-pointer ${
+                            sbBackPairFilter === f.id
+                              ? 'bg-[#1d4e89] text-white shadow-xs'
+                              : 'bg-[#faf6ee] text-[#5c4f43] border border-[#e2d8c7] hover:bg-white'
+                          }`}
+                        >
+                          {f.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Danh sách case cards */}
+                    <div className="space-y-2.5">
+                      {filteredSBBackPairCases.map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setSbSubTab('2d_edge_in_slot')}
+                      className="w-full flex items-center justify-between p-2.5 bg-[#f0f6fc] hover:bg-[#e3effa] text-[#1d4e89] rounded-xl border border-[#a8c8e8] font-bold text-xs cursor-pointer transition-all"
+                    >
+                      <span>👉 Tiếp tục 2d: Ghép cạnh & Tối ưu (7 thế)</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* 2d. Cạnh vào góc & Tối ưu */}
+                {sbSubTab === '2d_edge_in_slot' && (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-[#f0f6fc] rounded-2xl border border-[#a8c8e8]">
+                      <h4 className="text-xs font-bold text-[#0c2d48] flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#1d4e89]" />
+                        <span>Ghép cạnh vào khe & Kỹ thuật tối ưu SB</span>
+                      </h4>
+                      <p className="text-[11px] text-[#1d4e89] mt-1 leading-relaxed">
+                        Các trường hợp viên góc đã ở đúng khe đáy DFR/DBR, cách chèn cạnh an toàn và kỹ thuật unslotting không phá vỡ các khối đã xây.
+                      </p>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {SB_CASES.filter((c) => c.group === 'sb_edge_insertion').map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Nút hoàn tất Bước 2 chuyển sang Bước 3 */}
+                    <div className="pt-2 border-t border-[#f4ebe1]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedStep(3);
+                          setShowNote(false);
+                        }}
+                        className="w-full flex items-center justify-between p-2.5 bg-[#fdf4fa] hover:bg-[#f8e5f2] text-[#7b2d6e] rounded-xl border border-[#e0a8cc] transition-all cursor-pointer font-bold text-xs"
+                      >
+                        <span>👉 Hoàn tất Second Block? Chuyển sang Bước 3: CMLL</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── BƯỚC 3: CMLL CHI TIẾT ── */}
+            {selectedStep === 3 && (
+              <div className="bg-white rounded-2xl border border-[#e8dfcf] shadow-sm p-3.5 space-y-3">
+                {/* Thanh chọn nhanh sub-step (3a, 3b, 3c) */}
                 <div>
                   <div className="text-[10px] font-bold text-[#8c7b6c] mb-1.5 uppercase tracking-wider">
-                    Các giai đoạn con của Bước {selectedStep}:
+                    Các giai đoạn con của Bước 3:
                   </div>
                   <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[10.5px]">
                     {currentLesson.steps.map((st, idx) => (
@@ -518,7 +1078,7 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         onClick={() => handleSelectSubStep(idx)}
                         className={`px-2.5 py-1.5 rounded-xl shrink-0 font-bold transition-all cursor-pointer ${
                           idx === currentSubStepIndex
-                            ? `${STEP_META[selectedStep as keyof typeof STEP_META].badgeBg} text-white shadow-xs`
+                            ? `${STEP_META[3].badgeBg} text-white shadow-xs`
                             : 'bg-[#faf6ee] text-[#5c4f43] border border-[#e2d8c7] hover:bg-white'
                         }`}
                       >
@@ -528,15 +1088,11 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                   </div>
                 </div>
 
-                {/* Tiêu đề & Mô tả sub-step hiện tại */}
+                {/* Tiêu đề & Mô tả */}
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`px-2 py-0.5 text-[9px] font-bold uppercase rounded-md border ${
-                        STEP_META[selectedStep as keyof typeof STEP_META].bgLight
-                      } ${STEP_META[selectedStep as keyof typeof STEP_META].textColor} ${
-                        STEP_META[selectedStep as keyof typeof STEP_META].border
-                      }`}
+                      className={`px-2 py-0.5 text-[9px] font-bold uppercase rounded-md border ${STEP_META[3].bgLight} ${STEP_META[3].textColor} ${STEP_META[3].border}`}
                     >
                       Phần {currentSubStepIndex + 1}/{currentLesson.steps.length}
                     </span>
@@ -549,7 +1105,7 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                   </p>
                 </div>
 
-                {/* Sơ đồ 2D trực quan */}
+                {/* Sơ đồ 2D */}
                 {currentSubStep.diagram && (
                   <div className="p-3 bg-[#faf6ee] rounded-xl border border-[#ebdcca] flex flex-col items-center gap-1.5">
                     <CubeDiagram2D {...currentSubStep.diagram} />
@@ -598,24 +1154,55 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                   </div>
                 )}
 
-                {/* Nút chuyển tiếp sang bước tiếp theo ở cuối card */}
+                {/* Shortcut tra cứu CMLL */}
+                <div className="p-3 bg-[#fdf4fa] rounded-xl border border-[#e0a8cc] space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#7b2d6e]">
+                    <GraduationCap className="w-4 h-4" />
+                    <span>Tra cứu công thức CMLL đầy đủ:</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMainTab('reference');
+                        setRefTab('two_look');
+                      }}
+                      className="flex-1 py-1.5 px-2 bg-white text-[#7b2d6e] border border-[#e0a8cc] hover:bg-[#faf0f7] text-[11px] font-bold rounded-lg cursor-pointer transition-all text-center"
+                    >
+                      2-Look CMLL (9 công thức)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMainTab('reference');
+                        setRefTab('cmll45');
+                      }}
+                      className="flex-1 py-1.5 px-2 bg-[#7b2d6e] text-white hover:bg-[#68245c] text-[11px] font-bold rounded-lg cursor-pointer transition-all text-center shadow-2xs"
+                    >
+                      45 CMLL toàn diện
+                    </button>
+                  </div>
+                </div>
+
+                {/* Nút chuyển sang Bước 4 */}
                 <div className="pt-2 border-t border-[#f4ebe1]">
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedStep(selectedStep + 1);
+                      setSelectedStep(4);
                       setShowNote(false);
                     }}
                     className="w-full flex items-center justify-between p-2.5 bg-[#faf6ee] hover:bg-[#f0e8dc] text-[#2c221e] rounded-xl border border-[#ebdcca] transition-all cursor-pointer font-bold text-xs"
                   >
-                    <span>
-                      👉 Đã xong Bước {selectedStep}? Chuyển sang Bước {selectedStep + 1}
-                    </span>
+                    <span>👉 Đã xong CMLL? Chuyển sang Bước 4: LSE</span>
                     <ChevronRight className="w-4 h-4 text-[#e07a5f]" />
                   </button>
                 </div>
               </div>
-            ) : (
+            )}
+
+            {/* ── BƯỚC 4: LSE CHI TIẾT (3 PHÂN ĐOẠN CON CHUYÊN BIỆT) ── */}
+            {selectedStep === 4 && (
               /* BƯỚC 4: LSE ĐƯỢC CHIA THÀNH 3 PHÂN ĐOẠN CON CHUYÊN BIỆT */
               <div className="bg-white rounded-2xl border border-[#e8dfcf] shadow-sm p-3.5 space-y-3">
                 {/* 3 Sub-tabs cho bước 4 */}
@@ -1005,6 +1592,8 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
             {/* Thanh chọn phân nhóm tra cứu */}
             <div className="flex items-center gap-1 overflow-x-auto px-3 py-2 border-b border-[#ebdcca] bg-[#f5efe4]/60 text-[11px] shrink-0">
               {[
+                { id: 'fb_ref' as const, label: 'FB (31 thế)', color: 'bg-[#2d6a4f] text-white' },
+                { id: 'sb_ref' as const, label: 'SB (28 thế)', color: 'bg-[#1d4e89] text-white' },
                 { id: 'two_look' as const, label: '2-Look CMLL', color: 'bg-[#e76f51] text-white' },
                 { id: 'cmll45' as const, label: '45 CMLL', color: 'bg-[#3d5a80] text-white' },
                 { id: 'eo_ref' as const, label: 'EO (11 thế)', color: 'bg-[#247c72] text-white' },
@@ -1031,6 +1620,181 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
 
             {/* Nội dung danh mục tra cứu */}
             <div className="flex-1 overflow-y-auto p-3 sm:p-4 flex flex-col gap-3">
+              {/* FB Tra cứu (31 thế) */}
+              {refTab === 'fb_ref' && (
+                <div className="space-y-3">
+                  {/* Banner tổng quan */}
+                  <div className="p-3 bg-[#f0f9f3] rounded-2xl border border-[#a8d5b8]">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#1b4332]">
+                        <Compass className="w-4 h-4 text-[#2d6a4f]" />
+                        <span>Thư viện First Block (FB): 31 thế toàn diện</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white text-[#2d6a4f] border border-[#a8d5b8]">
+                        {filteredFBRefCases.length} / {FB_CASES.length} thế
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#2d6a4f] mt-1 leading-snug">
+                      Tra cứu nhanh mọi tình huống Mỏ neo DL, Cặp trước FL, Cặp sau BL và chèn cạnh chuẩn Roux Method VN.
+                    </p>
+                  </div>
+
+                  {/* Thanh tìm kiếm & lọc nhóm */}
+                  <div className="flex flex-col gap-2 bg-white p-3 rounded-2xl border border-[#e8dfcf] shadow-2xs">
+                    <div className="flex items-center gap-2 bg-[#faf6ee] px-2.5 py-1.5 rounded-xl border border-[#e4d9c7]">
+                      <Search className="w-3.5 h-3.5 text-[#8c7b6c]" />
+                      <input
+                        type="text"
+                        value={blockRefSearch}
+                        onChange={(e) => setBlockRefSearch(e.target.value)}
+                        placeholder="Tìm thế FB theo tên, slot, công thức (L2, U' L'...), nhận biết..."
+                        className="w-full text-xs text-[#2c221e] bg-transparent outline-none placeholder:text-[#a89b8d]"
+                      />
+                      {blockRefSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setBlockRefSearch('')}
+                          className="text-[#8c7b6c] hover:text-[#2c221e] cursor-pointer"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
+                      {[
+                        { id: 'ALL', label: `Tất cả (${FB_CASES.length})` },
+                        { id: 'dl_anchor', label: `Mỏ neo DL (${FB_CASES.filter((c) => c.group === 'dl_anchor').length})` },
+                        { id: 'fb_fp_white_left', label: 'Cặp Trước (Trắng L)' },
+                        { id: 'fb_fp_white_front', label: 'Cặp Trước (Trắng F)' },
+                        { id: 'fb_fp_white_top', label: 'Cặp Trước (Trắng U)' },
+                        { id: 'fb_bp_cases', label: `Cặp Sau BL (${FB_CASES.filter((c) => c.group === 'fb_bp_cases').length})` },
+                        { id: 'fb_edge_insertion', label: `Ghép Cạnh (${FB_CASES.filter((c) => c.group === 'fb_edge_insertion').length})` },
+                      ].map((grp) => (
+                        <button
+                          key={grp.id}
+                          type="button"
+                          onClick={() => setFbRefGroup(grp.id)}
+                          className={`px-2.5 py-1 font-bold rounded-lg shrink-0 cursor-pointer transition-all ${
+                            fbRefGroup === grp.id
+                              ? 'bg-[#2d6a4f] text-white shadow-xs'
+                              : 'bg-[#faf6ee] text-[#5c4f43] border border-[#e2d8c7] hover:bg-[#f0e7d8]'
+                          }`}
+                        >
+                          {grp.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Danh sách case cards */}
+                  <div className="space-y-2.5">
+                    {filteredFBRefCases.length === 0 ? (
+                      <div className="p-6 text-center text-xs text-[#8c7b6c] bg-white rounded-2xl border border-[#e8dfcf]">
+                        Không tìm thấy thế cờ FB nào phù hợp với từ khóa "{blockRefSearch}".
+                      </div>
+                    ) : (
+                      filteredFBRefCases.map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* SB Tra cứu (28 thế) */}
+              {refTab === 'sb_ref' && (
+                <div className="space-y-3">
+                  {/* Banner tổng quan */}
+                  <div className="p-3 bg-[#f0f6fc] rounded-2xl border border-[#a8c8e8]">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#0c2d48]">
+                        <Compass className="w-4 h-4 text-[#1d4e89]" />
+                        <span>Thư viện Second Block (SB): 28 thế &lt;R, r, M, U&gt;</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white text-[#1d4e89] border border-[#a8c8e8]">
+                        {filteredSBRefCases.length} / {SB_CASES.length} thế
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#1d4e89] mt-1 leading-snug">
+                      Toàn bộ 28 thế Second Block giải quyết mỏ neo DR, cặp trước FR và cặp sau BR mà không phá hỏng First Block.
+                    </p>
+                  </div>
+
+                  {/* Thanh tìm kiếm & lọc nhóm */}
+                  <div className="flex flex-col gap-2 bg-white p-3 rounded-2xl border border-[#e8dfcf] shadow-2xs">
+                    <div className="flex items-center gap-2 bg-[#faf6ee] px-2.5 py-1.5 rounded-xl border border-[#e4d9c7]">
+                      <Search className="w-3.5 h-3.5 text-[#8c7b6c]" />
+                      <input
+                        type="text"
+                        value={blockRefSearch}
+                        onChange={(e) => setBlockRefSearch(e.target.value)}
+                        placeholder="Tìm thế SB theo tên, slot, công thức (R U R'...), nhận biết..."
+                        className="w-full text-xs text-[#2c221e] bg-transparent outline-none placeholder:text-[#a89b8d]"
+                      />
+                      {blockRefSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setBlockRefSearch('')}
+                          className="text-[#8c7b6c] hover:text-[#2c221e] cursor-pointer"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
+                      {[
+                        { id: 'ALL', label: `Tất cả (${SB_CASES.length})` },
+                        { id: 'dr_anchor', label: `Mỏ neo DR (${SB_CASES.filter((c) => c.group === 'dr_anchor').length})` },
+                        { id: 'sb_fp_white_u', label: 'Cặp Trước (Trắng U)' },
+                        { id: 'sb_fp_white_r', label: 'Cặp Trước (Trắng R)' },
+                        { id: 'sb_fp_white_f', label: 'Cặp Trước (Trắng F)' },
+                        { id: 'sb_fp_corner_d', label: 'Cặp Trước (Góc ở D)' },
+                        { id: 'sb_bp_cases', label: `Cặp Sau BR (${SB_CASES.filter((c) => c.group === 'sb_bp_cases').length})` },
+                        { id: 'sb_edge_insertion', label: `Ghép Cạnh SB (${SB_CASES.filter((c) => c.group === 'sb_edge_insertion').length})` },
+                      ].map((grp) => (
+                        <button
+                          key={grp.id}
+                          type="button"
+                          onClick={() => setSbRefGroup(grp.id)}
+                          className={`px-2.5 py-1 font-bold rounded-lg shrink-0 cursor-pointer transition-all ${
+                            sbRefGroup === grp.id
+                              ? 'bg-[#1d4e89] text-white shadow-xs'
+                              : 'bg-[#faf6ee] text-[#5c4f43] border border-[#e2d8c7] hover:bg-[#f0e7d8]'
+                          }`}
+                        >
+                          {grp.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Danh sách case cards */}
+                  <div className="space-y-2.5">
+                    {filteredSBRefCases.length === 0 ? (
+                      <div className="p-6 text-center text-xs text-[#8c7b6c] bg-white rounded-2xl border border-[#e8dfcf]">
+                        Không tìm thấy thế cờ SB nào phù hợp với từ khóa "{blockRefSearch}".
+                      </div>
+                    ) : (
+                      filteredSBRefCases.map((caseItem) => (
+                        <BlockCaseCard
+                          key={caseItem.id}
+                          caseItem={caseItem}
+                          onSetup={(setup, name) => handleSetupCase(setup, name, true)}
+                          onRun={(alg, name) => handleRunAlg(alg, name)}
+                        />
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* 2-Look CMLL */}
               {refTab === 'two_look' && (
                 <div className="space-y-3">

@@ -458,6 +458,27 @@
 | 438 | 2026-10-13 00:29 | `dig CNAME roux.sweetvn2004.id.vn @1.1.1.1` | Kiểm tra CNAME record trên Cloudflare DNS 1.1.1.1 | 0 answer (do proxied thành A record) |
 | 439 | 2026-10-13 00:29 | `dig A roux.sweetvn2004.id.vn @1.1.1.1` | Kiểm tra A record phân giải từ Cloudflare Proxy | Trả về 104.21.80.225 và 172.67.154.134 |
 | 440 | 2026-10-13 00:29 | `dig NS sweetvn2004.id.vn +short` | Kiểm tra nameservers của zone sweetvn2004.id.vn | adrian và tadeo .ns.cloudflare.com |
+| 441 | 2026-10-13 20:19 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/parse_fb_sb.py` | Trích xuất toàn bộ nội dung text và công thức chi tiết từ các trang FB và SB của Google Site rouxmethodvn | Hoàn tất bóc tách 7 file text |
+| 442 | 2026-10-13 20:21 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/analyze_headers.py` | Phân tích cấu trúc tiêu đề và các nhóm trường hợp trong tài liệu FB và SB từ Google Site | Nhận diện đủ các phân nhóm Front/Back và hướng góc |
+| 443 | 2026-10-13 20:21 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/dump_sb_details.py` | Kiểm tra chi tiết danh mục các thế cờ SB (Front Pair, Back Pair và góc ở D) | Thu thập các chuỗi công thức SB từ Google Site |
+| 444 | 2026-10-13 20:22 | `npx tsx /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/test_fb_math.ts` | Chạy test xác thực tính nghịch đảo của công thức và thiết lập thế cờ FB | Báo lỗi đường dẫn tương đối (Exit code 1) |
+| 445 | 2026-10-13 20:22 | `npx tsx /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/test_fb_math.ts` | Chạy lại test sau khi sửa đường dẫn tuyệt đối cho tsx | Thành công 100%: DFL và FL giải chính xác |
+| 446 | 2026-10-13 20:23 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/count_fb_sb.py` | Kiểm tra dung lượng và số dòng toàn bộ tài liệu FB và SB đã cào từ Google Site | Đã khảo sát 4 file tổng hợp và ghép cạnh |
+| 447 | 2026-10-13 20:24 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/extract_all_cases.py` | Bóc tách tự động danh sách các thế cờ FB và SB từ các file text đã crawl | Trích xuất thành công 131 case FB tổng hợp, 44 case FB ghép cạnh |
+| 448 | 2026-10-13 20:24 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/extract_all_cases.py` | Nâng cấp regex bóc tách toàn diện danh mục SB từ file text | Trích xuất thành công 141 case SB Main và 32 case SB ghép cạnh |
+| 449 | 2026-10-13 20:25 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/parse_fb_cases.py` | Thử nghiệm bóc tách có cấu trúc phân nhóm cho toàn bộ 131 case FB | Lỗi cú pháp cú pháp for-loop (Exit code 1) |
+| 450 | 2026-10-13 20:25 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/parse_fb_cases.py` | Chạy lại bóc tách phân nhóm FB sau khi fix cú pháp | Thành công: Front White Left, Front White Front, Front White Top, Back |
+| 451 | 2026-10-13 20:26 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/parse_sb_cases.py` | Bóc tách có cấu trúc phân nhóm cho 141 case SB Main | Thành công: Front White U, Back White U, Back White D |
+| 452 | 2026-10-13 20:27 | `npx tsx /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/check_facelets.ts` | Khảo sát danh mục index của 27 facelets mặt U, F, L phục vụ vẽ sơ đồ isometric FB | Khớp chuẩn 54-facelet engine |
+| 453 | 2026-10-13 20:29 | `python3 /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/generate_rouxBlockData.py` | Sinh mã TypeScript chuẩn hóa toàn bộ các trường hợp FB và SB vào src/data/rouxBlockData.ts | Tạo thành công 31 case FB và 28 case SB kèm metadata |
+| 454 | 2026-10-13 20:30 | `npx tsx /home/sweetvn/.gemini/antigravity-cli/brain/c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/test_colors.ts` | Xác thực toán học trích xuất màu sắc chính xác của thế cờ từ setupAlg | U_F là Đỏ, F_U là Xanh lá, L_C là Đỏ (khớp 100% case FB) |
+| 455 | 2026-10-13 20:32 | `npm run build` | Kiểm tra biên dịch TypeScript và Vite sau khi triển khai BlockDiagram trong ReferenceDiagrams.tsx | Exit 0 — Build thành công trong 540ms |
+| 456 | 2026-10-13 20:41 | `npm run build` | Kiểm tra biên dịch sau khi tích hợp FB & SB vào LessonDrawer.tsx và BlockCaseCard.tsx | Exit 2 — Phát hiện 7 lỗi type/lint (unused props & alg requirement) |
+| 457 | 2026-10-13 20:43 | `npm run build` | Kiểm tra lại biên dịch sau khi tinh chỉnh BlockDiagramProps và dọn dẹp unused vars | Exit 0 — Build thành công trong 692ms |
+| 458 | 2026-10-13 20:43 | `git status -s` | Kiểm tra trạng thái git working tree trước khi commit | Exit 0 — 5 files modified/untracked |
+| 459 | 2026-10-13 20:44 | `git add .` | Stage toàn bộ các thay đổi mã nguồn, dữ liệu FB/SB và tài liệu | Exit 0 |
+| 460 | 2026-10-13 20:45 | `git commit -m "..."` | Commit theo chuẩn Conventional Commits cho tính năng cẩm nang FB & SB | Exit 0 |
+| 461 | 2026-10-13 20:45 | `git status -s` | Xác nhận working tree sạch sẽ sau commit | Exit 0 — Clean tree |
 
 
 
