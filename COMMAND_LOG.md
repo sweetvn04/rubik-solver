@@ -488,6 +488,9 @@
 | 468 | 2026-10-13 21:31 | `git status -s` | Kiểm tra trạng thái git working tree trước khi commit | Exit 0 — 6 files modified, 1 untracked |
 | 469 | 2026-10-13 21:32 | `git add .` | Stage toàn bộ thay đổi mã nguồn CaseStudyHUD, Zustand store, App split-view và LessonDrawer | Exit 0 |
 | 470 | 2026-10-13 21:32 | `git commit -m "feat(case-study): add interactive 3D Case Study HUD and desktop split-view for FB & SB"` | Commit tính năng học thế cờ tương tác 3D và split-view theo chuẩn Conventional Commits | Exit 0 — Commit `b1ff779` |
+| 471 | 2026-10-13 21:33 | `git commit -am "docs: sync commit hash in changelog and command log"` | Cập nhật commit hash b1ff779 vào CHANGELOG.md và COMMAND_LOG.md | Exit 0 — Commit `dd1cd68` |
+| 472 | 2026-10-13 21:33 | `git status -s` | Kiểm tra working tree sau commit tài liệu | Exit 0 — Clean tree |
+| 473 | 2026-10-13 21:33 | `npm run build` | Kiểm tra biên dịch cuối cùng toàn bộ dự án | Exit 0 — Build thành công trong 555ms |
 
 
 
