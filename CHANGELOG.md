@@ -6,6 +6,49 @@
 
 ## 📅 2026-10-13
 
+### 🧊 [Commit `pending`] — Trải Nghiệm Học Thế Cờ Tương Tác 3D Trực Tiếp: Tích Hợp Case Study HUD, Chế Độ Chia Màn Hình Split View Desktop & Điều Hướng Chuỗi Thế FB/SB
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng phản hồi: "nhưng mà ảnh 2d thì khó nhìn quá, có cách nào để vừa hiện công thức vừa hiện trường hợp đó trên khối 3d k".
+  - Nhu cầu thực tế: Ảnh sơ đồ isometric 2D cố định góc nhìn có thể gây khó khăn cho người mới khi cần xoay đa chiều để quan sát các viên ẩn ở mặt sau/đáy. Người dùng muốn xem trực tiếp thế cờ trên khối Rubik 3D thật trong không gian, vừa nhìn thấy công thức di chuyển từng bước (step-by-step playback), vừa có thể xoay camera tự do và chuyển đổi linh hoạt giữa các thế cờ.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Nâng Cấp Zustand Store Quản Lý Trạng Thái Học Thế Cờ (`src/store/useRubikStore.ts`):**
+     - Khởi tạo interface `ActiveCaseStudy` lưu trữ toàn bộ metadata của thế cờ đang học: ID, tên, nhóm, slot mục tiêu, vị trí góc/cạnh, công thức giải (`alg`), công thức setup (`setupAlg`), mẹo nhận diện (`recognition`), lời khuyên công thái học (`tip`).
+     - Bổ sung state: `activeCaseStudy`, `caseStudyGroup` (danh sách toàn bộ các thế trong nhóm đang học), `caseStudyIndex` (vị trí hiện tại), `caseCurrentMoveIndex` (tiến độ thực thi bước xoay).
+     - Triển khai bộ actions tương tác:
+       - `startCaseStudy(caseItem, groupList)`: Reset Rubik về solved, áp dụng chuỗi setup toán học trong 90ms và kích hoạt chế độ học 3D.
+       - `closeCaseStudy()`: Thoát chế độ học thế cờ.
+       - `resetCaseStudyState()`: Tái thiết lập thế cờ ban đầu để người dùng thực hành lại từ đầu.
+       - `playCaseStudyDemo()`: Tự động chạy toàn bộ công thức giải trên khối 3D với nhịp độ sư phạm chậm rãi (400ms/move).
+       - `stepCaseForward()` / `stepCaseBackward()`: Điều khiển tiến/lùi chính xác từng bước xoay trong công thức giải.
+       - `nextCaseStudy()` / `prevCaseStudy()`: Di chuyển liền mạch sang thế cờ kế tiếp/trước đó trong cùng nhóm mà không cần quay lại menu danh sách.
+  2. **Bảng Điều Khiển Nổi Tương Tác 3D Case Study HUD (`src/components/ui/CaseStudyHUD.tsx`):**
+     - Thiết kế giao diện đảo nổi glassmorphism (`backdrop-blur-xl`) ngay trên canvas 3D với phong cách cozy gốm sứ.
+     - Header: Hiển thị huy hiệu slot mục tiêu (Slot FL, BL, FR, BR, DL, DR), tên thế cờ tiếng Việt, chỉ số tiến độ trong nhóm `(Thế X/Y)`, và nút đóng hoặc nút `[ 📖 ]` quay lại bài học.
+     - Hiển thị trực quan chuỗi xoay: Các chip bước xoay (`R`, `U`, `R'`, `F'...`) với highlight nổi bật bước đang thực thi, đánh dấu gạch ngang mờ các bước đã qua, và chỉ số đếm số move.
+     - Hộp mẹo nhận biết & finger trick công thái học đặt ngay dưới công thức để người học quan sát trực diện trên khối 3D.
+     - Bộ nút điều khiển tương tác đầy đủ: `[ ‹ Thế trước ]`, `[ Thế tiếp › ]`, `[ ⏪ Đặt lại ]`, `[ ‹ Bước ]`, `[ ▶ Chạy demo ]`, `[ Bước › ]`.
+  3. **Tối Ưu Thẻ Bài Học & Khả Năng Mở 3D Nhanh (`src/components/ui/BlockCaseCard.tsx`):**
+     - Bổ sung nút nổi bật `[ 🧊 Học trên khối 3D ]` giúp người học lập tức chuyển vào chế độ thực hành không gian 3D.
+     - Biến thumbnail sơ đồ isometric 2D thành nút bấm mở 3D trực tiếp với tooltip rõ ràng.
+     - Hiển thị viền highlight cam nổi bật (`ring-2 ring-[#e07a5f]/20`) khi thẻ thế cờ đang được xem trên khối 3D.
+  4. **Chế Độ Chia Đôi Màn Hình Split View Trên Desktop & Tối Ưu Mobile (`src/App.tsx` & `RubikCanvas.tsx`):**
+     - **Trên Desktop (>= 1024px):** Khi ở chế độ Cẩm nang lý thuyết (`theory`), giao diện tự động chia làm 2 cột: Cột trái (48% width) hiển thị Canvas 3D trực tiếp và bảng điều khiển `CaseStudyHUD`, Cột phải (52% width) hiển thị danh sách giáo trình `LessonDrawer`. Nhấp vào bất kỳ thế cờ nào bên phải sẽ ngay lập tức xoay khối 3D bên trái mà không làm đóng bài học.
+     - **Trên Mobile (< 1024px):** Khi nhấn "Học trên khối 3D", tự động chuyển toàn màn hình sang Viewport 3D. Đồng thời camera 3D tự động nâng góc nhìn lên `offsetY = 0.85` để khối Rubik nằm hoàn hảo ở nửa trên màn hình, không bị bảng điều khiển HUD che khuất.
+  5. **Tích Hợp Đồng Bộ Toàn Bộ 9 Phân Nhóm FB & SB (`src/components/ui/LessonDrawer.tsx`):**
+     - Truyền `allCasesInGroup` và `onSwitchTo3D` qua toàn bộ 9 khu vực hiển thị thẻ bài học: Mỏ neo DL, Cặp trên U (FB Pairs), Ghép cạnh FB, Mỏ neo DR, Cặp trước FR, Cặp sau BR, Ghép cạnh SB, cùng 2 thư viện tra cứu toàn diện FB Ref (31 thế) và SB Ref (28 thế).
+* **Files tác động:**
+  - `src/store/useRubikStore.ts`: Bổ sung state và actions cho chế độ Case Study tương tác 3D.
+  - `src/components/ui/CaseStudyHUD.tsx`: Tạo mới component HUD điều khiển học thế cờ 3D.
+  - `src/components/ui/BlockCaseCard.tsx`: Thêm nút mở 3D, thumbnail tương tác và active styling.
+  - `src/components/cube/RubikCanvas.tsx`: Tối ưu nâng camera di động khi bật Case Study.
+  - `src/App.tsx`: Tích hợp Split View desktop và routing tương tác 3D.
+  - `src/components/ui/LessonDrawer.tsx`: Đồng bộ toàn bộ các danh sách thế cờ FB/SB.
+  - `COMMAND_LOG.md`: Cập nhật nhật ký lệnh kiểm tra và biên dịch.
+  - `CHANGELOG.md`: Ghi nhận chi tiết thay đổi mã nguồn.
+
+---
+
 ### 🎨 [Commit `f504acb`] — Bổ Sung Toàn Bộ 31 Thế First Block (FB) & 28 Thế Second Block (SB) Kèm Sơ Đồ Isometric 3D & Demo Tương Tác Chuẩn Roux VN
 
 * **Bối cảnh & Yêu cầu:**

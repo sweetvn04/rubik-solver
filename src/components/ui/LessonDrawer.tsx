@@ -704,8 +704,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={FB_CASES.filter((c) => c.group === 'dl_anchor')}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))}
                     </div>
@@ -765,8 +767,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={filteredFBPairCases}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))}
                     </div>
@@ -800,8 +804,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={FB_CASES.filter((c) => c.group === 'fb_edge_insertion')}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))}
                     </div>
@@ -882,8 +888,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={SB_CASES.filter((c) => c.group === 'dr_anchor')}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))}
                     </div>
@@ -942,8 +950,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={filteredSBFrontPairCases}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))}
                     </div>
@@ -1002,8 +1012,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={filteredSBBackPairCases}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))}
                     </div>
@@ -1037,8 +1049,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={SB_CASES.filter((c) => c.group === 'sb_edge_insertion')}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))}
                     </div>
@@ -1698,8 +1712,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={filteredFBRefCases}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))
                     )}
@@ -1786,8 +1802,10 @@ export const LessonDrawer: React.FC<LessonDrawerProps> = ({
                         <BlockCaseCard
                           key={caseItem.id}
                           caseItem={caseItem}
+                          allCasesInGroup={filteredSBRefCases}
                           onSetup={(setup, name) => handleSetupCase(setup, name, true)}
                           onRun={(alg, name) => handleRunAlg(alg, name)}
+                          onSwitchTo3D={onSwitchTo3D}
                         />
                       ))
                     )}

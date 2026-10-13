@@ -20,10 +20,11 @@ export function RubikCanvas({ onResetCamera }: RubikCanvasProps) {
   const isMobile = useMemo(() => isMobileDevice(), []);
   const dpr = useMemo(() => getOptimizedDPR(), []);
   const isTutorActive = useRubikStore((s) => s.isTutorActive);
+  const activeCaseStudy = useRubikStore((s) => s.activeCaseStudy);
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
-  // Khi đang bật Tutor Mode trên màn hình điện thoại, nâng nhẹ khối Rubik lên nửa trên để không bị che bởi thanh hướng dẫn
-  const offsetY = isTutorActive && isMobile ? 0.85 : 0;
+  // Khi đang bật Tutor Mode hoặc Case Study trên màn hình điện thoại, nâng nhẹ khối Rubik lên nửa trên để không bị che bởi bảng điều khiển
+  const offsetY = (isTutorActive || activeCaseStudy) && isMobile ? 0.85 : 0;
 
   useEffect(() => {
     invalidate();

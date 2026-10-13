@@ -483,6 +483,9 @@
 | 463 | 2026-10-13 20:45 | `git commit -am "docs: sync commit hash in changelog and command log"` | Cập nhật commit hash f504acb vào tài liệu | Exit 0 |
 | 464 | 2026-10-13 20:45 | `git status -s` | Kiểm tra working tree sau doc commit | Exit 0 — Clean tree |
 | 465 | 2026-10-13 20:45 | `npm run build` | Kiểm tra biên dịch cuối cùng của toàn bộ project | Exit 0 — Build thành công trong 694ms |
+| 466 | 2026-10-13 21:30 | `npm run build` | Kiểm tra biên dịch sau khi tích hợp CaseStudyHUD và allCasesInGroup | Exit 2 — TS6133 unused imports (ExternalLink, Pause) |
+| 467 | 2026-10-13 21:31 | `npm run build` | Kiểm tra biên dịch lại sau khi loại bỏ 2 unused imports | Exit 0 — Build thành công trong 621ms |
+| 468 | 2026-10-13 21:31 | `git status -s` | Kiểm tra trạng thái git working tree trước khi commit | Exit 0 — 6 files modified, 1 untracked |
 
 
 

@@ -39,6 +39,22 @@ export interface SolveResult {
   errorMessage?: string;
 }
 
+export interface ActiveCaseStudy {
+  id: string;
+  name: string;
+  group: string;
+  groupName?: string;
+  blockType?: string;
+  targetSlot?: string;
+  cornerPos?: string;
+  edgePos?: string;
+  setupAlg: string;
+  alg: string;
+  altAlg?: string;
+  recognition?: string;
+  tip?: string;
+}
+
 interface RubikStore {
   cubies: CubieState[];
   isAnimating: boolean;
@@ -54,6 +70,12 @@ interface RubikStore {
   tutorChunks: TutorChunk[];
   tutorAllMoves: string[];
   tutorCurrentIndex: number;
+
+  // Case Study State (Học thế cờ tương tác trực tiếp trên 3D)
+  activeCaseStudy: ActiveCaseStudy | null;
+  caseStudyGroup: ActiveCaseStudy[];
+  caseStudyIndex: number;
+  caseCurrentMoveIndex: number;
 
   // Focus Mode State (Làm nổi bật các viên của phase đang giải)
   isFocusMode: boolean;
@@ -76,6 +98,16 @@ interface RubikStore {
   setLofiVolume: (vol: number) => void;
   solveFirstTwoBlocks: () => SolveResult | null;
   solveFullCube: () => FullRouxSolution | null;
+
+  // Case Study Actions
+  startCaseStudy: (caseItem: ActiveCaseStudy, group?: ActiveCaseStudy[]) => void;
+  closeCaseStudy: () => void;
+  resetCaseStudyState: () => void;
+  playCaseStudyDemo: () => void;
+  stepCaseForward: () => void;
+  stepCaseBackward: () => void;
+  nextCaseStudy: () => void;
+  prevCaseStudy: () => void;
 
   // Tutor Mode Actions
   startTutorMode: () => { success: boolean; message?: string };
@@ -143,6 +175,12 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
   tutorChunks: [],
   tutorAllMoves: [],
   tutorCurrentIndex: 0,
+
+  // Case Study State (Học thế cờ tương tác trực tiếp trên 3D)
+  activeCaseStudy: null,
+  caseStudyGroup: [],
+  caseStudyIndex: 0,
+  caseCurrentMoveIndex: 0,
 
   // Focus Mode State
   isFocusMode: true,
@@ -528,5 +566,119 @@ export const useRubikStore = create<RubikStore>((set, get) => ({
     });
   },
 
+  // ── Case Study Actions ──
+  startCaseStudy: (caseItem, group) => {
+    const list = group && group.length > 0 ? group : [caseItem];
+    const idx = list.findIndex((c) => c.id === caseItem.id);
+    const validIdx = idx >= 0 ? idx : 0;
+
+    set({
+      isTutorActive: false,
+      activeCaseStudy: caseItem,
+      caseStudyGroup: list,
+      caseStudyIndex: validIdx,
+      caseCurrentMoveIndex: 0,
+      moveQueue: [],
+      currentMove: null,
+      isAnimating: false,
+    });
+
+    get().reset();
+    setTimeout(() => {
+      get().enqueueAlgorithm(caseItem.setupAlg, 90);
+    }, 120);
+  },
+
+  closeCaseStudy: () => {
+    set({
+      activeCaseStudy: null,
+      caseStudyGroup: [],
+      caseStudyIndex: 0,
+      caseCurrentMoveIndex: 0,
+    });
+  },
+
+  resetCaseStudyState: () => {
+    const { activeCaseStudy, isAnimating, moveQueue } = get();
+    if (!activeCaseStudy || isAnimating || moveQueue.length > 0) return;
+
+    set({
+      caseCurrentMoveIndex: 0,
+      moveQueue: [],
+      currentMove: null,
+      isAnimating: false,
+    });
+    get().reset();
+    setTimeout(() => {
+      get().enqueueAlgorithm(activeCaseStudy.setupAlg, 90);
+    }, 120);
+  },
+
+  playCaseStudyDemo: () => {
+    const { activeCaseStudy, isAnimating, moveQueue, caseCurrentMoveIndex } = get();
+    if (!activeCaseStudy || isAnimating || moveQueue.length > 0) return;
+
+    const moves = parseAlgorithm(activeCaseStudy.alg, 400);
+    if (!moves.length) return;
+
+    if (caseCurrentMoveIndex >= moves.length) {
+      get().reset();
+      setTimeout(() => {
+        get().enqueueAlgorithm(activeCaseStudy.setupAlg, 90);
+        setTimeout(() => {
+          get().enqueueAlgorithm(activeCaseStudy.alg, 400);
+          set({ caseCurrentMoveIndex: moves.length });
+        }, 200);
+      }, 120);
+    } else {
+      const remainingMoves = moves.slice(caseCurrentMoveIndex);
+      const remainingAlg = remainingMoves.map((m) => m.raw).join(' ');
+      get().enqueueAlgorithm(remainingAlg, 400);
+      set({ caseCurrentMoveIndex: moves.length });
+    }
+  },
+
+  stepCaseForward: () => {
+    const { activeCaseStudy, isAnimating, moveQueue, caseCurrentMoveIndex } = get();
+    if (!activeCaseStudy || isAnimating || moveQueue.length > 0) return;
+
+    const moves = parseAlgorithm(activeCaseStudy.alg, 350);
+    if (caseCurrentMoveIndex < moves.length) {
+      const nextMove = moves[caseCurrentMoveIndex];
+      get().enqueueMove(nextMove.raw, 350);
+      set({ caseCurrentMoveIndex: caseCurrentMoveIndex + 1 });
+    }
+  },
+
+  stepCaseBackward: () => {
+    const { activeCaseStudy, isAnimating, moveQueue, caseCurrentMoveIndex } = get();
+    if (!activeCaseStudy || isAnimating || moveQueue.length > 0) return;
+
+    const moves = parseAlgorithm(activeCaseStudy.alg, 300);
+    if (caseCurrentMoveIndex > 0) {
+      const prevMove = moves[caseCurrentMoveIndex - 1];
+      const inv = invertMove(prevMove.raw);
+      get().enqueueMove(inv, 300);
+      set({ caseCurrentMoveIndex: caseCurrentMoveIndex - 1 });
+    }
+  },
+
+  nextCaseStudy: () => {
+    const { caseStudyGroup, caseStudyIndex, isAnimating, moveQueue } = get();
+    if (caseStudyGroup.length <= 1 || isAnimating || moveQueue.length > 0) return;
+
+    const nextIdx = (caseStudyIndex + 1) % caseStudyGroup.length;
+    const nextCase = caseStudyGroup[nextIdx];
+    get().startCaseStudy(nextCase, caseStudyGroup);
+  },
+
+  prevCaseStudy: () => {
+    const { caseStudyGroup, caseStudyIndex, isAnimating, moveQueue } = get();
+    if (caseStudyGroup.length <= 1 || isAnimating || moveQueue.length > 0) return;
+
+    const prevIdx = (caseStudyIndex - 1 + caseStudyGroup.length) % caseStudyGroup.length;
+    const prevCase = caseStudyGroup[prevIdx];
+    get().startCaseStudy(prevCase, caseStudyGroup);
+  },
 }));
 

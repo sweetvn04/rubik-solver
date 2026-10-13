@@ -1,19 +1,29 @@
 import React from 'react';
 import type { BlockCase } from '../../data/rouxBlockData';
 import { BlockDiagram } from './ReferenceDiagrams';
-import { RotateCcw, Play, Lightbulb, Compass } from 'lucide-react';
+import { useRubikStore } from '../../store/useRubikStore';
+import { RotateCcw, Play, Lightbulb, Compass, Box } from 'lucide-react';
 
 interface BlockCaseCardProps {
   caseItem: BlockCase;
+  allCasesInGroup?: BlockCase[];
   onSetup: (setupAlg: string, name: string) => void;
   onRun: (alg: string, name: string) => void;
+  onSwitchTo3D?: (caseName: string) => void;
 }
 
 export const BlockCaseCard: React.FC<BlockCaseCardProps> = ({
   caseItem,
+  allCasesInGroup,
   onSetup,
   onRun,
+  onSwitchTo3D,
 }) => {
+  const startCaseStudy = useRubikStore((s) => s.startCaseStudy);
+  const activeCaseStudy = useRubikStore((s) => s.activeCaseStudy);
+
+  const isCurrentActive = activeCaseStudy?.id === caseItem.id;
+
   const isFB = caseItem.blockType === 'fb';
   const themeBadge = isFB
     ? 'bg-[#eef6f2] text-[#2d6a4f] border-[#c2e2cf]'
@@ -22,8 +32,21 @@ export const BlockCaseCard: React.FC<BlockCaseCardProps> = ({
     ? 'bg-[#2d6a4f] hover:bg-[#245640]'
     : 'bg-[#1d4e89] hover:bg-[#163e6e]';
 
+  const handleOpen3D = () => {
+    startCaseStudy(caseItem, allCasesInGroup);
+    if (onSwitchTo3D) {
+      onSwitchTo3D(caseItem.name);
+    }
+  };
+
   return (
-    <div className="p-3 bg-white rounded-2xl border border-[#e8dfcf] shadow-2xs flex flex-col gap-2.5 transition-all hover:border-[#dfd0bd]">
+    <div
+      className={`p-3 bg-white rounded-2xl border transition-all hover:border-[#dfd0bd] flex flex-col gap-2.5 ${
+        isCurrentActive
+          ? 'border-[#e07a5f] ring-2 ring-[#e07a5f]/20 shadow-md'
+          : 'border-[#e8dfcf] shadow-2xs'
+      }`}
+    >
       {/* Header: Tên thế cờ + Vị trí slot + Nhóm */}
       <div className="flex items-start justify-between gap-2.5">
         <div className="flex-1 min-w-0">
@@ -56,8 +79,13 @@ export const BlockCaseCard: React.FC<BlockCaseCardProps> = ({
           </div>
         </div>
 
-        {/* Sơ đồ Isometric 3D SVG thu nhỏ */}
-        <div className="shrink-0 flex flex-col items-center">
+        {/* Sơ đồ Isometric 3D SVG thu nhỏ (Click để mở ngay trên 3D) */}
+        <button
+          type="button"
+          onClick={handleOpen3D}
+          className="shrink-0 flex flex-col items-center group cursor-pointer relative"
+          title="Bấm để mở thế cờ này trực tiếp trên khối Rubik 3D"
+        >
           <BlockDiagram
             blockType={caseItem.blockType}
             targetSlot={caseItem.targetSlot}
@@ -67,7 +95,10 @@ export const BlockCaseCard: React.FC<BlockCaseCardProps> = ({
             edgePos={caseItem.edgePos}
             size={68}
           />
-        </div>
+          <span className="absolute bottom-1 right-1 p-0.5 bg-black/60 text-white rounded text-[8px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+            <Box className="w-2.5 h-2.5" /> 3D
+          </span>
+        </button>
       </div>
 
       {/* Mẹo nhận biết đặc trưng */}
@@ -110,25 +141,39 @@ export const BlockCaseCard: React.FC<BlockCaseCardProps> = ({
         )}
       </div>
 
-      {/* Nút tương tác 3D */}
-      <div className="flex items-center gap-2 pt-0.5">
+      {/* Nút tương tác: 1 nút mở 3D nổi bật và 2 nút nhanh */}
+      <div className="flex items-center gap-1.5 pt-0.5">
+        {/* Nút chính: Mở thế cờ trực tiếp trên 3D */}
+        <button
+          type="button"
+          onClick={handleOpen3D}
+          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[#e07a5f] hover:bg-[#d4684c] text-white rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer"
+          title="Mở thế cờ và công thức trực tiếp trên khối Rubik 3D"
+        >
+          <Box className="w-3.5 h-3.5" />
+          <span>Học trên khối 3D</span>
+        </button>
+
+        {/* Nút nạp nhanh */}
         <button
           type="button"
           onClick={() => onSetup(caseItem.setupAlg, caseItem.name)}
-          className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all cursor-pointer"
+          className="px-2.5 py-1.5 text-xs font-semibold bg-[#faf6ee] hover:bg-white text-[#5c4f43] rounded-xl border border-[#e2d8c7] transition-all cursor-pointer flex items-center gap-1"
           title={`Thiết lập khối Rubik 3D về thế ${caseItem.name}`}
         >
           <RotateCcw className="w-3 h-3 text-[#3d5a80]" />
-          <span>Tập thế cờ</span>
+          <span className="hidden sm:inline">Nạp</span>
         </button>
+
+        {/* Nút chạy demo */}
         <button
           type="button"
           onClick={() => onRun(caseItem.alg, caseItem.name)}
-          className={`flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white rounded-xl shadow-xs transition-all cursor-pointer ${themeBtn}`}
-          title={`Xem minh hoạ 3D với tốc độ chậm (400ms)`}
+          className={`flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-bold text-white rounded-xl shadow-xs transition-all cursor-pointer ${themeBtn}`}
+          title="Xem minh hoạ 3D với tốc độ chậm (400ms)"
         >
           <Play className="w-3 h-3 fill-current" />
-          <span>Xem Demo 3D</span>
+          <span className="hidden sm:inline">Demo</span>
         </button>
       </div>
     </div>

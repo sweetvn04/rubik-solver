@@ -2,16 +2,18 @@ import { useState, useRef, useCallback } from 'react';
 import { RubikCanvas } from './components/cube/RubikCanvas';
 import { PlayerBar } from './components/ui/PlayerBar';
 import { TutorCard } from './components/ui/TutorCard';
+import { CaseStudyHUD } from './components/ui/CaseStudyHUD';
 import { LessonDrawer } from './components/ui/LessonDrawer';
 import { CubeInputModal } from './components/ui/CubeInputModal';
 import { TopNavbar } from './components/ui/TopNavbar';
 import { useRubikStore } from './store/useRubikStore';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
-import { MonitorPlay, X } from 'lucide-react';
+import { MonitorPlay, X, Box } from 'lucide-react';
 
 export default function App() {
   useKeyboardControls();
   const isTutorActive = useRubikStore((s) => s.isTutorActive);
+  const activeCaseStudy = useRubikStore((s) => s.activeCaseStudy);
   const [activeView, setActiveView] = useState<'workspace' | 'theory'>('workspace');
   const [demoToastInfo, setDemoToastInfo] = useState<string | null>(null);
   const [isInputModalOpen, setIsInputModalOpen] = useState(false);
@@ -42,8 +44,8 @@ export default function App() {
           activeView === 'workspace' ? 'flex flex-col' : 'hidden'
         }`}
       >
-        {/* Banner thông báo khi chuyển từ bài học sang xem demo 3D */}
-        {demoToastInfo && (
+        {/* Banner thông báo khi chuyển từ bài học sang xem demo 3D (chỉ khi không có Case Study HUD) */}
+        {demoToastInfo && !activeCaseStudy && (
           <div className="absolute top-14 sm:top-18 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-3.5 py-1.5 bg-white/95 backdrop-blur-md text-xs font-bold text-[#2c221e] rounded-xl border border-[#e8dfcf] shadow-md animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto">
             <MonitorPlay className="w-3.5 h-3.5 text-[#e07a5f]" />
             <span className="truncate max-w-[180px] sm:max-w-xs">
@@ -81,12 +83,13 @@ export default function App() {
                 'radial-gradient(circle at 50% 46%, rgba(255, 253, 248, 0.35) 0%, transparent 58%), radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(160, 135, 110, 0.15) 75%, rgba(110, 85, 60, 0.25) 100%)',
             }}
           />
-
         </div>
 
-        {/* Tutor Mode Card hoặc Bottom Player Bar */}
+        {/* Tutor Mode Card, Case Study HUD hoặc Bottom Player Bar */}
         {isTutorActive ? (
           <TutorCard />
+        ) : activeCaseStudy ? (
+          <CaseStudyHUD onOpenTheory={() => setActiveView('theory')} />
         ) : (
           <footer className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))] left-1/2 -translate-x-1/2 z-20 pointer-events-auto w-full flex justify-center px-2">
             <PlayerBar onOpenInputModal={() => setIsInputModalOpen(true)} />
@@ -94,18 +97,47 @@ export default function App() {
         )}
       </section>
 
-      {/* 2B. CHẾ ĐỘ GIÁO TRÌNH LÝ THUYẾT (THEORY VIEW TOÀN TRANG) */}
+      {/* 2B. CHẾ ĐỘ GIÁO TRÌNH LÝ THUYẾT (HỖ TRỢ SPLIT-VIEW TRÊN DESKTOP) */}
       {activeView === 'theory' && (
-        <section className="flex-1 w-full h-full relative overflow-hidden pt-13 sm:pt-16">
-          <LessonDrawer
-            isOpen={true}
-            isFullPage={true}
-            onClose={() => setActiveView('workspace')}
-            onSwitchTo3D={(stepTitle) => {
-              setActiveView('workspace');
-              setDemoToastInfo(stepTitle || 'Mô phỏng 3D');
-            }}
-          />
+        <section className="flex-1 w-full h-full relative overflow-hidden pt-13 sm:pt-16 flex flex-col lg:flex-row">
+          {/* Cột trái trên Desktop: Bàn xoay 3D trực tiếp (Live 3D Cube + Case HUD) */}
+          <div className="hidden lg:flex lg:w-[46%] xl:w-[48%] h-full relative border-r border-[#ebdcca]/80 overflow-hidden bg-[#f6f2e9]">
+            <RubikCanvas onResetCamera={handleCameraReset} />
+
+            {/* Cozy Studio Vignette */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  'radial-gradient(circle at 50% 46%, rgba(255, 253, 248, 0.35) 0%, transparent 58%), radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(160, 135, 110, 0.15) 75%, rgba(110, 85, 60, 0.25) 100%)',
+              }}
+            />
+
+            {/* Case Study HUD nổi bên cột 3D */}
+            {activeCaseStudy ? (
+              <CaseStudyHUD onOpenTheory={() => setActiveView('theory')} />
+            ) : (
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-3.5 py-2 bg-white/92 backdrop-blur-md rounded-2xl border border-[#e8dfcf] shadow-sm text-xs font-semibold text-[#5c4f43] flex items-center gap-2 pointer-events-none">
+                <Box className="w-4 h-4 text-[#e07a5f]" />
+                <span>Bấm vào thế cờ bất kỳ bên phải để xem trực tiếp trên khối 3D</span>
+              </div>
+            )}
+          </div>
+
+          {/* Cột phải (hoặc toàn trang trên Mobile): Cẩm nang giáo trình */}
+          <div className="flex-1 h-full overflow-hidden">
+            <LessonDrawer
+              isOpen={true}
+              isFullPage={true}
+              onClose={() => setActiveView('workspace')}
+              onSwitchTo3D={(stepTitle) => {
+                if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                  setActiveView('workspace');
+                }
+                setDemoToastInfo(stepTitle || 'Mô phỏng 3D');
+              }}
+            />
+          </div>
         </section>
       )}
 
