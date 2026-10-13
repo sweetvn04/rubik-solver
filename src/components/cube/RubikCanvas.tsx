@@ -23,23 +23,25 @@ export function RubikCanvas({ onResetCamera }: RubikCanvasProps) {
   const activeCaseStudy = useRubikStore((s) => s.activeCaseStudy);
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
-  // Khi đang bật Tutor Mode hoặc Case Study trên màn hình điện thoại, nâng nhẹ khối Rubik lên nửa trên để không bị che bởi bảng điều khiển
-  const offsetY = (isTutorActive || activeCaseStudy) && isMobile ? 0.85 : 0;
+  // Khi đang bật Tutor Mode hoặc Case Study trên màn hình điện thoại, điều chỉnh góc ngắm để khối Rubik nổi lên 1/3 trên màn hình, không bị card che khuất
+  const isCaseOrTutor = Boolean((isTutorActive || activeCaseStudy) && isMobile);
+  const targetY = isCaseOrTutor ? -0.85 : 0;
+  const groupY = isCaseOrTutor ? 0.35 : 0;
 
   useEffect(() => {
     invalidate();
-  }, [offsetY]);
+  }, [targetY, groupY]);
 
   // Expose hàm reset camera về góc nhìn chuẩn Roux cho parent
   const handleResetCamera = useCallback(() => {
     const controls = controlsRef.current;
     if (!controls) return;
     const targetPos = isMobile ? DEFAULT_CAMERA_POS_MOBILE : DEFAULT_CAMERA_POS;
-    controls.object.position.set(targetPos.x, targetPos.y + offsetY, targetPos.z);
-    controls.target.set(0, offsetY, 0);
+    controls.object.position.set(targetPos.x, targetPos.y + groupY, targetPos.z);
+    controls.target.set(0, targetY, 0);
     controls.update();
     invalidate();
-  }, [isMobile, offsetY]);
+  }, [isMobile, groupY, targetY]);
 
   useEffect(() => {
     onResetCamera?.(handleResetCamera);
@@ -50,7 +52,7 @@ export function RubikCanvas({ onResetCamera }: RubikCanvasProps) {
       <Canvas
         frameloop="demand" // Render on-demand: 0% GPU load khi không chạm
         dpr={dpr}          // 1.0 trên Mobile, 1.25 trên Desktop (cứu tinh cho GPU)
-        camera={{ position: [8.1, 6.55 + offsetY, 9.35], fov: isMobile ? 42 : 36 }}
+        camera={{ position: [8.1, 6.55 + groupY, 9.35], fov: isMobile ? 42 : 36 }}
         gl={{
           antialias: !isMobile, // Tắt antialias trên mobile (màn hình nhỏ PPI cao không cần tới)
           alpha: false,         // Tắt alpha để compositor không phải tính toán hòa trộn
@@ -71,7 +73,7 @@ export function RubikCanvas({ onResetCamera }: RubikCanvasProps) {
           minDistance={4.2}
           maxDistance={14}
           dampingFactor={0.14}
-          target={[0, offsetY, 0]}
+          target={[0, targetY, 0]}
           rotateSpeed={isMobile ? 0.9 : 0.85}
           touches={{
             ONE: THREE.TOUCH.ROTATE,
@@ -79,7 +81,7 @@ export function RubikCanvas({ onResetCamera }: RubikCanvasProps) {
           }}
         />
 
-        <group position={[0, offsetY, 0]}>
+        <group position={[0, groupY, 0]}>
           <EnvironmentView />
           {/* Khối Rubik 3D đầy đủ 26 cubies bo góc mềm */}
           <RubikCube />

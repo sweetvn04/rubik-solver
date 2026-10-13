@@ -6,7 +6,35 @@
 
 ## 📅 2026-10-14
 
-### 🎬 [Commit `7879fe8`] — Khắc Phục Triệt Để Lỗi Ngắt/Loạn Animation 3D Và Chuẩn Hóa 100% Vị Trí & Thuật Toán Các Thế Cờ First Block (FB) & Second Block (SB)
+### 📱 [Commit `TBD`] — Tối Ưu Triệt Để Trải Nghiệm Học Thế Cờ 3D Trên Android & Màn Hình Nhỏ (344px Viewport)
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng gửi ảnh chụp màn hình giả lập Android (344 x 780, Galaxy S24) và phản ánh: "chưa tối ưu trên android nè".
+  - Phân tích hiện trạng trên mobile hẹp:
+    1. Bảng `CaseStudyHUD` có chiều cao quá lớn do cố định 4-6 dòng text của hộp "Mẹo nhận biết & Mẹo xoay", đẩy toàn bộ thanh nút điều khiển quan trọng (`‹ Bước`, `Chạy demo`, `Bước ›`, `Đặt lại`) bị tụt xuống dưới đáy màn hình, chỉ thấy được một mẩu đỉnh của nút.
+    2. Chiều ngang 344px quá hẹp khiến hàng 6 nút bấm footer bị dồn ép sát mép, nguy cơ tràn màn hình.
+    3. Tâm ngắm camera 3D chưa được tính toán chuẩn theo tỷ lệ viewport mobile, khiến khối Rubik bị bảng điều khiển bên dưới che khuất một phần.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Nâng Tâm Nhìn Khối Rubik 3D Lên Nửa Trên Màn Hình (`src/components/cube/RubikCanvas.tsx`):**
+     - Khi mở Case Study hoặc Tutor Mode trên thiết bị di động (`isMobile`), tự động hướng tâm ngắm camera `targetY: -0.85` và nâng tọa độ khối `groupY: 0.35`.
+     - Khối Rubik nổi bật tại 1/3 trên của màn hình, hoàn toàn lộ rõ các mặt F, U, L trong không gian thoáng đãng mà không bị card HUD bên dưới che khuất dù người dùng xoay lật ở bất kỳ góc độ nào.
+  2. **Thu Gọn Mẹo Nhận Biết Linh Hoạt (Collapsible Accordion trong `src/components/ui/CaseStudyHUD.tsx`):**
+     - Trên mobile (< sm): Thu gọn phần mẹo dài dòng thành nút bấm tinh gọn dạng pill `[💡 Mẹo nhận biết & cách xoay ▼]`. Người dùng chạm để mở rộng xem chi tiết hoặc thu gọn lại theo ý muốn.
+     - Trên desktop (sm+): Giữ nguyên giao diện rộng rãi mở sẵn mặc định.
+     - Giảm hơn 50% chiều cao của HUD trên mobile (từ ~380px xuống chỉ còn ~170px), trả lại không gian tối đa cho bàn xoay 3D.
+  3. **Cố Định Vị Trí Tuyệt Đối & Safe Area Inset Chuẩn Mobile:**
+     - Sử dụng `fixed sm:absolute bottom-[max(0.4rem,env(safe-area-inset-bottom,0.4rem))]` giúp card luôn bám vững chắc vào mép đáy thực tế của viewport, không bao giờ bị thanh điều hướng ảo của Android (3 phím Back/Home/Recent hoặc gesture bar) hay thanh URL của trình duyệt di động che lấp.
+  4. **Tái Cấu Trúc Thanh Nút Footer Chống Tràn Trên Màn Hình 320px – 344px:**
+     - Stepper chuyển thế cờ: Thu gọn thành 2 nút icon nhỏ gọn `[‹]` và `[›]` (28x28px).
+     - Nút `[Đặt lại]`: Thu gọn icon xoay `[🔄]` (28x28px).
+     - Bộ nút điều khiển `[‹ Bước]`, `[▶ Demo]`, `[Bước ›]`: Khóa `shrink-0`, cỡ chữ `text-[11px]` sắc nét, tổng chiều ngang chỉ 272px (nhỏ hơn nhiều so với độ rộng 310px khả dụng trên màn hình 344px). Toàn bộ nút hiển thị trọn vẹn 100%, thao tác êm ái bằng ngón tay cái.
+* **Files tác động:**
+  - `src/components/cube/RubikCanvas.tsx`: Điều chỉnh camera offset targetY và groupY cho mobile.
+  - `src/components/ui/CaseStudyHUD.tsx`: Thêm accordion mẹo nhận biết, thu gọn kích thước header/footer, ghim fixed bottom safe area.
+  - `COMMAND_LOG.md`: Ghi nhật ký lệnh kiểm tra và biên dịch.
+  - `CHANGELOG.md`: Ghi nhận chi tiết thay đổi mã nguồn.
+
+---
 
 * **Bối cảnh & Yêu cầu:**
   - Người dùng phản hồi: "các bước xoay bị loạn ròi bạn, nó bị ngắt animation và bị sai trường hợp ở FB bạn hãy check lại".

@@ -526,6 +526,7 @@
 | 506 | 2026-10-14 01:06 | `git add . && git commit -m "fix(case-study): ..."` | Commit sửa lỗi ngắt animation và chuẩn hóa FB/SB cases | Exit 0 — Commit `7879fe8` |
 | 507 | 2026-10-14 01:07 | `git commit -am "docs: sync commit hash in changelog and command log"` | Cập nhật commit hash 7879fe8 vào CHANGELOG.md và COMMAND_LOG.md | Exit 0 — Commit `f0a774d` |
 | 508 | 2026-10-14 01:07 | `npm run build` | Kiểm tra biên dịch xác nhận toàn bộ dự án không có lỗi sau khi đồng bộ tài liệu | Exit 0 — Build thành công trong 876ms |
+| 509 | 2026-10-14 01:22 | `npm run build` | Kiểm tra biên dịch sau khi tối ưu CaseStudyHUD và camera cho Android | Exit 0 — Build thành công trong 591ms |
 
 
 
