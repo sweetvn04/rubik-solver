@@ -11,6 +11,8 @@ import {
   Lightbulb,
   BookOpen,
   Sparkles,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 interface CaseStudyHUDProps {
@@ -32,6 +34,9 @@ export const CaseStudyHUD: React.FC<CaseStudyHUDProps> = ({ onOpenTheory }) => {
   const nextCaseStudy = useRubikStore((s) => s.nextCaseStudy);
   const prevCaseStudy = useRubikStore((s) => s.prevCaseStudy);
   const closeCaseStudy = useRubikStore((s) => s.closeCaseStudy);
+
+  const isFocusMode = useRubikStore((s) => s.isFocusMode);
+  const toggleFocusMode = useRubikStore((s) => s.toggleFocusMode);
 
   const parsedMoves = useMemo(() => {
     if (!activeCaseStudy?.alg) return [];
@@ -100,6 +105,25 @@ export const CaseStudyHUD: React.FC<CaseStudyHUDProps> = ({ onOpenTheory }) => {
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
+            {/* Nút bật/tắt làm xám các viên thừa không liên quan */}
+            <button
+              type="button"
+              onClick={toggleFocusMode}
+              className={`px-2 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1 text-[11px] font-bold ${
+                isFocusMode
+                  ? 'bg-[#e07a5f]/15 text-[#e07a5f] border-[#e07a5f]/30 hover:bg-[#e07a5f]/25 shadow-2xs'
+                  : 'bg-[#faf6ee] text-[#8c7b6c] border-[#e2d8c7] hover:text-[#2c221e]'
+              }`}
+              title={
+                isFocusMode
+                  ? 'Đang làm xám các viên không liên quan (Bấm để hiện màu tất cả)'
+                  : 'Đang hiện màu toàn bộ khối (Bấm để làm xám các viên thừa)'
+              }
+            >
+              {isFocusMode ? <Eye className="w-3.5 h-3.5 text-[#e07a5f]" /> : <EyeOff className="w-3.5 h-3.5 text-[#8c7b6c]" />}
+              <span className="hidden sm:inline">{isFocusMode ? 'Đang làm xám' : 'Hiện đủ màu'}</span>
+            </button>
+
             {onOpenTheory && (
               <button
                 type="button"

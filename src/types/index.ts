@@ -60,6 +60,22 @@ export interface CubieState {
   isDimmed?: boolean;
 }
 
+export interface ActiveCaseStudy {
+  id: string;
+  name: string;
+  group: string;
+  groupName?: string;
+  blockType?: string;
+  targetSlot?: string;
+  cornerPos?: string;
+  edgePos?: string;
+  setupAlg: string;
+  alg: string;
+  altAlg?: string;
+  recognition?: string;
+  tip?: string;
+}
+
 // Bảng màu sáp / giấy phác thảo lấy cảm hứng từ phim ngắn SCRAMBLED
 export const CUBE_PALETTE = {
   U: '#e5a922', // Vàng nghệ sáp

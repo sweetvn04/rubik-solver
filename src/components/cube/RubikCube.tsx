@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useRubikStore } from '../../store/useRubikStore';
 import { getMoveExecutionInfo } from '../../engine/moveParser';
-import { isCubieInPhase, type FocusPhaseId } from '../../engine/highlightRules';
+import { isCubieInPhase, isCubieInCaseStudy, type FocusPhaseId } from '../../engine/highlightRules';
 import { Cubie } from './Cubie';
 
 const SPACING = 1.00;
@@ -27,6 +27,7 @@ export function RubikCube() {
   const tutorCurrentIndex = useRubikStore((s) => s.tutorCurrentIndex);
   const tutorAllMoves = useRubikStore((s) => s.tutorAllMoves);
   const isFocusMode = useRubikStore((s) => s.isFocusMode);
+  const activeCaseStudy = useRubikStore((s) => s.activeCaseStudy);
 
   let currentPhaseId: FocusPhaseId = 'all';
   if (isTutorActive && isFocusMode) {
@@ -40,10 +41,10 @@ export function RubikCube() {
     }
   }
 
-  // Cập nhật lại khung hình khi chuyển phase hoặc bật/tắt Focus
+  // Cập nhật lại khung hình khi chuyển phase, đổi case study hoặc bật/tắt Focus
   useEffect(() => {
     invalidate();
-  }, [currentPhaseId, isFocusMode, invalidate]);
+  }, [currentPhaseId, isFocusMode, activeCaseStudy?.id, invalidate]);
 
   const cubieRefs = useRef<Map<string, THREE.Group>>(new Map());
   const progressRef = useRef(0);
@@ -128,7 +129,14 @@ export function RubikCube() {
           z * SPACING,
         ];
 
-        const isDimmed = !isCubieInPhase(cubie, currentPhaseId);
+        let isDimmed = false;
+        if (isFocusMode) {
+          if (activeCaseStudy) {
+            isDimmed = !isCubieInCaseStudy(cubie, activeCaseStudy);
+          } else if (isTutorActive) {
+            isDimmed = !isCubieInPhase(cubie, currentPhaseId);
+          }
+        }
 
         return (
           <Cubie

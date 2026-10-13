@@ -4,6 +4,44 @@
 
 ---
 
+## 📅 2026-10-14
+
+### 🎯 [Commit `pending`] — Làm Xám Các Viên Cubie Không Liên Quan Trong Chế Độ Học 3D (Focus Mode Cho FB & SB)
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng gửi ảnh chụp màn hình chế độ Split-View và phản hồi: "sao bạn không làm xám mấy viên k liên quan để dễ xem".
+  - Phân tích nguyên nhân: Trong chế độ Case Study 3D trước đó, toàn bộ 26 cubies đều hiển thị đầy đủ màu sắc rực rỡ khiến người học bị quá tải thị giác, khó nhận biết nhanh viên nào đang được giải (ví dụ như cạnh DL đang ở UF) và viên nào chỉ là nền không liên quan.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Thuật Toán Phân Định Mảnh Nổi Bật (`isCubieInCaseStudy` trong `src/engine/highlightRules.ts`):**
+     - Nhận diện chính xác từng viên cubie dựa trên tọa độ ban đầu bất biến (`cubie.initialPos`):
+       - **First Block (FB):**
+         - Mỏ neo DL (`targetSlot === 'DL'`): Chỉ duy nhất cạnh DL (`[-1, -1, 0]`) sáng màu; toàn bộ 19 cạnh và góc khác trên khối lập tức được làm xám mờ than chì (`#504a44`). Các tâm L, D, F, B, U được giữ sáng để định hướng không gian (tâm R đối diện làm xám).
+         - Cặp trước FL (`targetSlot === 'FL'`): Giữ sáng mỏ neo DL (`[-1, -1, 0]`), góc DFL (`[-1, -1, 1]`) và cạnh FL (`[-1, 0, 1]`), kèm cặp sau DBL + BL nếu đã giải. Toàn bộ tầng R (8 viên) và các viên U khác đều làm xám.
+         - Cặp sau BL (`targetSlot === 'BL'`): Giữ sáng mỏ neo DL, góc DBL (`[-1, -1, -1]`) và cạnh BL (`[-1, 0, -1]`). Các viên khác làm xám.
+       - **Second Block (SB):**
+         - Giữ sáng toàn bộ 6 viên First Block đã hoàn thành vững chắc bên trái (`x === -1 && y <= 0`) và các tâm chuẩn.
+         - Mỏ neo DR (`targetSlot === 'DR'`): Chỉ cạnh DR (`[1, -1, 0]`) sáng màu; toàn bộ các góc và cạnh khác trên tầng R và U đều làm xám.
+         - Cặp trước FR (`targetSlot === 'FR'`): Giữ sáng cạnh DR, góc DFR (`[1, -1, 1]`) và cạnh FR (`[1, 0, 1]`).
+         - Cặp sau BR (`targetSlot === 'BR'`): Giữ sáng cạnh DR, góc DBR (`[1, -1, -1]`) và cạnh BR (`[1, 0, -1]`).
+  2. **Kết Nối Bàn Xoay 3D Tự Động (`src/components/cube/RubikCube.tsx`):**
+     - Truyền `isDimmed = !isCubieInCaseStudy(cubie, activeCaseStudy)` khi đang mở Case Study và `isFocusMode` đang bật (mặc định bật).
+     - Đăng ký `activeCaseStudy?.id` vào dependency của `useEffect` kích hoạt `invalidate()` để chuyển đổi khung hình WebGL tức thì khi đổi thế cờ hoặc bật/tắt làm xám.
+  3. **Nút Bấm Bật/Tắt Trực Tiếp Trên Header HUD (`src/components/ui/CaseStudyHUD.tsx`):**
+     - Bổ sung nút `[ 👁️ Đang làm xám / Hiện đủ màu ]` ngay trên thanh tiêu đề của `CaseStudyHUD`.
+     - Cho phép người dùng linh hoạt chuyển đổi giữa chế độ tập trung cao độ (làm xám các viên thừa) và chế độ quan sát toàn khối chỉ với 1 click.
+  4. **Tổ chức Type Definitions Sạch Sẽ (`src/types/index.ts` & `src/store/useRubikStore.ts`):**
+     - Đưa interface `ActiveCaseStudy` vào `src/types/index.ts` để tránh circular dependency giữa store và engine.
+* **Files tác động:**
+  - `src/types/index.ts`: Khai báo `ActiveCaseStudy`.
+  - `src/store/useRubikStore.ts`: Re-export `ActiveCaseStudy`.
+  - `src/engine/highlightRules.ts`: Triển khai hàm `isCubieInCaseStudy`.
+  - `src/components/cube/RubikCube.tsx`: Tích hợp tính toán `isDimmed` cho Case Study 3D.
+  - `src/components/ui/CaseStudyHUD.tsx`: Thêm nút toggle Focus Mode vào Header.
+  - `COMMAND_LOG.md`: Ghi nhật ký lệnh kiểm tra và biên dịch.
+  - `CHANGELOG.md`: Ghi nhận chi tiết thay đổi mã nguồn.
+
+---
+
 ## 📅 2026-10-13
 
 ### 🧊 [Commit `b1ff779`] — Trải Nghiệm Học Thế Cờ Tương Tác 3D Trực Tiếp: Tích Hợp Case Study HUD, Chế Độ Chia Màn Hình Split View Desktop & Điều Hướng Chuỗi Thế FB/SB

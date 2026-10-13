@@ -491,6 +491,8 @@
 | 471 | 2026-10-13 21:33 | `git commit -am "docs: sync commit hash in changelog and command log"` | Cập nhật commit hash b1ff779 vào CHANGELOG.md và COMMAND_LOG.md | Exit 0 — Commit `dd1cd68` |
 | 472 | 2026-10-13 21:33 | `git status -s` | Kiểm tra working tree sau commit tài liệu | Exit 0 — Clean tree |
 | 473 | 2026-10-13 21:33 | `npm run build` | Kiểm tra biên dịch cuối cùng toàn bộ dự án | Exit 0 — Build thành công trong 555ms |
+| 474 | 2026-10-14 00:23 | `npm run build` | Kiểm tra biên dịch sau khi triển khai làm xám cubie không liên quan trong Case Study | Exit 0 — Build thành công trong 755ms |
+| 475 | 2026-10-14 00:23 | `git status -s` | Kiểm tra trạng thái git working tree trước khi commit tính năng làm mờ | Exit 0 — 5 files modified |
 
 
 

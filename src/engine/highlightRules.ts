@@ -1,4 +1,4 @@
-import type { CubieState } from '../types';
+import type { CubieState, ActiveCaseStudy } from '../types';
 
 export type FocusPhaseId = 'fb' | 'sb' | 'cmll' | 'lse' | 'all';
 
@@ -54,3 +54,84 @@ export function isCubieInPhase(
 
   return true;
 }
+
+/**
+ * Kiểm tra xem một viên Cubie có thuộc nhóm liên quan trực tiếp đến thế cờ đang học
+ * trong Case Study (First Block hoặc Second Block) hay không.
+ * Các viên không liên quan sẽ được làm xám (dimmed) để người học quan sát trực quan nhất.
+ */
+export function isCubieInCaseStudy(
+  cubie: CubieState,
+  caseStudy: ActiveCaseStudy
+): boolean {
+  const [ix, iy, iz] = cubie.initialPos;
+  const isCenter = Math.abs(ix) + Math.abs(iy) + Math.abs(iz) === 1;
+
+  // 1. FIRST BLOCK (FB)
+  if (caseStudy.blockType === 'fb') {
+    // Các tâm tham chiếu định hướng không gian: L (mặt chính FB), D (đáy), F (trước), B (sau), U (trên)
+    // Tâm R đối diện được làm xám vì First Block hoàn toàn không can thiệp mặt R
+    if (isCenter) {
+      return ix !== 1;
+    }
+
+    // Mỏ neo DL: Chỉ viên cạnh DL (Trắng - Đỏ)
+    if (caseStudy.targetSlot === 'DL') {
+      return ix === -1 && iy === -1 && iz === 0;
+    }
+
+    // Cặp trước FL (Front Pair): Cạnh DL (nền), Cặp FL (DFL + FL), kèm Cặp sau (DBL + BL) nếu đã xong
+    if (caseStudy.targetSlot === 'FL') {
+      const isDL = ix === -1 && iy === -1 && iz === 0;
+      const isFrontPair = (ix === -1 && iy === -1 && iz === 1) || (ix === -1 && iy === 0 && iz === 1);
+      const isBackPair = (ix === -1 && iy === -1 && iz === -1) || (ix === -1 && iy === 0 && iz === -1);
+      return isDL || isFrontPair || isBackPair;
+    }
+
+    // Cặp sau BL (Back Pair): Cạnh DL (nền) + Cặp BL (DBL + BL)
+    if (caseStudy.targetSlot === 'BL') {
+      const isDL = ix === -1 && iy === -1 && iz === 0;
+      const isBackPair = (ix === -1 && iy === -1 && iz === -1) || (ix === -1 && iy === 0 && iz === -1);
+      return isDL || isBackPair;
+    }
+
+    // Mặc định cho First Block (x = -1, y <= 0)
+    return ix === -1 && iy <= 0;
+  }
+
+  // 2. SECOND BLOCK (SB)
+  if (caseStudy.blockType === 'sb') {
+    // Toàn bộ khối First Block bên trái (1x2x3) đã giải xong: luôn giữ nguyên màu để nhận biết
+    const isFB = ix === -1 && iy <= 0;
+    if (isFB) return true;
+
+    // Toàn bộ 6 tâm hệ quy chiếu không gian
+    if (isCenter) return true;
+
+    // Mỏ neo DR: Chỉ viên cạnh DR (Trắng - Cam)
+    if (caseStudy.targetSlot === 'DR') {
+      return ix === 1 && iy === -1 && iz === 0;
+    }
+
+    // Cặp trước FR: Cạnh DR + Cặp FR (DFR + FR) + Cặp sau (DBR + BR) nếu có
+    if (caseStudy.targetSlot === 'FR') {
+      const isDR = ix === 1 && iy === -1 && iz === 0;
+      const isFrontPair = (ix === 1 && iy === -1 && iz === 1) || (ix === 1 && iy === 0 && iz === 1);
+      const isBackPair = (ix === 1 && iy === -1 && iz === -1) || (ix === 1 && iy === 0 && iz === -1);
+      return isDR || isFrontPair || isBackPair;
+    }
+
+    // Cặp sau BR: Cạnh DR + Cặp BR (DBR + BR)
+    if (caseStudy.targetSlot === 'BR') {
+      const isDR = ix === 1 && iy === -1 && iz === 0;
+      const isBackPair = (ix === 1 && iy === -1 && iz === -1) || (ix === 1 && iy === 0 && iz === -1);
+      return isDR || isBackPair;
+    }
+
+    // Mặc định cho Second Block: Khối FB hoặc SB (x !== 0, y <= 0)
+    return (ix === -1 || ix === 1) && iy <= 0;
+  }
+
+  return true;
+}
+

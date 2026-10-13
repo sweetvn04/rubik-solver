@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import * as THREE from 'three';
 import { invalidate } from '@react-three/fiber';
-import type { CubieState, Move } from '../types';
+import type { CubieState, Move, ActiveCaseStudy } from '../types';
 import { createInitialCubies } from '../engine/cubeModel';
 import { parseAlgorithm, getMoveExecutionInfo } from '../engine/moveParser';
 import { generateScramble } from '../engine/scrambler';
@@ -39,21 +39,7 @@ export interface SolveResult {
   errorMessage?: string;
 }
 
-export interface ActiveCaseStudy {
-  id: string;
-  name: string;
-  group: string;
-  groupName?: string;
-  blockType?: string;
-  targetSlot?: string;
-  cornerPos?: string;
-  edgePos?: string;
-  setupAlg: string;
-  alg: string;
-  altAlg?: string;
-  recognition?: string;
-  tip?: string;
-}
+export type { ActiveCaseStudy };
 
 interface RubikStore {
   cubies: CubieState[];
