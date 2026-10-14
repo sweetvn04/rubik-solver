@@ -537,6 +537,7 @@
 | 517 | 2026-10-14 23:27 | `grep -n -C 5 "SAU" .../fb_tong_hop.txt` | Tra cứu các trường hợp Cặp Sau trong tài liệu FB gốc của Roux VN | Exit 0 |
 | 518 | 2026-10-14 23:28 | `grep -n -C 5 "SAU" .../sb_main.txt` | Tra cứu các trường hợp Cặp Sau trong tài liệu SB gốc của Roux VN | Exit 0 |
 | 519 | 2026-10-14 23:29 | `git status -s` | Kiểm tra trạng thái git working tree | Exit 0 — Sạch (clean) |
+| 520 | 2026-10-14 23:29 | `git commit -am "docs: update COMMAND_LOG.md with queries 514-519"` | Lưu commit cập nhật COMMAND_LOG.md | Exit 0 — Commit `4ee597d` |
 
 
 
