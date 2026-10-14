@@ -101,7 +101,7 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '1c. Dựng Back Square 1×2×2 (Cặp sau BL)',
         description:
-          'Tìm góc DBL (Trắng/Đỏ/Xanh lam) và cạnh BL (Đỏ/Xanh lam). Đưa cả hai lên tầng trên U. Xoay tầng U để ghép đôi thành cặp F2L khớp màu (Đỏ đi với Đỏ, Xanh lam đi với Xanh lam). Sau đó dùng move L\' hoặc l\' chèn cặp này xuống khe sau BL.',
+          'Tìm góc DBL (Trắng/Đỏ/Xanh lam) và cạnh BL (Đỏ/Xanh lam). Đưa cả hai lên tầng trên U để ghép đôi thành cặp khớp màu. Các trigger vàng siêu tốc: B\' (khi cặp ghép sẵn trên U), B\' U\' B (khi Trắng hướng ra B), r\' B hoặc r B (khi Trắng hướng L), và M U R B\' (khi cạnh kẹt ở DF đáy trước).',
         diagram: {
           U: _9(X),
           D: [X,X,X, RED,W,X, RED,X,X],
@@ -115,7 +115,7 @@ export const ROUX_LESSONS: Lesson[] = [
         demoAlg: "U' L' U L",
         setupAlg: "L' U' L U",
         highlightPhase: 'fb',
-        note: 'Quy tắc: Ưu tiên làm khối sau (Back Square) trước để quan sát khối trước (Front Square) dễ dàng hơn.',
+        note: '💡 Mẹo Pro: Ưu tiên làm Back Square trước! Xem chi tiết 11 thế cờ minh họa 3D của Cặp Sau FB trong mục Cẩm nang.',
       },
       {
         title: '1d. Dựng Front Square 1×2×2 (Cặp trước FL) → Hoàn tất 1×2×3',
@@ -263,7 +263,7 @@ export const ROUX_LESSONS: Lesson[] = [
       {
         title: '2d. Dựng Back Square 1×2×2 bên phải (Cặp sau BR)',
         description:
-          'Tìm góc DBR (Trắng/Cam/Xanh lam) và cạnh BR (Cam/Xanh lam). Sau khi đã đưa cả hai lên tầng U, áp dụng kỹ thuật ghép cặp F2L để dính liền góc và cạnh. Chèn cặp vào khe sau bằng công thức: R\' U R hoặc dùng wide move: r U\' r\'. Khối vuông 1×2×2 phía sau bên phải đã hoàn thành!',
+          'Tìm góc DBR (Trắng/Cam/Xanh lam) và cạnh BR (Cam/Xanh lam). Sau khi đã đưa cả hai lên tầng U, áp dụng các công thức vàng chỉ dùng ⟨R, r, M, U⟩: r\' U\' r hoặc R\' U R (chèn cặp siêu tốc 3 bước), M2 r\' U\' r (khi cạnh kẹt ở DF), và R U\' R\' r\' U\' r (khi cạnh kẹt ở khe trước FR).',
         diagram: {
           U: _9(X),
           D: [RED,X,X, RED,W,ORA, RED,X,ORA],
@@ -277,7 +277,7 @@ export const ROUX_LESSONS: Lesson[] = [
         demoAlg: "U' R' U R",
         setupAlg: "R' U' R U",
         highlightPhase: 'sb',
-        note: 'Ưu thế: Luôn hoàn thành khe sau trước để bạn thoải mái nhìn trực diện khe trước.',
+        note: '💡 Mẹo Pro: Luôn hoàn thành khe sau trước để thoải mái nhìn khe trước! Xem chi tiết 8 thế cờ minh họa 3D của Cặp Sau SB trong mục Cẩm nang.',
       },
       {
         title: '2e. Dựng Front Square (Cặp trước FR) → Hoàn tất F2B',
