@@ -531,6 +531,12 @@
 | 511 | 2026-10-14 01:23 | `git add . && git commit -m "fix(mobile): ..."` | Commit tối ưu HUD và camera 3D cho Android và màn hình hẹp | Exit 0 — Commit `3c7fa23` |
 | 512 | 2026-10-14 01:23 | `git commit -am "docs: sync commit hash 3c7fa23 in changelog and command log"` | Đồng bộ commit hash 3c7fa23 vào tài liệu | Exit 0 — Commit `40c75ba` |
 | 513 | 2026-10-14 01:24 | `npm run build` | Kiểm tra biên dịch xác nhận dự án hoàn hảo 0 lỗi | Exit 0 — Build thành công trong 562ms |
+| 514 | 2026-10-14 23:26 | `find . -maxdepth 3 -not -path '*/.*'` | Khảo sát cấu trúc thư mục dự án để kiểm tra tài liệu FB & SB | Exit 0 |
+| 515 | 2026-10-14 23:27 | `ls -la src/data/` | Kiểm tra danh sách file dữ liệu bài học trong thư mục src/data | Exit 0 |
+| 516 | 2026-10-14 23:27 | `ls -la .../c1a64c34-3575-49c3-b5de-feea936a26fe/scratch/` | Khảo sát các tài liệu crawl từ giáo trình Roux gốc trong thư mục lưu trữ | Exit 0 |
+| 517 | 2026-10-14 23:27 | `grep -n -C 5 "SAU" .../fb_tong_hop.txt` | Tra cứu các trường hợp Cặp Sau trong tài liệu FB gốc của Roux VN | Exit 0 |
+| 518 | 2026-10-14 23:28 | `grep -n -C 5 "SAU" .../sb_main.txt` | Tra cứu các trường hợp Cặp Sau trong tài liệu SB gốc của Roux VN | Exit 0 |
+| 519 | 2026-10-14 23:29 | `git status -s` | Kiểm tra trạng thái git working tree | Exit 0 — Sạch (clean) |
 
 
 
