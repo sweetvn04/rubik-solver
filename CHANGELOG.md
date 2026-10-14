@@ -4,6 +4,36 @@
 
 ---
 
+## 📅 2026-10-15
+
+### 🧩 [Commit `5945128`] — Bổ Sung Trọn Bộ 8 Trường Hợp Ghép Cạnh BL Khi Góc DBL Đã Ở Đáy Cho First Block
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng hỏi: "vậy trường hợp viên góc dbl đã đúng còn viên cạnh trên U thì sao nhỉ" kèm ảnh chụp màn hình giao diện học thế cờ. Sau khi được giải thích về các phương pháp Keyhole `u R u'` và Trigger `B' r B`, người dùng yêu cầu: "thêm vào hướng dẫn đi".
+  - Phân tích hiện trạng:
+    - Trong nhóm "Ghép Cạnh FB (Góc đã ở vị trí)" (`fb_edge_insertion`), các trường hợp cho góc trước DFL có 5 ca, nhưng cho góc sau DBL chỉ có 1 ca duy nhất (`fb_edge_bl_ub`).
+    - Thiếu các vị trí cạnh khác trên tầng U (UL, UR, UF) và thiếu hoàn toàn các trường hợp cạnh bị lật màu (màu Lam hướng lên tầng U thay vì màu Đỏ).
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Bổ Sung 7 Trường Hợp Ghép Cạnh BL Mới Kèm Minh Họa 3D (`src/data/rouxBlockData.ts`):**
+     - **Hướng 1 (Màu Đỏ hướng lên trên U — Kỹ thuật Keyhole):**
+       - `fb_edge_bl_ub`: Cập nhật tip nhận biết chính xác cơ chế Keyhole `u R u'`.
+       - `fb_edge_bl_ul`: Cạnh tại UL — giải bằng `U u R u'`.
+       - `fb_edge_bl_ur`: Cạnh tại UR — giải bằng `U' u R u'`.
+       - `fb_edge_bl_uf`: Cạnh tại UF — giải bằng `U2 u R u'`.
+     - **Hướng 2 (Màu Lam hướng lên trên U — Cạnh bị lật màu, dùng Trigger B' r B):**
+       - `fb_edge_bl_flip_uf`: Cạnh tại UF — giải bằng `B' r B` (3 moves).
+       - `fb_edge_bl_flip_ur`: Cạnh tại UR — giải bằng `U B' r B`.
+       - `fb_edge_bl_flip_ul`: Cạnh tại UL — giải bằng `U' B' r B`.
+       - `fb_edge_bl_flip_ub`: Cạnh tại UB — giải bằng `U2 B' r B`.
+  2. **Xác Thực Toán Học Tuyệt Đối:**
+     - Toàn bộ 8 trường hợp đều giữ nguyên 100% mỏ neo DL và góc DBL ở đáy, chèn chuẩn xác cạnh BL vào khe sau.
+     - Vượt qua 100% các bài test `test_all_cases.ts` (45 FB cases, 31 SB cases) và `check_fb_positions.ts` (0 mismatches).
+* **Files tác động:**
+  - `src/data/rouxBlockData.ts`: Cập nhật và bổ sung 7 trường hợp mới trong nhóm `fb_edge_insertion`.
+  - `COMMAND_LOG.md`: Ghi nhật ký lệnh kiểm tra và biên dịch.
+  - `CHANGELOG.md`: Ghi nhận chi tiết mã nguồn.
+
+
 ## 📅 2026-10-14
 
 ### 📚 [Commit `6d54ae6`] — Bổ Sung Toàn Diện Cẩm Nang Khối Sau 1x2x2 (Back Square) Kèm Minh Họa 3D Cho FB & SB
