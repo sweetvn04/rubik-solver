@@ -6,6 +6,40 @@
 
 ## 📅 2026-10-14
 
+### 📚 [Commit `6d54ae6`] — Bổ Sung Toàn Diện Cẩm Nang Khối Sau 1x2x2 (Back Square) Kèm Minh Họa 3D Cho FB & SB
+
+* **Bối cảnh & Yêu cầu:**
+  - Người dùng hỏi: "tại sao trong phần tài liệu fb sb, lại không có phần hướng dẫn cho cặp f2l ở phía sau viên tâm?", "khối sau 1x2x2 là bao gồm cặp f2l sau và viên tâm và viên cạnh lb hoặc rb á hả?", "có mẹo hay công thức nào để làm khối 1x2x2 sau nhanh không hay có công thức nào không", "còn cho fb thì sao", và yêu cầu: "thêm tất cả các cái này vào hướng dẫn có hình minh hoạ như các trường hợp khác".
+  - Phân tích hiện trạng:
+    - Trước đó, nhóm Cặp Sau (`fb_bp_cases`) trong First Block chỉ có 4 trường hợp sơ sài, và Second Block (`sb_bp_cases`) chỉ có 5 trường hợp.
+    - Thiếu các trường hợp kinh điển cực kỳ phổ biến như: Cặp đã ghép sẵn trên tầng U, các hướng mặt trắng khác nhau (Trắng hướng L, B, U), và các ca tận dụng tầng giữa M khi cạnh bị kẹt ở DF/DB hoặc kẹt ở khe trước FR.
+* **Chi tiết kỹ thuật & Tính năng triển khai:**
+  1. **Bổ Sung 7 Trường Hợp Cặp Sau Minh Họa 3D Cho First Block (`src/data/rouxBlockData.ts`):**
+     - `fb_bp_paired_ub`: Cặp sau đã dính liền trên tầng U, chèn thẳng bằng move `B` (1 move).
+     - `fb_bp_wb_ur`: Góc Trắng hướng sau B, Cạnh tại UR — giải bằng trigger vàng `B' U' B` (3 moves).
+     - `fb_bp_wl_ur`: Góc Trắng hướng Trái L, Cạnh tại UR — giải bằng `U' r U r' B`.
+     - `fb_bp_wl_uf`: Góc Trắng hướng Trái L, Cạnh tại UF — giải bằng `r B` (2 moves).
+     - `fb_bp_wl_db`: Góc Trắng hướng Trái L, Cạnh kẹt ở DB đáy sau — giải bằng `r' B` (2 moves).
+     - `fb_bp_wt_ur`: Góc Trắng trên U, Cạnh tại UR — giải bằng `R' U2 R U' B`.
+     - `fb_bp_wt_df`: Góc Trắng trên U, Cạnh kẹt ở DF đáy trước — giải bằng combo M-slice `M U R B'`.
+     - Nâng tổng số ca First Block lên **38 trường hợp**, nhóm Cặp Sau đạt **11 trường hợp** đầy đủ mọi hướng góc và cạnh.
+  2. **Bổ Sung 3 Trường Hợp Cặp Sau Minh Họa 3D Cho Second Block (`src/data/rouxBlockData.ts`):**
+     - `sb_bp_paired_ub`: Cặp sau SB dính liền trên tầng U — chèn bằng wide move `r' U' r` (3 moves).
+     - `sb_bp_wt_df`: Cạnh BR kẹt ở DF đáy trước — dùng `M2 r' U' r` hất cạnh ra sau chèn vào khe.
+     - `sb_bp_unslot_fr`: Cạnh BR kẹt ở khe trước FR — dùng trigger unslotting `R U' R' r' U' r` giải cứu và hoàn thiện khối.
+     - Nâng tổng số ca Second Block lên **31 trường hợp**, nhóm Cặp Sau đạt **8 trường hợp** chuẩn ⟨R, r, M, U⟩.
+  3. **Xác Thực Toán Học & Vị Trí Cubie 100%:**
+     - Toàn bộ 10 trường hợp mới đều được kiểm tra toán học tự động qua script: 100% `setupAlg` đặt đúng vị trí `cornerPos` và `edgePos`, sau khi chạy `alg` phục hồi hoàn hảo về trạng thái giải và bảo toàn tuyệt đối mỏ neo và First Block.
+     - Tương thích 100% với hệ thống render SVG Isometric `BlockDiagram` và chế độ thực hành 3D `CaseStudyHUD` (tự động làm mờ cubie không liên quan).
+  4. **Cập Nhật Giáo Trình Lý Thuyết (`src/data/lessonsData.ts`):**
+     - Cập nhật bước `1c` (FB Back Square) và bước `2d` (SB Back Square) bổ sung các mẹo Pro, trigger vàng và hướng dẫn tra cứu cẩm nang 3D.
+* **Files tác động:**
+  - `src/data/rouxBlockData.ts`: Bổ sung 7 thế FB và 3 thế SB Cặp Sau.
+  - `src/data/lessonsData.ts`: Cập nhật nội dung bài học 1c và 2d.
+  - `COMMAND_LOG.md`: Ghi nhật ký lệnh kiểm tra và biên dịch.
+  - `CHANGELOG.md`: Ghi nhận chi tiết mã nguồn.
+
+
 ### 📱 [Commit `3c7fa23`] — Tối Ưu Triệt Để Trải Nghiệm Học Thế Cờ 3D Trên Android & Màn Hình Nhỏ (344px Viewport)
 
 * **Bối cảnh & Yêu cầu:**

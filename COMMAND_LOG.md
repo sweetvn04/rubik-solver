@@ -538,6 +538,21 @@
 | 518 | 2026-10-14 23:28 | `grep -n -C 5 "SAU" .../sb_main.txt` | Tra cứu các trường hợp Cặp Sau trong tài liệu SB gốc của Roux VN | Exit 0 |
 | 519 | 2026-10-14 23:29 | `git status -s` | Kiểm tra trạng thái git working tree | Exit 0 — Sạch (clean) |
 | 520 | 2026-10-14 23:29 | `git commit -am "docs: update COMMAND_LOG.md with queries 514-519"` | Lưu commit cập nhật COMMAND_LOG.md | Exit 0 — Commit `4ee597d` |
+| 521 | 2026-10-14 23:46 | `node -e "const { createSolvedCube ... }"` | Kiểm tra khả năng import hàm giải toán từ file bundle | Exit 0 |
+| 522 | 2026-10-14 23:47 | `npx tsx .../test_candidates.ts` | Chạy test toán học và vị trí các thế ứng viên Cặp Sau FB & SB | Exit 0 |
+| 523 | 2026-10-14 23:47 | `npx tsx .../find_setups.ts` | Khảo sát vị trí góc và cạnh sau các setup FB | Exit 0 |
+| 524 | 2026-10-14 23:47 | `npx tsx .../find_df_setup.ts` | Tìm setup chuẩn cho thế cạnh BL ở DF và góc ở UBL | Exit 0 — Tìm ra setup B R' U' M' |
+| 525 | 2026-10-14 23:47 | `npx tsx .../verify_df.ts` | Xác thực toán học công thức M U R B' cho thế DF | Exit 0 — Is Solved identical: true |
+| 526 | 2026-10-14 23:48 | `npx tsx .../check_sweep.ts` | Khảo sát combo sweep gom DL và Cặp sau | Exit 0 |
+| 527 | 2026-10-14 23:48 | `npx tsx .../analyze_back.ts` | Phân tích các thế cờ Back trong giáo trình Roux Method VN | Exit 0 |
+| 528 | 2026-10-14 23:48 | `npx tsx .../verify_all_back.ts` | Xác thực toán học toàn bộ 8 thế FB và 6 thế SB từ giáo trình Roux | Exit 0 — 8/8 FB PASS 100% |
+| 529 | 2026-10-14 23:49 | `npx tsx .../find_sb_ur.ts` | Tìm setup cho SB góc UBR và cạnh UR | Exit 0 — Tìm ra R' U' R U |
+| 530 | 2026-10-14 23:49 | `npx tsx .../check_sb_ub.ts` | Kiểm tra trạng thái góc và cạnh sau R' U R U' | Exit 0 |
+| 531 | 2026-10-14 23:50 | `npx tsx .../test_all_cases.ts` | Kiểm tra toán học toàn bộ 38 ca FB và 31 ca SB sau khi bổ sung | Exit 0 — FB 0 errors, SB 0 errors |
+| 532 | 2026-10-14 23:50 | `npx tsx .../check_fb_positions.ts` | Kiểm tra vị trí góc & cạnh của toàn bộ 38 ca FB sau khi bổ sung | Exit 0 — 0 mismatches |
+| 533 | 2026-10-14 23:51 | `npm run build` | Kiểm tra biên dịch TypeScript và đóng gói Vite toàn bộ dự án | Exit 0 — Build thành công trong 660ms |
+| 534 | 2026-10-14 23:51 | `git status -s` | Kiểm tra trạng thái git working tree | Exit 0 |
+| 535 | 2026-10-14 23:51 | `git add src/data/lessonsData.ts src/data/rouxBlockData.ts && git commit -m "..."` | Commit cập nhật các thế cờ Khối Sau 1x2x2 cho FB & SB | Exit 0 — Commit `6d54ae6` |
 
 
 
